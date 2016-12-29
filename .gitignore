@@ -1,24 +1,19 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# ignore .idea folder
+.idea*
 *.iml
-*.ipr
 
-### NetBeans ###
-nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
+# Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+node
+node_modules
+bower_components
+
+# Mac
+.DS_Store
+
+# Место установки node, создающего дополнительно директорию etc
+thirdparty
+
+logs
+target
+src/main/resources/db/migration/current.sql

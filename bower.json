@@ -1,0 +1,182 @@
+{
+  "name": "lfp",
+  "version": "1.0",
+  "authors": [
+    "Alexandra Dekhanova <aleksaad4@gmail.com>"
+  ],
+  "description": "lfp",
+  "main": "bower_main.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.0",
+    "angular": "~1.5.5",
+    "angular-route": "~1.5.5",
+    "angular-animate": "~1.5.5",
+    "angular-cookies": "~1.5.5",
+    "angular-resource": "~1.5.5",
+    "angular-touch": "~1.5.5",
+    "angular-ui-router": "~0.3.1",
+    "angular-ui-select": "0.19.1",
+    "angular-ui-utils": "~0.1.1",
+    "angular-ui-mask": "~1.8.7",
+    "angular-sanitize": ">=1.2.18",
+    "angular-tree-control": "~0.2.26",
+    "angular-file-upload": "~2.3.4",
+    "angular-datatables": "~0.5.4",
+    "angular-bootstrap": "2.2.0",
+    "angular-bootstrap-slider": "0.1.26",
+    "ng-tags-input": "~3.1.1",
+    "angular-utils-pagination": "~0.11.1",
+    "restangular": "1.5.2",
+    "sockjs-client": "~1.0.3",
+    "emojione": "~2.2.6",
+    "components-font-awesome": "~4.6.3",
+    "bootstrap": "~3.3.0",
+    "nprogress": "~0.1.6",
+    "lodash": ">=1.3.0",
+    "roboto-fontface": "0.5.0",
+    "font-source-sans-pro": "0.1.0",
+    "raven-js": "~3.0.4",
+    "moment": "^2.14.1",
+    "angular-moment": "~1.0.0",
+    "humanize-duration": "~3.2.1",
+    "angular-daterangepicker": "~0.2.2",
+    "checklist-model": "~0.10.0",
+    "angular-ui-tree": "~2.17.0",
+    "angular-tree-dnd": "~ 3.0.4",
+    "store-js": "1.3.20",
+    "angular-bootstrap-colorpicker": "^3.0.25",
+    "angular-number-picker": "^2.1.0",
+    "angular-loopify-number-picker": "*",
+    "angular-file-saver": "~1.1.2",
+    "stomp-websocket": "^2.3.4",
+    "angular-messages": "^1.5.9",
+    "angular-random-string": "^0.1.0",
+    "less": "^2.7.1",
+    "magnific-popup": "^1.1.0",
+    "angular-scroll-glue": "^2.1.0",
+    "vis": "^4.17.0"
+  },
+  "install": {
+    "base": "src/main/resources/assets/external",
+    "path": {
+      "//fonts//": "{name}/fonts",
+      "css": "{name}/css",
+      "less": "{name}/less",
+      "js": "{name}/js",
+      "eot": "{name}/fonts",
+      "otf": "{name}/fonts",
+      "ttf": "{name}/fonts",
+      "woff": "{name}/fonts",
+      "woff2": "{name}/fonts",
+      "svg": "{name}/img",
+      "png": "{name}/img",
+      "jpg": "{name}/img"
+    },
+    "sources": {
+      "bootstrap": [
+        "bower_components/bootstrap/dist/js/bootstrap.js",
+        "bower_components/bootstrap/dist/css/bootstrap.css",
+        "bower_components/bootstrap/dist/fonts/*",
+        "bower_components/bootstrap/js/*.js",
+        "bower_components/bootstrap/less/*.less"
+      ],
+      "components-font-awesome": [
+        "bower_components/components-font-awesome/fonts/*",
+        "bower_components/components-font-awesome/css/*.css",
+        "bower_components/components-font-awesome/less/*.less"
+      ],
+      "font-source-sans-pro": [
+        "bower_components/font-source-sans-pro/EOT/*",
+        "bower_components/font-source-sans-pro/OTF/*",
+        "bower_components/font-source-sans-pro/TTF/*",
+        "bower_components/font-source-sans-pro/WOFF/OTF/*",
+        "bower_components/font-source-sans-pro/WOFF/TTF/*",
+        "bower_components/font-source-sans-pro/*.css"
+      ],
+      "raven-js": {
+        "mapping": [
+          {
+            "bower_components/raven-js/dist/raven.js": "raven.js"
+          },
+          {
+            "bower_components/raven-js/dist/plugins/console.js": "plugins/console.js"
+          },
+          {
+            "bower_components/raven-js/dist/plugins/angular.js": "plugins/angular.js"
+          }
+        ]
+      },
+      "stomp-websocket": {
+        "mapping": [
+          {
+            "bower_components/stomp-websocket/lib/stomp.js": "stomp.js"
+          },
+          {
+            "bower_components/stomp-websocket/lib/stomp-node.js": "stomp-node.js"
+          }
+        ]
+      },
+      "angular-file-upload": {
+        "mapping": [
+          {
+            "bower_components/angular-file-upload/dist/angular-file-upload.js": "angular-file-upload.js"
+          }
+        ]
+      },
+      "lodash": [
+        {
+          "bower_components/lodash/lodash.js": "lodash.js"
+        }
+      ],
+      "moment": [
+        {
+          "bower_components/moment/moment.js": "moment.js"
+        },
+        {
+          "bower_components/moment/locale/ru.js": "locale/ru.js"
+        }
+      ],
+      "angular-tree-control": [
+        "bower_components/angular-tree-control/fonts/*",
+        "bower_components/angular-tree-control/*.js",
+        "bower_components/angular-tree-control/images/*",
+        "bower_components/angular-tree-control/css/*"
+      ],
+      "angular-datatables": [
+        "bower_components/angular-datatables/dist/css/*",
+        "bower_components/angular-datatables/dist/*",
+        "bower_components/angular-datatables/dist/plugins/bootstrap/*",
+        "bower_components/angular-datatables/dist/plugins/buttons/*",
+        "bower_components/angular-datatables/dist/plugins/colreorder/*",
+        "bower_components/angular-datatables/dist/plugins/columnfilter/*",
+        "bower_components/angular-datatables/dist/plugins/colvis/*",
+        "bower_components/angular-datatables/dist/plugins/fixedcolumns/*",
+        "bower_components/angular-datatables/dist/plugins/fixedheader/*",
+        "bower_components/angular-datatables/dist/plugins/light-columnfilter/*",
+        "bower_components/angular-datatables/dist/plugins/scroller/*",
+        "bower_components/angular-datatables/dist/plugins/select/*",
+        "bower_components/angular-datatables/dist/plugins/tabletools/*"
+      ],
+      "angular-utils-pagination": [
+        "bower_components/angular-utils-pagination/*.js",
+        "bower_components/angular-utils-pagination/*.html"
+      ],
+      "humanize-duration": [
+        "bower_components/humanize-duration/*.js"
+      ],
+      "vis": [
+        "bower_components/vis/dist/img/network/*.png"
+      ]
+    }
+  },
+  "resolutions": {
+    "angular": ">=1.5.8"
+  }
+}
