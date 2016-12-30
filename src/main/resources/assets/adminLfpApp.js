@@ -155,8 +155,8 @@ var initAngularApp = function () {
 
         }])
         .config(["RestangularProvider", function (RestangularProvider) {
-            RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
-                if(data.status == "NOT_AUTHORIZED"){
+            RestangularProvider.addResponseInterceptor(function (data, operation, what, url, response, deferred) {
+                if (data.status == "NOT_AUTHORIZED") {
                     location.reload();
                 }
                 if (data.status != "OK") {
@@ -164,13 +164,13 @@ var initAngularApp = function () {
                 }
                 return data;
             });
-            RestangularProvider.setResponseExtractor(function(response, operation) {
+            RestangularProvider.setResponseExtractor(function (response, operation) {
                 if (!response) {
                     return;
                 }
                 return response.result;
             });
-            RestangularProvider.addErrorInterceptor(function(response) {
+            RestangularProvider.addErrorInterceptor(function (response) {
                 if (response.status == 401) {
                     location.reload();
                 }
@@ -203,9 +203,9 @@ var initAngularApp = function () {
             };
         })
 
-        .animation('.sliding-item', function() {
+        .animation('.sliding-item', function () {
             return {
-                enter : function(element, done) {
+                enter: function (element, done) {
                     var el = jQuery(element);
                     // сначала hide, чтобы анимация не срабатывала сразу
                     el.hide().slideDown({complete: done});
@@ -216,7 +216,7 @@ var initAngularApp = function () {
                         }
                     }
                 },
-                leave : function(element, done) {
+                leave: function (element, done) {
                     var el = jQuery(element);
                     el.slideUp({complete: done});
                     return function (cancelled) {

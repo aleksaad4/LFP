@@ -12,6 +12,7 @@ import java.sql.SQLException;
  * Description: <br>
  */
 public class StringsListType extends CustomListType<String> {
+
     /**
      * RCS (CVS/SVN) information
      *

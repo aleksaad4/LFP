@@ -154,7 +154,7 @@ module.exports = [
             ],
             extensions: ['', '.es6.js', '.js', '.css', '.less'], // расширения точек входа
             alias: { // алиасы общеиспользуемых плагинов - для bower-installer
-                'jquery': path.join(__dirname, settings.root, 'external/jquery/js/jquery'),
+                'jquery': path.join(__dirname, settings.root, 'external/jquery/js/jquery')
             }
         },
         resolveLoader: {

@@ -1,6 +1,7 @@
 package ad4si2.lfp.utils.jpa;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author:      doa <br>
@@ -10,6 +11,7 @@ import java.util.*;
  * Description: <br>
  */
 public abstract class CustomListType<T> extends CustomCollectionType<List<T>, T> {
+
     @Override
     protected List<T> collectionInstance() {
         return new ArrayList<>();

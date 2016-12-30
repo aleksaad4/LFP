@@ -11,7 +11,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Author:      doa <br>
@@ -23,10 +26,6 @@ import java.util.*;
 public abstract class CustomCollectionType<C extends Collection<T>, T> implements UserType {
 
     private static final int[] SQL_TYPES = {Types.VARCHAR};
-
-    protected String getDelim() {
-        return ",";
-    }
 
     protected abstract C collectionInstance();
 
@@ -116,5 +115,9 @@ public abstract class CustomCollectionType<C extends Collection<T>, T> implement
     @Override
     public Object replace(final Object original, final Object target, final Object owner) throws HibernateException {
         return original;
+    }
+
+    protected String getDelim() {
+        return ",";
     }
 }

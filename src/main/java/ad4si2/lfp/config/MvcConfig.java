@@ -3,7 +3,6 @@ package ad4si2.lfp.config;
 import com.google.gson.Gson;
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;

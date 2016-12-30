@@ -9,6 +9,7 @@ import java.io.Serializable;
  * Company:     SofIT labs
  */
 public interface IEntity<ID, T> extends Serializable {
+
     @Nonnull
     ID getId();
 

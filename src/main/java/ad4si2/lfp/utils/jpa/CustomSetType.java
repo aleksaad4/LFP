@@ -8,6 +8,7 @@ import java.util.Set;
  * Date:        16.12.16
  */
 public abstract class CustomSetType<T> extends CustomCollectionType<Set<T>, T> {
+
     @Override
     protected Set<T> collectionInstance() {
         return new LinkedHashSet<>();
