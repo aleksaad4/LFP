@@ -21,7 +21,7 @@ export default class RootController {
 
         // слушаем события перехода на стейт
         //.on() возвращает функцию, которую можно вызвать чтобы удалить созданные listener
-        const removeListenerFunction = $rootScope.$on("$stateChangeStart", function (event, newState, newStateParams) {
+        const removeListenerFunction = that.rootScope.$on("$stateChangeStart", function (event, newState, newStateParams) {
 
             // первый переход на стейт вообще в приложении
             // проверим авторизацию и перейдём либо на логин

@@ -48,11 +48,12 @@ import "angular-tree-control/css/tree-control-fixed.css";
 import "angular-tree-control/css/tree-control-attribute-fixed.css";
 import "angular-tree-control/js/angular-tree-control.js";
 
+import "angular-ui-router/js/angular-ui-router";
+
 import "angular-tree-dnd/css/ng-tree-dnd";
 import "angular-tree-dnd/js/ng-tree-dnd";
 
 import "angular-ui-mask/js/mask";
-import "angular-ui-router/js/angular-ui-router";
 
 import "angular-ui-select/css/select";
 import "angular-ui-select/js/select-fixed";
@@ -119,6 +120,9 @@ import "material-design-icons/material-icons";
 import "mediaelement/css/mediaelementplayer-fixed";
 import "mediaelement/js/mediaelement-and-player";
 
+// import "ng-table/js/ng-table.min.js";
+// import "ng-table/css/ng-table.min.css";
+
 import "ng-tags-input/css/ng-tags-input";
 import "ng-tags-input/js/ng-tags-input";
 
@@ -130,7 +134,7 @@ import "nouislider-angular/js/nouislider";
 import "nprogress/css/nprogress";
 import "nprogress/js/nprogress";
 
-import "oclazyload/js/ocLazyLoad";
+// import "oclazyload/js/ocLazyLoad";
 import "requirejs/js/require";
 import "restangular/js/restangular";
 

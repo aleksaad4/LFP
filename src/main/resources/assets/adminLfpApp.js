@@ -10,7 +10,7 @@ import "./less/admin/admin";
 /**
  * Инициализация Angular
  */
-var initAngularApp = function () {
+const initAngularAdminLfpApp = function () {
     "use strict";
 
     /**
@@ -82,7 +82,7 @@ var initAngularApp = function () {
         });
     }
 
-    const app = angular.module("AdminLfpApp", [
+    const app = angular.module("adminLfpApp", [
         "ngRoute",
         "ngResource",
         "ngAnimate",
@@ -109,9 +109,8 @@ var initAngularApp = function () {
         "luegg.directives",
         "ui.bootstrap-slider",
         'angular-loading-bar',
-        'oc.lazyLoad',
         'nouislider',
-        'ngTable'
+        // 'ngTable'
     ]);
 
     // Инициазизация всех компонент (контролеров, директив etc) – package by layer
@@ -265,4 +264,4 @@ var initAngularApp = function () {
 };
 
 // запуск Angular
-require("./js/general/angular-starter").run(initAngularApp);
+require("./js/general/angular-starter").run(initAngularAdminLfpApp);

@@ -1,7 +1,3 @@
-/**
- * Created by semyon on 25.07.16.
- */
-
 function MultipleUrlMatcher(patterns, useCaseInsensitiveMatch, $urlMatcherFactoryProvider) {
     this.urlMatchers = [];
     this.params = [];

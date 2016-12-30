@@ -10,7 +10,7 @@ import "./less/user/user";
 /**
  * Инициализация Angular
  */
-var initAngularApp = function () {
+const initAngularUserLfpApp = function () {
     "use strict";
 
     /**
@@ -87,7 +87,7 @@ var initAngularApp = function () {
         });
     }
 
-    const app = angular.module("UserLfpApp", [
+    const app = angular.module("userLfpApp", [
         "ngRoute",
         "ngResource",
         "ngAnimate",
@@ -270,4 +270,4 @@ var initAngularApp = function () {
 };
 
 // запуск Angular
-require("./js/general/angular-starter").run(initAngularApp);
+require("./js/general/angular-starter").run(initAngularUserLfpApp);

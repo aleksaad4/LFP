@@ -257,20 +257,20 @@ module.exports.devServer = { // настройки сервера
     stats: {colors: true}
 };
 
- if (settings.isModeProd()) {
-     // минификация кода
-     for (var i = 0; i < module.exports.length; i++) {
-         var obj = module.exports[i];
-         if (obj.plugins) {
-             obj.plugins.push(
-                 new webpack.optimize.UglifyJsPlugin({
-                     compress: {
-                         warnings: false,
-                         drop_console: true,
-                         unsafe: false
-                     }
-                 })
-             )
-         }
-     }
- }
+if (settings.isModeProd()) {
+    // минификация кода
+    for (var i = 0; i < module.exports.length; i++) {
+        var obj = module.exports[i];
+        if (obj.plugins) {
+            obj.plugins.push(
+                new webpack.optimize.UglifyJsPlugin({
+                    compress: {
+                        warnings: false,
+                        drop_console: true,
+                        unsafe: false
+                    }
+                })
+            )
+        }
+    }
+}
