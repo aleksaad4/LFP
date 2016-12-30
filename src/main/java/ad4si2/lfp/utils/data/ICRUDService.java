@@ -231,7 +231,7 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IA
     @Override
     default EntityValidatorResult validateEntry(final ENTITY entry, final boolean forUpdate) {
         return entry.isDeleted()
-                ? validatorResult("chat_common_entry.deleted", "Объект удален")
+                ? validatorResult("common_entry.deleted", "Объект удален")
                 : emptyValidatorResult();
     }
 }

@@ -1,0 +1,26 @@
+<div class="loopify-number-picker" ng-class="{'has-max': isMaxValue, 'has-min': isMinValue}">
+    <div class="text-center loopify-frame-action">
+        <a ng-click="incrementValue()" ng-class="{disabled: !canUp}"
+           class="btn btn-link" ng-disabled="!canUp"><span
+                class="glyphicon glyphicon-chevron-up"></span></a>
+    </div>
+
+    <div class="loopify-frame-controls clearfix">
+        <div class="loopify-frame-action pull-left">
+            <input type="text" ng-model="value" class="form-control text-center"
+                   ng-disabled="disabled"
+                   ng-readonly="{{enter}}" id="{{id}}" loopify-input-number-picker>
+        </div>
+        <div class="loopify-frame-percent-label pull-left" ng-if="label">
+            <button type="button" class="btn btn-gray text-center loopify-toggle-percentage"
+                    ng-click="togglePercentageValue()"
+                    ng-if="percent">{{percentLabel}}
+            </button>
+            <label for="{{id}}" class="control-label loopify-label" ng-if="!percent">{{label}}</label>
+        </div>
+    </div>
+    <div class="text-center loopify-frame-action">
+        <a ng-click="decrementValue()" ng-class="{disabled: !canDown}" class="btn btn-link"
+           ng-disabled="!canDown"><span class="glyphicon glyphicon-chevron-down"></span></a>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+{
+  "name": "angular-loopify-number-picker",
+  "authors": [
+    "yura.l <yura.l@webcodium.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/WebCodium/angular-loopify-number-picker",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.4.8",
+    "bootstrap": "~3.3.6"
+  },
+  "_release": "0615e22f11",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "0615e22f117c6c485c096c3f6e19b5c65b4074ce"
+  },
+  "_source": "https://github.com/WebCodium/angular-loopify-number-picker.git",
+  "_target": "*",
+  "_originalSource": "angular-loopify-number-picker",
+  "_direct": true
+}

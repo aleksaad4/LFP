@@ -15,7 +15,6 @@ public class GsonConfig {
         return new GsonBuilder()
                 .setExclusionStrategies(new GsonAnnotationExclusionStrategy())
                 .setPrettyPrinting()
-                // работа с аккаунтами
                 // .registerTypeAdapter(ExampleClass.class, new EnumSerializer())
                 // .registerTypeAdapter(ExampleClass.class, new EnumDeserializer())
                 .registerTypeAdapter(Date.class, (JsonSerializer<Date>) (src, typeOfSrc, context) -> new JsonPrimitive(src.getTime()))

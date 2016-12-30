@@ -15,6 +15,6 @@ public interface EntityValidator<T> {
     @Nonnull
     EntityValidatorResult validateEntry(T entry, boolean forUpdate);
 
-    /** интерфейс может быть расширен функциями валидации отдельных полей, если для них возможно провести  */
+    /* интерфейс может быть расширен функциями валидации отдельных полей, если для них возможно провести  */
 
 }

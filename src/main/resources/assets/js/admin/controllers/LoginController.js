@@ -1,55 +1,42 @@
-
+import urls from "../urls";
 import {BaseFormController} from "./BaseFormController";
 
-// контроллер для логина
+
 export default class LoginController extends BaseFormController {
 
-    constructor($scope, $rootScope, $state, $stateParams, Restangular, TabService) {
-        super($scope, $state);
-        this.tabService = TabService;
-        this.loginRest = Restangular.all("/account/login");
-        this.$stateParams = $stateParams;
+    constructor(scope, state, stateParams, Restangular) {
+        super();
+        const that = this;
 
-        var initialStateParamsString = this.$stateParams["params"];
-        var initialStateParams = {};
-        if (initialStateParamsString) {
-            initialStateParams = JSON.parse(initialStateParamsString);
-            this.reason = initialStateParams.reason;
-        }
+        that.scope = scope;
+        that.state = state;
+        that.stateParams = stateParams;
+
+        that.loginRest = Restangular.all(urls.login);
     }
 
     login() {
-        var that = this;
+        const that = this;
 
-        // будем отображать что мы сейчас что-то грузим
-        that.setLoading(true);
-        // пробуем запостить данные логина
-        that.loginRest.post(that.form)
-            .then(function success(data) {
-                that.handleSuccess(that, data);
-                // рассылаем событие логина
-                that.tabService.broadcast("login", data);
+        // отправляем форму
+        that.doAction(that.loginRest.post(that.form),
+            function success(data) {
+                // root controller
+                const rootController = that.scope.rCtrl;
+                // пробросим в root контроллер данные полученные после авторизации
+                rootController.handleAuthorizeData(data);
 
-                var parentController = that.$scope.rCtrl;
-                // отправить главному контроллеру сообщение об авторизации
-                parentController.onAuthorization(data);
-
-                // по умолчанию переходим к первому пункту меню
-                var initialState = that.$stateParams["nextUrl"];
-                var initialStateParamsString = that.$stateParams["params"];
-                var initialStateParams = {};
-                if (initialStateParamsString) {
-                    initialStateParams = JSON.parse(initialStateParamsString);
+                let nextState = that.stateParams["nextUrl"];
+                if (nextState == null) {
+                    // на вкладку по умолчанию
+                    that.$state.go(rootController.getDefaultState());
+                } else {
+                    // на запрашиваемую вкладку
+                    let params = that.stateParams["params"];
+                    that.$state.go(nextState, params == null ? null : JSON.parse(params));
                 }
-
-                if (!initialState || initialState.startsWith("login")) {
-                    initialState = parentController.menu[0].url + "." + parentController.menu[0].submenu[0].url;
-                }
-                that.$state.go(initialState, initialStateParams);
-            }, function error(data) {
-                that.handleError(data);
             });
     }
 }
-// логин контроллер получает профиль пользователя и меню
-LoginController.$inject = ["$scope", "$rootScope", "$state", "$stateParams", "Restangular", "TabService"];
+
+LoginController.$inject = ["$scope", "$state", "$stateParams", "Restangular"];

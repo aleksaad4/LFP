@@ -1,0 +1,39 @@
+{
+  "name": "angular-loopify-number-picker",
+  "version": "1.0.0",
+  "description": "You should run `npm install` and `bower install` console commands before runing `gulp` command.",
+  "main": "gulpfile.js",
+  "directories": {
+    "example": "examples"
+  },
+  "devDependencies": {
+    "bower": "latest",
+    "browser-sync": "latest",
+    "gulp": "latest",
+    "gulp-angular-templatecache": "latest",
+    "gulp-concat": "latest",
+    "gulp-jshint": "latest",
+    "gulp-minify-html": "latest",
+    "gulp-rename": "latest",
+    "gulp-minify-css": "^1.2.2",
+    "gulp-sass": "^2.1.1",
+    "gulp-uglify": "latest",
+    "gulp-wrap": "latest",
+    "shelljs": "latest"
+  },
+  "scripts": {
+    "prestart": "bower install",
+    "start": "npm install",
+    "poststart": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebCodium/angular-loopify-number-picker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WebCodium/angular-loopify-number-picker/issues"
+  },
+  "homepage": "https://github.com/WebCodium/angular-loopify-number-picker#readme"
+}

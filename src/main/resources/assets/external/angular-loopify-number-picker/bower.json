@@ -1,0 +1,24 @@
+{
+  "name": "angular-loopify-number-picker",
+  "authors": [
+    "yura.l <yura.l@webcodium.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.4.8",
+    "bootstrap": "~3.3.6"
+  }
+}

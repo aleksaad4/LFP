@@ -271,6 +271,7 @@
 					<dependency>
 						<groupId>org.springframework</groupId>
 						<artifactId>springloaded</artifactId>
+						<version>1.2.6.RELEASE</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -342,10 +343,12 @@
 					<dependency>
 						<groupId>org.aspectj</groupId>
 						<artifactId>aspectjrt</artifactId>
+						<version>${aspectj.version}</version>
 					</dependency>
 					<dependency>
 						<groupId>org.aspectj</groupId>
 						<artifactId>aspectjtools</artifactId>
+						<version>${aspectj.version}</version>
 					</dependency>
 				</dependencies>
 			</plugin>

@@ -3,7 +3,7 @@ import nprogesss from "./js/general/angular-nprogress";
 import locationUI from "./js/general/angular-location-ui";
 import routes from "./js/admin/routes";
 import {TemplateCacheBuilder} from "./utils";
-import "./js/admin/services/MultipleUrlMatcherFactoryProvider";
+import "./js/shared/services/MultipleUrlMatcherFactoryProvider";
 import "./less/skin-lfp.less";
 import "./less/admin/admin";
 
@@ -106,7 +106,12 @@ var initAngularApp = function () {
         "loopify.ui.numberPicker",
         "ngFileSaver",
         "angularRandomString",
-        "luegg.directives"
+        "luegg.directives",
+        "ui.bootstrap-slider",
+        'angular-loading-bar',
+        'oc.lazyLoad',
+        'nouislider',
+        'ngTable'
     ]);
 
     // Инициазизация всех компонент (контролеров, директив etc) – package by layer

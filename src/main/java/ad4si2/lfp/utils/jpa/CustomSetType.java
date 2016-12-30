@@ -1,4 +1,4 @@
-package ru.sofitlabs.chat.common.utils.jpa;
+package ad4si2.lfp.utils.jpa;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

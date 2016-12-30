@@ -1,4 +1,4 @@
-package ru.sofitlabs.chat.common.utils.jpa;
+package ad4si2.lfp.utils.jpa;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

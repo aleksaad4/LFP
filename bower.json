@@ -32,7 +32,6 @@
     "angular-bootstrap": "2.2.0",
     "angular-bootstrap-slider": "0.1.26",
     "ng-tags-input": "~3.1.1",
-    "angular-utils-pagination": "~0.11.1",
     "restangular": "1.5.2",
     "sockjs-client": "~1.0.3",
     "emojione": "~2.2.6",
@@ -61,7 +60,38 @@
     "less": "^2.7.1",
     "magnific-popup": "^1.1.0",
     "angular-scroll-glue": "^2.1.0",
-    "vis": "^4.17.0"
+    "vis": "^4.17.0",
+    "angular-chosen-localytics": "~1.0.7",
+    "angular-farbtastic": "*",
+    "angular-loading-bar": "~0.8.0",
+    "angular-nouislider": "~0.3.1",
+    "animate.css": "daneden/animate.css#~3.3.0",
+    "autosize": "~3.0.6",
+    "bootstrap-sweetalert": "~0.4.5",
+    "bower": "*",
+    "br-validations": "~0.2.4",
+    "eonasdan-bootstrap-datetimepicker": "Eonasdan/bootstrap-datetimepicker#~4.7.14",
+    "flot-orderBars": "emmerich/flot-orderBars",
+    "flot.curvedlines": "MichaelZinsmaier/CurvedLines#~1.1.1",
+    "flot.tooltip": "~0.8.5",
+    "fullcalendar": "~2.4.0",
+    "install": "~1.0.4",
+    "jquery-placeholder": "~2.1.2",
+    "jquery.easy-pie-chart": "~2.1.6",
+    "jquery.nicescroll": "inuyaksa/jquery.nicescroll#~3.6.0",
+    "lightgallery": "~1.1.5",
+    "malihu-custom-scrollbar-plugin": "~3.1.0",
+    "material-design-iconic-font": "~2.1.1",
+    "material-shadows": "~2.0.1",
+    "mediaelement": "johndyer/mediaelement#~2.16.4",
+    "nouislider-angular": "Yankovsky/nouislider-angular#~1.0.8",
+    "oclazyload": "~1.0.9",
+    "simpleWeather": "~3.0.2",
+    "string-mask": "~0.2.0",
+    "summernote": "~0.6.7",
+    "sweetalert": "~1.0.1",
+    "Waves": "waves#~0.7.4",
+    "codemirror": "~5.21.0"
   },
   "install": {
     "base": "src/main/resources/assets/external",
@@ -164,15 +194,35 @@
         "bower_components/angular-datatables/dist/plugins/select/*",
         "bower_components/angular-datatables/dist/plugins/tabletools/*"
       ],
-      "angular-utils-pagination": [
-        "bower_components/angular-utils-pagination/*.js",
-        "bower_components/angular-utils-pagination/*.html"
-      ],
       "humanize-duration": [
         "bower_components/humanize-duration/*.js"
       ],
       "vis": [
-        "bower_components/vis/dist/img/network/*.png"
+        "bower_components/vis/dist/img/network/*.png",
+        "bower_components/vis/dist/vis.css",
+        "bower_components/vis/dist/vis.js"
+      ],
+      "lightgallery": [
+        "bower_components/lightgallery/light-gallery/img/loading.gif",
+        "bower_components/lightgallery/light-gallery/css/*.css",
+        "bower_components/lightgallery/light-gallery/js/*.js",
+        "bower_components/lightgallery/light-gallery/fonts/*"
+      ],
+      "mediaelement": [
+        "bower_components/mediaelement/build/*.png",
+        "bower_components/mediaelement/build/loading.gif",
+        "bower_components/mediaelement/build/*.svg",
+        "bower_components/mediaelement/build/mediaelementplayer.css",
+        "bower_components/mediaelement/build/mediaelementplayer.js"
+      ],
+      "font-awesome": [
+        "bower_components/font-awesome/fonts/*",
+        "bower_components/font-awesome/css/*.css",
+        "bower_components/font-awesome/less/*.less"
+      ],
+      "codemirror": [
+        "bower_components/codemirror/lib/*.js",
+        "bower_components/codemirror/lib/*.css"
       ]
     }
   },

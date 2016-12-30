@@ -1,4 +1,4 @@
-package ru.sofitlabs.chat.common.utils.thread;
+package ad4si2.lfp.utils.thread;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.*;

@@ -11,7 +11,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -23,7 +22,7 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = {"ad4si2.lft"})
+@EnableJpaRepositories(basePackages = {"ad4si2.lfp"})
 public class DBConfig {
 
     @Inject
@@ -47,13 +46,11 @@ public class DBConfig {
 
         // дополнительные проперти
         efmBean.getJpaPropertyMap().putAll(ImmutableMap.<String, Object>builder()
-                .put("hibernate.cache.use_second_level_cache", true)
-                .put("hibernate.cache.use_minimal_puts", true)
                 // валидация hibernate
                 .put("hibernate.hbm2ddl.auto", hbMddlAuto)
                 // кэш запросов, включается на каждом методе с запросом отдельно аннотацией
                 // @QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value = "true") })
-                .put("hibernate.cache.use_query_cache", true)
+                // .put("hibernate.cache.use_query_cache", true)
                 .build());
 
         return efmBean;
@@ -63,8 +60,8 @@ public class DBConfig {
      * Стратегия миграции с автогенерацией патч файла и обновлением базы (аналогично ddl-auto=update)
      * Только для DEV профиля!
      */
-    @Bean
-    @Profile(SpringProfileConstrants.SPRING_PROFILE_DEVELOPMENT)
+    // @Bean
+    // @Profile(SpringProfileConstrants.SPRING_PROFILE_DEVELOPMENT)
     public FlywayMigrationStrategy migrationStrategyWithAutoPatching() {
         return flyway -> {
             try {

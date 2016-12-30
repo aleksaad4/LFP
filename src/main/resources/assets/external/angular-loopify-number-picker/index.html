@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="demo" ng-cloak>
+<head>
+    <meta charset="UTF-8">
+    <title>Loopify UI Number Picker</title>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <style>
+        [ng-cloak] {
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="/dist/loopify-ui-number-picker.min.css">
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/dist/loopify-ui-number-picker.js"></script>
+    <script src="/dist/loopify-ui-number-picker-templates.js"></script>
+
+    <script>
+        angular.module('demo', ['loopify.ui.numberPicker']).controller('demoController', ['$scope', function ($scope) {
+            'use strict';
+            $scope.curValue = 10;
+            $scope.curValue2 = 0;
+        }]);
+    </script>
+</head>
+<body ng-controller="demoController" style="padding: 10px 20px;">
+<h4>Number picker with percentage</h4>
+
+<p>Current value is
+    <mark>{{curValue}}</mark>
+    step is
+    <mark>5</mark>
+    min is
+    <mark>0</mark>
+    max is
+    <mark>50</mark>
+    enter is
+    <mark>false</mark>
+</p>
+
+<loopify-number-picker value="curValue" step="5" min="0" max="50" label="hours" enter="false"
+                       percent="true"></loopify-number-picker>
+<h4>Number picker without percentage</h4>
+
+<p>Current value is
+    <mark>{{curValue2}}</mark>
+    step is
+    <mark>2</mark>
+    min is
+    <mark>0</mark>
+    max is
+    <mark>100</mark>
+</p>
+<loopify-number-picker value="curValue2" step="2" min="1" max="100" label="kg"></loopify-number-picker>
+</body>
+</html>

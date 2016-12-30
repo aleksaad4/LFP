@@ -1,160 +1,102 @@
 export class BaseFormController {
 
-    // в конструкторе создается объект формы
-    constructor($scope, $state) {
+    constructor() {
+        const that = this;
 
-        var that = this;
-        that.$scope = $scope;
-        that.$state = $state;
+        // создаём переменную для формы
         that.form = {
             success: false,
             isLoading: false,
             errors: {}
         };
-
-    }
-
-    selectMode(mode) {
-        var opts = this.modeOptions[mode];
-        Object.keys(opts).forEach(function (key) {
-            this.mode[key] = opts[key];
-        }.bind(this));
     }
 
     /**
-     * Выбрать режим редактирования существуюещего объекта
-     * @optional options параметры, которые надо добавить/заменить в состоянии
+     * Выполнение операции по загрузке чего-либо
+     * @param action загрузочный action
+     * @param success success callback, may be null
+     * @param error error callback, may be null
      */
-    setModeEdit(options) {
-        var mode = "edit";
-        if (options) {
-            this.addModeOptions(mode, options);
-        }
-        this.selectMode(mode);
-        this.mode.new = false;
-    }
+    doAction(action, success, error) {
+        const that = this;
 
-    /**
-     * Выбрать режим редактирования просмотра
-     * @optional options параметры, которые надо добавить/заменить в состоянии
-     */
-    setModeShow(options) {
-        var mode = "show";
-        if (options) {
-            this.addModeOptions(mode, options);
-        }
-        this.selectMode(mode);
-        this.mode.new = false;
-    }
-
-    isModeShow() {
-        // todo: как проверить на текущий режим?
-        return this.mode.title == this.modeOptions["show"].title;
-    }
-
-    /**
-     * Выбрать режим создания нового объекта
-     * @optional options параметры, которые надо добавить/заменить в состоянии
-     */
-    setModeCreate(options) {
-        var mode = "create";
-        if (options) {
-            this.addModeOptions(mode, options);
-        }
-        this.selectMode(mode);
-        this.mode.new = true;
-    }
-
-    initFormMode(options) {
-        // по-умолчанию есть параметры для названия формы и текста в кнопке "сохранить"
-        this.modeOptions = {
-            "create": {
-                title: "Новый объект",
-                save: "Сохранить"
-            },
-            "edit": {
-                title: "Редактирование",
-                save: "Сохранить"
-            },
-            "show": {
-                title: "Просмотр",
-                save: "Редактировать"
+        // начинаем загрузку
+        that.setLoading(true);
+        action.then(function (data) {
+            // успешно завершаем загрузку
+            that.handleSuccess();
+            // вызываем success-callback
+            if (success != null) {
+                success(data);
             }
-        };
-
-        this.mode = {};
-
-        if (!options) {
-            return;
-        }
-
-        // берём ключи-состояния ("edit", "create")
-        var optionsKeys = Object.keys(options);
-        optionsKeys.forEach(function (mode) {
-            // берём значения конкретного режима
-            this.addModeOptions(mode, options[mode]);
-        }.bind(this));
+        }, function (data) {
+            // завершаем загрузку не успешно
+            that.handleError(data);
+            // вызываем error-callback
+            if (error != null) {
+                error(data);
+            }
+        });
     }
 
-    /***
-     * Добавить или заменить параметры режима
-     * e.g. addModeOptions("create", {title: "Перезаписываемый параметр", myNewVal: "Новый параметр"})
-     * @param mode название режима
-     * @param optionsForMode параметры
+    /**
+     * Успешное выполнение операции
      */
-    addModeOptions(mode, optionsForMode) {
-        if (!this.modeOptions[mode]) {
-            this.modeOptions[mode] = {};
-        }
-        Object.keys(optionsForMode).forEach(function (key) {
-            this.modeOptions[mode][key] = optionsForMode[key];
-        }.bind(this));
-    }
-
-    // успешная обработка
-    handleSuccess(data) {
-        // покажем, что загрузка закончена
+    handleSuccess() {
+        // загрузка закончена
         this.setLoading(false);
-        // обнулим ошибки
+        // обнуляем ошибки
         this.form.success = true;
         this.form.errors = {};
     };
 
-    // отображение состояния загрузки
-    setLoading(loading) {
-        this.form.isLoading = loading;
-    };
 
+    /**
+     * Неуспешное выполнение операции
+     * @param data
+     */
     handleError(data) {
-        this.form.errors = {};
         // загрузка закончена
         this.setLoading(false);
+        // обнуляем ошибки
         this.form.success = false;
-        var errors = data.errors;
+        this.form.errors = {};
 
-        // пришла 503, 502, 501, 500........ ошибка
+        const errors = data.errors;
+
+        // вообще не получили массив ошибок, пришла ошибка с сервера с каким-то кодом
         if (!errors) {
-            if(data.status == 403){
+            if (data.status == 403) {
+                // forbidden
                 this.form.errors["#main"] = "Доступ запрещен";
             } else {
+                // internal server error
                 this.form.errors["#main"] = "Внутренняя ошибка системы, повторите запрос позже";
             }
             return;
         }
-        // список ошибок от сервера
-        for (var i = 0; i < errors.length; i++) {
-            var error = errors[i];
-            var fieldKey = error.field;
-            var msg = error.message;
+
+        // получили список ошибок от сервера
+        for (let i = 0; i < errors.length; i++) {
+            const error = errors[i];
+            let fieldKey = error.field;
+            const msg = error.message;
+
             if (!fieldKey) {
                 // ошибка без привязки к полю
                 this.form.errors["#main"] = msg;
             } else {
+                // ошибка с привязкой к полю
                 this.form.errors[fieldKey] = msg;
             }
         }
     }
 
+    /**
+     * Установка состояния загрузки
+     * @param loading идёт ли загрузка
+     */
+    setLoading(loading) {
+        this.form.isLoading = loading;
+    };
 }
-
-BaseFormController.$inject = ["$scope", "$state"];
