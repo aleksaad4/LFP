@@ -35,7 +35,7 @@ import "angular-loopify-number-picker/dist/loopify-ui-number-picker.min.css";
 import "angular-loopify-number-picker/dist/loopify-ui-number-picker-templates.js";
 
 import "angular-messages/js/angular-messages";
-import "angular-moment/js/angular-moment";
+// import "angular-moment/js/angular-moment";
 import "angular-nouislider/js/nouislider";
 import "angular-random-string/js/angular-random-string";
 import "angular-resource/js/angular-resource";
@@ -83,8 +83,8 @@ import "datatables.net/js/jquery.dataTables";
 import "emojione/js/emojione";
 import "emojione/css/emojione";
 
-import "eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker";
-import "eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css";
+// import "eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker";
+// import "eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css";
 
 import "file-saver.js/js/FileSaver";
 import "flot/js/jquery.flot";
@@ -93,12 +93,12 @@ import "flot.tooltip/js/jquery.flot.tooltip";
 import "font-awesome/less/font-awesome.less";
 import "font-source-sans-pro/css/source-sans-pro-fixed";
 
-import "fullcalendar/js/fullcalendar";
-import "fullcalendar/css/fullcalendar";
+// import "fullcalendar/js/fullcalendar";
+// import "fullcalendar/css/fullcalendar";
 
 import "humanize-duration/js/humanize-duration";
 import "jquery.easy-pie-chart/js/jquery.easypiechart";
-import "jquery-mousewheel/js/jquery.mousewheel";
+// import "jquery-mousewheel/js/jquery.mousewheel";
 import "jquery-placeholder/js/jquery.placeholder";
 import "less/js/less";
 
@@ -110,8 +110,8 @@ import "lodash/js/lodash";
 import "magnific-popup/css/magnific-popup";
 import "magnific-popup/js/jquery.magnific-popup";
 
-import "malihu-custom-scrollbar-plugin/css/jquery.mCustomScrollbar-fixed";
-import "malihu-custom-scrollbar-plugin/js/jquery.mCustomScrollbar";
+// import "malihu-custom-scrollbar-plugin/css/jquery.mCustomScrollbar-fixed";
+// import "malihu-custom-scrollbar-plugin/js/jquery.mCustomScrollbar";
 
 import "material-design-iconic-font/css/material-design-iconic-font.min.css"
 import "material-design-icons/material-icons";
@@ -149,8 +149,8 @@ import "sockjs-client/js/sockjs-fixed";
 import "store-js/js/store";
 import "string-mask/js/string-mask";
 
-import "summernote/css/summernote";
-import "summernote/js/summernote";
+// import "summernote/css/summernote";
+// import "summernote/js/summernote";
 
 import "sweetalert/js/sweetalert.min.js";
 import "sweetalert/css/sweetalert";
