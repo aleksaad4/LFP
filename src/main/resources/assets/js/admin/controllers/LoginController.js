@@ -30,11 +30,11 @@ export default class LoginController extends BaseFormController {
                 let nextState = that.stateParams["nextUrl"];
                 if (nextState == null) {
                     // на вкладку по умолчанию
-                    that.$state.go(rootController.getDefaultState());
+                    that.state.go(rootController.getDefaultState());
                 } else {
                     // на запрашиваемую вкладку
                     let params = that.stateParams["params"];
-                    that.$state.go(nextState, params == null ? null : JSON.parse(params));
+                    that.state.go(nextState, params == null ? null : JSON.parse(params));
                 }
             });
     }

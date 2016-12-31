@@ -1,0 +1,35 @@
+<div class="sidebar-inner c-overflow">
+    <div class="profile-menu">
+        <a href="">
+            <div class="profile-pic">
+                <img src="img/profile-pics/1.jpg" alt="">
+            </div>
+
+            <div class="profile-info">
+                Malinda Hollaway
+            </div>
+        </a>
+    </div>
+
+    <ul class="main-menu">
+        <li ng-repeat="menuItem in mCtrl.menu"
+            ng-click="mCtrl.menuItemClick($index)" ng-class="{'active toggled': mCtrl.isMenuItemSelected($index),
+            'empty' : !mCtrl.menuItemHaveSubItem($index)}"
+            class="sub-menu">
+
+            <a>
+                <i class="{{menuItem.icon}}"></i>
+                <span ng-bind="menuItem.name"></span>
+            </a>
+
+            <ul data-ng-if="mCtrl.isMenuItemSelected($index)">
+                <li ng-class="{active: mCtrl.isSubMenuItemSelected($parent.$index, $index)}"
+                    ng-repeat="subMenuItem in menuItem.subMenu">
+                    <a ui-sref="{{menuItem.url}}.{{subMenuItem.url}}">
+                        <i class="{{menuItem.icon}}"></i><span>{{subMenuItem.name}}</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

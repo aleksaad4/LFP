@@ -36,7 +36,7 @@ export default class RootController {
                 that.isLoading = false;
 
                 if (isAuthorized) {
-                    if (state == null || state.name.startsWith("login")) {
+                    if (newState == null || newState.name.startsWith("login")) {
                         // переходим на первую страницу интерфейса - первую страницу первой вкладки
                         that.state.transitionTo(that.getDefaultState());
                     } else {
@@ -65,13 +65,16 @@ export default class RootController {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             angular.element('html').addClass('ismobile');
         }
+
+        that.currentSkin = "bluegray";
+        that.sideMenu = true;
     }
 
     /**
      * @returns {string} state по умолчанию
      */
     getDefaultState() {
-        return this.menu[0].url + "." + this.menu[0].submenu[0].url;
+        return this.menu[0].url + (this.menu[0].submenu != null ? "." + this.menu[0].submenu[0].url : "");
     }
 
     /**

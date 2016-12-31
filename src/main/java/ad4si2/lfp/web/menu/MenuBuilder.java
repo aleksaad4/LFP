@@ -17,7 +17,11 @@ public class MenuBuilder {
             final List<MenuItem> items = new ArrayList<>();
 
             items.add(new MenuItem("Аккаунты", "accounts", "fa fa-history"));
-            items.add(new MenuItem("Команды", "teams", "fa fa-history"));
+
+            final List<MenuItem> subMenu = new ArrayList<>();
+            subMenu.add(new MenuItem("Подпункт1", "one", "fa fa-history"));
+            subMenu.add(new MenuItem("Подпункт2", "two", "fa fa-history"));
+            items.add(new MenuItem("Второй пункт меню", "teams", "fa fa-history", subMenu));
 
             return items;
         } else {
