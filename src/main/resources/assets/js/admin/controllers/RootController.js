@@ -1,7 +1,7 @@
 import moment from "moment/js/moment";
 import "moment/js/locale/ru";
+import urls from "../urls";
 
-let webSocketService;
 
 export default class RootController {
 
@@ -110,7 +110,7 @@ export default class RootController {
     isAuthorized(callback) {
         const that = this;
         // обращаемся на сервер, чтобы проверить, есть ли в сессии авторизационные данные
-        that.restAngular.one("/account/login").get().then(function success(data) {
+        that.restAngular.one(urls.loginCheck).get().then(function success(data) {
             // отправить главному контроллеру сообщение об авторизации
             that.handleAuthorizeData(data);
             callback(true);
@@ -125,10 +125,10 @@ export default class RootController {
      * @param data данные после проверки авторизации
      */
     handleAuthorizeData(data) {
+        // аккаунт
+        this.account = data.account;
         // запоминаем меню
         this.menu = data.menu;
-
-        // todo: запоминаем admin-а
     }
 }
 

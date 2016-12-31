@@ -1,7 +1,11 @@
 package ad4si2.lfp.utils.validation;
 
+import ad4si2.lfp.utils.data.IDeleted;
+import ad4si2.lfp.utils.data.IEntity;
+
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class EntityValidatorResult {
@@ -17,14 +21,19 @@ public class EntityValidatorResult {
         this.errors = errors;
     }
 
-    public void addError(@Nonnull final EntityValidatorError error) {
-        errors.add(error);
+    @Nonnull
+    public static EntityValidatorResult validatorResult(@Nonnull final String errorCode, @Nonnull final String errorMessage) {
+        final EntityValidatorResult result = new EntityValidatorResult();
+        result.addError(new EntityValidatorError(errorCode, errorMessage));
+        return result;
     }
 
     @Nonnull
-    public EntityValidatorResult addErrors(@Nonnull final Collection<EntityValidatorError> newErrors) {
-        errors.addAll(newErrors);
-        return this;
+    public static EntityValidatorResult validatorResult(@Nonnull final String fieldName, @Nonnull final String errorCode,
+                                                        @Nonnull final String errorMessage) {
+        final EntityValidatorResult result = new EntityValidatorResult();
+        result.addError(new EntityValidatorError(fieldName, errorCode, errorMessage));
+        return result;
     }
 
     public boolean hasErrors() {
@@ -56,5 +65,72 @@ public class EntityValidatorResult {
     @Override
     public String toString() {
         return hasErrors() ? "ERROR: " + errors : "OK";
+    }
+
+    public void addError(@Nonnull final EntityValidatorError error) {
+        errors.add(error);
+    }
+
+    @Nonnull
+    public EntityValidatorResult addErrors(@Nonnull final Collection<EntityValidatorError> newErrors) {
+        errors.addAll(newErrors);
+        return this;
+    }
+
+    @Nonnull
+    public <T> EntityValidatorResult checkMaxSize(@Nonnull final String fieldName, final int size,
+                                                  @Nonnull final T object, @Nonnull final Function<T, String> getter) {
+        final String fieldValue = getter.apply(object);
+        if (!(fieldValue == null || fieldValue.length() < size)) {
+            addError(new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_max_size",
+                    "Object [" + object.getClass().getSimpleName() + "] field [" + fieldName + "] max size limit"));
+        }
+        return this;
+    }
+
+    @Nonnull
+    public EntityValidatorResult checkDeleted(@Nonnull final IDeleted iDeleted) {
+        if (iDeleted.isDeleted()) {
+            addError(new EntityValidatorError("common.entity_deleted",
+                    "Object [" + iDeleted.getClass().getSimpleName() + "] already deleted"));
+        }
+        return this;
+    }
+
+    @Nonnull
+    public <T> EntityValidatorResult checkIsEmpty(@Nonnull final String fieldName, @Nonnull final T object,
+                                                  @Nonnull final Function<T, String> getter) {
+        final String fieldValue = getter.apply(object);
+        if (fieldValue == null || fieldValue.trim().isEmpty()) {
+            addError(new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_is_empty",
+                    "Object [" + object.getClass().getSimpleName() + "] field [" + fieldName + "] is empty"));
+        }
+        return this;
+    }
+
+    @Nonnull
+    public <T extends IEntity, FIELD_TYPE> EntityValidatorResult checkDuplicate(@Nonnull final String fieldName, @Nonnull final T object,
+                                                                                @Nonnull final Function<T, FIELD_TYPE> getter,
+                                                                                @Nonnull final Function<FIELD_TYPE, List<T>> finder,
+                                                                                final boolean forUpdate) {
+        final FIELD_TYPE fieldValue = getter.apply(object);
+        if (fieldValue != null) {
+            final List<T> list = finder.apply(fieldValue);
+            if (!list.isEmpty()) {
+                final EntityValidatorError error = new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_exists",
+                        "Object [" + object.getClass().getSimpleName() + "] with field [" + fieldName + "] value [" + fieldValue + "] already exists");
+                if (!forUpdate) {
+                    // создание нового объекта, а уже нашелся такой
+                    addError(error);
+                } else {
+                    // обновление объекта, проверка что тот, что нашелся - не наш
+                    if (list.stream().noneMatch(e -> e.getId() == object.getId())) {
+                        // среди этих объектов есть какой-то, но не наш
+                        addError(error);
+                    }
+                }
+            }
+        }
+        return this;
     }
 }

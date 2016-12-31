@@ -27,7 +27,7 @@ public class FrontendDevConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontendDevConfig.class);
 
-    private static final String HOST = "0.0.0.0";
+    private static final String HOST = "127.0.0.1";
 
     private static final int MAGIC_THREE = 3;
 

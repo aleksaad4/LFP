@@ -4,39 +4,46 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class EntityValidatorError {
 
     // описание ошибки валидации
+    @Nonnull
     private String rawMessage;
 
     // код ресурса из MessageSource
+    @Nonnull
     private String userMessageKey;
 
     // ключ поля, к которому относится ошибка (если нет - значит, относится к объекту в целом)
+    @Nullable
     private String fieldKey;
 
     // конструктор для общей ошибки
-    public EntityValidatorError(final String rawMessage, final String userMessageKey) {
+    public EntityValidatorError(@Nonnull final String rawMessage, @Nonnull final String userMessageKey) {
         this.rawMessage = rawMessage;
         this.userMessageKey = userMessageKey;
     }
 
     // конструктор для ошибки, привязанной к полю
-    public EntityValidatorError(final String fieldKey, final String rawMessage, final String userMessageKey) {
+    public EntityValidatorError(@Nullable final String fieldKey, @Nonnull final String rawMessage, @Nonnull final String userMessageKey) {
         this.fieldKey = fieldKey;
         this.rawMessage = rawMessage;
         this.userMessageKey = userMessageKey;
     }
 
+    @Nonnull
     public String getRawMessage() {
         return rawMessage;
     }
 
+    @Nonnull
     public String getUserMessageKey() {
         return userMessageKey;
     }
 
+    @Nullable
     public String getFieldKey() {
         return fieldKey;
     }

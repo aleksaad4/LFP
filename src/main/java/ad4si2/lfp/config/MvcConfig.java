@@ -1,5 +1,7 @@
 package ad4si2.lfp.config;
 
+import ad4si2.lfp.web.interceptors.AuthInterceptor;
+import ad4si2.lfp.web.interceptors.BaseInterceptor;
 import com.google.gson.Gson;
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
@@ -31,6 +33,12 @@ import java.util.List;
 public class MvcConfig {
 
     @Inject
+    private AuthInterceptor authInterceptor;
+
+    @Inject
+    private BaseInterceptor baseInterceptor;
+
+    @Inject
     @Named("gsonConfiguration")
     private Gson gsonConfiguration;
 
@@ -42,12 +50,17 @@ public class MvcConfig {
 
     @Bean
     @Order(value = 1)
-    public WebMvcConfigurerAdapter config() {
+    public WebMvcConfigurerAdapter webAdapter() {
         return new WebMvcConfigurerAdapter() {
+
             @Override
             public void addInterceptors(final InterceptorRegistry registry) {
-                // registry.addInterceptor(adminLoggingInterceptor)
-                //         .addPathPatterns("/admin/**");
+                registry.addInterceptor(baseInterceptor)
+                        .addPathPatterns("/rest/**");
+
+                registry.addInterceptor(authInterceptor)
+                        .addPathPatterns("/rest/account/**")
+                        .addPathPatterns("/rest/admin/**");
             }
 
             @Override

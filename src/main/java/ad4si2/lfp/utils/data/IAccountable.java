@@ -4,14 +4,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Date;
 
-public interface IAdminable {
+public interface IAccountable {
 
     @Nullable
-    Long getAdminId();
+    Long getAccountId();
 
-    void setAdminId(Long adminId);
+    void setAccountId(@Nonnull Long accountId);
 
-    @Nullable
+    @Nonnull
     Date getD();
 
     void setD(@Nonnull final Date d);

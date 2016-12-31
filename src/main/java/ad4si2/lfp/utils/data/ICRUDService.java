@@ -1,9 +1,10 @@
 package ad4si2.lfp.utils.data;
 
+import ad4si2.lfp.utils.events.data.ChangeEvent;
+import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.exceptions.DataNotFoundException;
 import ad4si2.lfp.utils.exceptions.LfpRuntimeException;
 import ad4si2.lfp.utils.validation.EntityValidator;
-import ad4si2.lfp.utils.validation.EntityValidatorError;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,39 +14,15 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
 
-/**
- * Шаблонный сервис для работы с сущностями типа ответ,
- * стандартный ответ, атрибут и т. д. которые торчат на интерфейс и crud с него
- * <p>
- * Author:      daa
- * Date:        10.06.16
- * Company:     SofIT labs
- */
 @Transactional
-public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IAdminable, ID extends Serializable,
+public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IAccountable, ID extends Serializable,
         REPO extends RepositoryWithDeleted<ENTITY, ID>> extends EntityValidator<ENTITY> {
 
     @Nonnull
     REPO getRepo();
 
     @Nonnull
-    static EntityValidatorResult emptyValidatorResult() {
-        return new EntityValidatorResult();
-    }
-
-    @Nonnull
-    static EntityValidatorResult validatorResult(final String errorCode, final String errorMessage) {
-        final EntityValidatorResult result = new EntityValidatorResult();
-        result.addError(new EntityValidatorError(errorCode, errorMessage));
-        return result;
-    }
-
-    @Nonnull
-    static EntityValidatorResult validatorResult(final String fieldName, final String errorCode, final String errorMessage) {
-        final EntityValidatorResult result = new EntityValidatorResult();
-        result.addError(new EntityValidatorError(fieldName, errorCode, errorMessage));
-        return result;
-    }
+    ChangesEventDispatcher getEventDispatcher();
 
     /**
      * @param deleted true, если нужно добавлять в выборку объекты с признаком deleted
@@ -157,6 +134,9 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IA
         // todo: set admin
         t.setD(new Date());
 
+        // рассылаем PRE событие о создании нового объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.createEvent(t, ChangeEvent.ChatChangeWhen.PRE));
+
         // сохраняем
         final ENTITY saved = getRepo().save(t);
 
@@ -164,6 +144,9 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IA
         if (postAction != null) {
             postAction.accept(t);
         }
+
+        // рассылаем POST событие о создании нового объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.createEvent(t, ChangeEvent.ChatChangeWhen.POST));
 
         return saved;
     }
@@ -191,13 +174,19 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IA
         // todo: set admin
         t.setD(new Date());
 
+        // рассылаем PRE событие об обновлении объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.updateEvent(t, old, ChangeEvent.ChatChangeWhen.PRE));
+
         // сохраняем объект
         final ENTITY updated = getRepo().save(t);
 
         // дополнительная обработка после сохранения
         if (postAction != null) {
-            preAction.accept(updated);
+            postAction.accept(updated);
         }
+
+        // рассылаем POST событие об обновлении объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.updateEvent(t, old, ChangeEvent.ChatChangeWhen.POST));
 
         return updated;
     }
@@ -212,6 +201,9 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IA
             preCheckF.accept(t);
         }
 
+        // рассылаем PRE событие об удалении объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.deleteEvent(t, ChangeEvent.ChatChangeWhen.PRE));
+
         // помечаем удалённым и сохраняем
         final ENTITY item = getById(t.getId(), false);
         item.setDeleted(true);
@@ -219,6 +211,10 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IA
         // обновляем дату и admin-а
         // todo: set admin
         t.setD(new Date());
+
+        // рассылаем POST событие об удалении объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.deleteEvent(t, ChangeEvent.ChatChangeWhen.POST));
+
     }
 
     default void delete(@Nonnull final Collection<ENTITY> ts) {
@@ -230,8 +226,7 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IA
     @Nonnull
     @Override
     default EntityValidatorResult validateEntry(final ENTITY entry, final boolean forUpdate) {
-        return entry.isDeleted()
-                ? validatorResult("common_entry.deleted", "Объект удален")
-                : emptyValidatorResult();
+        final EntityValidatorResult result = new EntityValidatorResult();
+        return result.checkDeleted(entry);
     }
 }
