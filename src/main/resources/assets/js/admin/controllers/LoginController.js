@@ -13,13 +13,14 @@ export default class LoginController extends BaseFormController {
         that.stateParams = stateParams;
 
         that.loginRest = Restangular.all(urls.login);
+        that.form.object = {};
     }
 
     login() {
         const that = this;
 
         // отправляем форму
-        that.doAction(that.loginRest.post(that.form),
+        that.doAction(that.loginRest.post(that.form.object),
             function success(data) {
                 // root controller
                 const rootController = that.scope.rCtrl;

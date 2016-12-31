@@ -1,11 +1,8 @@
-const FormMessagesWithScopeDirective = {
-    templateUrl: "/pages/shared/components/formMessages.html",
+const FormMessagesComponent = {
+    templateUrl: "/pages/shared/components/form/formMessages.html",
     bindings: {
         form: "<"
-    },
-    restrict: "EA",
-    controller: function () {
     }
 };
 
-export default FormMessagesWithScopeDirective;
+export default FormMessagesComponent;

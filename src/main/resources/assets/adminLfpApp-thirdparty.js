@@ -1,5 +1,6 @@
 import "expose?$!expose?jQuery!jquery";
 import "expose?$!expose?moment!moment/js/moment";
+import "expose?$!expose?Waves!Waves/js/waves.min";
 
 import "./skin/less/vendors/bootstrap/js/bootstrap.min.js";
 import "./skin/less/skin.less";
@@ -27,8 +28,8 @@ import "angular-farbtastic/js/angular-farbtastic";
 import "angular-file-saver/js/angular-file-saver.bundle";
 import "angular-file-upload/js/angular-file-upload";
 
-import "angular-loading-bar/css/loading-bar";
-import "angular-loading-bar/js/loading-bar";
+// import "angular-loading-bar/css/loading-bar";
+// import "angular-loading-bar/js/loading-bar";
 
 import "angular-loopify-number-picker/dist/loopify-ui-number-picker.js";
 import "angular-loopify-number-picker/dist/loopify-ui-number-picker.min.css";
@@ -160,7 +161,7 @@ import "sweetalert/js/sweetalert.min.js";
 import "sweetalert/css/sweetalert";
 
 import "Waves/css/waves.min.css";
-import "Waves/js/waves.min.js";
+// import "Waves/js/waves.min.js";
 
 import "expose?$!expose?vis!vis/js/vis.js";
 import "vis/css/vis-fixed.css";

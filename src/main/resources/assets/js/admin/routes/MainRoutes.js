@@ -7,7 +7,7 @@ module.exports = [
                 "main@": {
                     templateUrl: "/pages/admin/auth/login.html",
                     controller: "LoginController",
-                    controllerAs: "lCtrl"
+                    controllerAs: "ctrl"
                 }
             }
         }

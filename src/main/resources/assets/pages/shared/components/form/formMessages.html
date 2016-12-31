@@ -1,12 +1,11 @@
 <div>
     <!--выводим alert с ошибкой не привязанной к полю-->
-    <div class="alert alert-danger" ng-show="ctrl.form.errors['#main']">
-        <!--#main ключ для такой ошибки-->
-        {{ctrl.form.errors['#main']}}
+    <!--#main ключ для такой ошибки-->
+    <div class="alert alert-danger" ng-if="$ctrl.form.errors['#main'] != null" ng-bind="$ctrl.form.errors['#main']">
     </div>
 
     <!--выводим alert об успешном сохранении-->
-    <div class="alert alert-success" ng-show="ctrl.form.success && !ctrl.form.hideSuccess">
+    <div class="alert alert-success" ng-if="$ctrl.form.success && !$ctrl.form.hideSuccess">
         <i class="icon fa fa-check-circle-o"></i> Успешно
     </div>
 </div>

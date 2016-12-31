@@ -1,0 +1,17 @@
+.overlay-wrapper .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.7);
+
+  &:before {
+    content: '';
+    height: 100%;
+    width: 1px;
+    vertical-align: middle;
+    display: inline-block;
+  }
+}

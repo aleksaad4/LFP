@@ -1,9 +1,9 @@
 const FormControlMessagesComponent = {
-    templateUrl: "/pages/shared/components/formControlMessages.html",
+    templateUrl: "/pages/shared/components/form/formControlMessages.html",
     bindings: {
         form: "<",
-        controlId: "@",
-        controlName: "@"
+        fieldName: "@",
+        label: "@"
     },
     restrict: "EA",
     replace: true,

@@ -127,8 +127,8 @@ const initAngularUserLfpApp = function () {
     populate(app.filter, require.context("./js/user/filters/", true, /\.js$/));
 
     //shared компоненты
-    populate(app.directive, require.context("./js/shared/controllers/", true, /\.js$/));
-    populate(app.directive, require.context("./js/shared/components/", true, /\.js$/));
+    populate(app.controller, require.context("./js/shared/controllers/", true, /\.js$/));
+    populate(app.controller, require.context("./js/shared/components/", true, /\.js$/));
     populate(app.directive, require.context("./js/shared/directives/", true, /\.js$/));
     populate(app.service, require.context("./js/shared/services/", true, /\.js$/));
     populate(app.filter, require.context("./js/shared/filters/", true, /\.js$/));

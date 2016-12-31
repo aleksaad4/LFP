@@ -1,10 +1,11 @@
-<div class="form-group" ng-class="{'has-error': !!fCtrl.form.errors[fCtrl.controlId]}">
+<div class="form-group" ng-class="{'has-error': $ctrl.form.errors[$ctrl.fieldName] != null}">
     <!-- подпись к контролу -->
-    <label class="control-label" ng-bind="fCtrl.controlName" ng-if="fCtrl.controlName"></label>
+    <label class="control-label" ng-bind="fCtrl.label" ng-if="fCtrl.label"></label>
 
     <!-- сюда помещается сам контрол -->
     <div ng-transclude=""></div>
 
     <!-- поле для ошибок -->
-    <span class="help-block" ng-show="fCtrl.form.errors[fCtrl.controlId]">{{fCtrl.form.errors[fCtrl.controlId]}}</span>
+    <small class="help-block" ng-if="$ctrl.form.errors[$ctrl.fieldName] != null"
+          ng-bind="$ctrl.form.errors[$ctrl.fieldName]"></small>
 </div>

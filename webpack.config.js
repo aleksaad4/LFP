@@ -136,8 +136,8 @@ module.exports = [
         entry: { // точки входа
             adminLfpAppThirdparty: ['./adminLfpApp-thirdparty'],
             adminLfpApp: ['./adminLfpApp'],
-            userLfpAppThirdparty: ['./userLfpApp-thirdparty'],
-            userLfpApp: ['./userLfpApp'],
+            // userLfpAppThirdparty: ['./userLfpApp-thirdparty'],
+            // userLfpApp: ['./userLfpApp'],
             babelPolyfill: "babel-polyfill"
         },
         output: {
@@ -240,12 +240,12 @@ module.exports = [
                 chunks: ['common', 'adminLfpAppThirdparty', 'adminLfpApp', "babelPolyfill"]
             })),
 
-            new HtmlWebpackPlugin(htmlConfig("Default", {
-                filename: './user.html',
-                template: "templates/userLfpApp.ejs",
-                inject: 'head',
-                chunks: ['common', 'userLfpAppThirdparty', 'userLfpApp', "babelPolyfill"]
-            }))
+            // new HtmlWebpackPlugin(htmlConfig("Default", {
+            //     filename: './user.html',
+            //     template: "templates/userLfpApp.ejs",
+            //     inject: 'head',
+            //     chunks: ['common', 'userLfpAppThirdparty', 'userLfpApp', "babelPolyfill"]
+            // }))
         ]
     }
 ];

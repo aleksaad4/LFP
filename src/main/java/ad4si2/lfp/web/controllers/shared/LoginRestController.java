@@ -11,6 +11,7 @@ import ad4si2.lfp.web.menu.MenuBuilder;
 import ad4si2.lfp.web.menu.MenuItem;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Nonnull;
@@ -50,7 +51,7 @@ public class LoginRestController {
         }
     }
 
-    @RequestMapping(value = "login")
+    @RequestMapping(value = "login", method = RequestMethod.POST)
     public AjaxResponse login(@Nonnull final HttpServletRequest request, @Nonnull final HttpServletResponse response,
                               @RequestBody final LoginRequestData loginRequestData) {
         // проверка входных данных
@@ -92,10 +93,10 @@ public class LoginRestController {
     @Nullable
     private AjaxResponse validateLoginData(@Nonnull final LoginRequestData loginRequestData) {
         final EntityValidatorResult result = new EntityValidatorResult();
-        if (loginRequestData.getLogin() == null) {
+        if (loginRequestData.getLogin() == null || loginRequestData.getLogin().trim().isEmpty()) {
             result.addError(new EntityValidatorError("login", "Login is empty", "common.empty_login"));
         }
-        if (loginRequestData.getPassword() == null) {
+        if (loginRequestData.getPassword() == null || loginRequestData.getPassword().trim().isEmpty()) {
             result.addError(new EntityValidatorError("password", "Password is empty", "common.empty_password"));
         }
         if (result.hasErrors()) {
