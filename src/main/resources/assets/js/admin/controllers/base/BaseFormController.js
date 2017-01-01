@@ -7,8 +7,12 @@ export class BaseFormController {
         that.form = {
             success: false,
             isLoading: false,
-            errors: {}
+            errors: {},
         };
+    }
+
+    doActionS(action, success, error) {
+        this.doAction(action, success, error, true);
     }
 
     /**
@@ -16,15 +20,17 @@ export class BaseFormController {
      * @param action загрузочный action
      * @param success success callback, may be null
      * @param error error callback, may be null
+     * @param setSuccessFlag нужно ли после успешной операции переводить флаг success в true
+     * (чтобы тем самым отобразить на интерфейсе сообщение об успехе операции)
      */
-    doAction(action, success, error) {
+    doAction(action, success, error, setSuccessFlag) {
         const that = this;
 
         // начинаем загрузку
-        that.setLoading(true);
+        that.startLoading();
         action.then(function (data) {
             // успешно завершаем загрузку
-            that.handleSuccess();
+            that.handleSuccess(setSuccessFlag);
             // вызываем success-callback
             if (success != null) {
                 success(data);
@@ -42,12 +48,16 @@ export class BaseFormController {
     /**
      * Успешное выполнение операции
      */
-    handleSuccess() {
-        // загрузка закончена
-        this.setLoading(false);
-        // обнуляем ошибки
-        this.form.success = true;
-        this.form.errors = {};
+    handleSuccess(setSuccessFlag) {
+        // если статус операции не задан, то значит это первая загрузка
+        // в таком случае проставляем успешный статус
+        if (this.form.success == null) {
+            // если нужно переключать success флаг, то ставим его в true, иначе проставляем null
+            this.form.success = setSuccessFlag ? true : null;
+        }
+
+        // загрузка завершена
+        this.finishLoading();
     };
 
 
@@ -56,13 +66,21 @@ export class BaseFormController {
      * @param data
      */
     handleError(data) {
-        // загрузка закончена
-        this.setLoading(false);
-        // обнуляем ошибки
+        // неуспех операции
         this.form.success = false;
-        this.form.errors = {};
+        // вытаскиваем ошибки
+        const errors = this.extractErrors(data);
+        // добавляем ошибки в массив
+        $.extend(this.form.errors, errors);
 
+        // загрузка завершена
+        this.finishLoading();
+    }
+
+    extractErrors(data) {
         const errors = data.errors;
+
+        const result = {};
 
         // вообще не получили массив ошибок, пришла ошибка с сервера с каким-то кодом
         if (!errors) {
@@ -76,20 +94,46 @@ export class BaseFormController {
             return;
         }
 
-        // получили список ошибок от сервера
+        // список ошибок от сервера
         for (let i = 0; i < errors.length; i++) {
             const error = errors[i];
-            let fieldKey = error.field;
+            const fieldKey = error.field;
             const msg = error.message;
-
             if (!fieldKey) {
                 // ошибка без привязки к полю
-                this.form.errors["#main"] = msg;
+                result["#main"] = msg;
             } else {
-                // ошибка с привязкой к полю
-                this.form.errors[fieldKey] = msg;
+                result[fieldKey] = msg;
             }
         }
+        return result;
+    }
+
+
+    /**
+     * Обработка окончания загрузки
+     */
+    finishLoading() {
+        // уменьшаем счётчик количества загрузок
+        this.form.loadingCounter = (this.form.loadingCounter != null ? this.form.loadingCounter : 0) - 1;
+        // все загрузки завершились
+        if (this.form.loadingCounter == 0) {
+            this.setLoading(false);
+        }
+    }
+
+    /**
+     * Обработка начала загрузки
+     */
+    startLoading() {
+        // если это первый запрос - то скидываем список ошибок в пусто
+        if (this.form.loadingCounter == null || this.form.loadingCounter == 0) {
+            this.form.errors = {};
+            this.form.success = null;
+        }
+        // увеличиваем счётчик количества операций загрузки
+        this.form.loadingCounter = (this.form.loadingCounter != null ? this.form.loadingCounter : 0) + 1;
+        this.setLoading(true);
     }
 
     /**

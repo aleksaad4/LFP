@@ -1,6 +1,5 @@
 import "expose?$!expose?jQuery!jquery";
 
-
 import "./skin/less/vendors/bootstrap/js/bootstrap.min.js";
 import "./skin/less/skin.less";
 

@@ -109,6 +109,7 @@ const initAngularAdminLfpApp = function () {
         "luegg.directives",
         "ui.bootstrap-slider",
         'nouislider',
+        'localytics.directives'
         // 'ngTable'
     ]);
 

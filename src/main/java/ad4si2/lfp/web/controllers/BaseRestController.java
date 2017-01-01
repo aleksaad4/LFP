@@ -23,7 +23,7 @@ public abstract class BaseRestController<ID extends Serializable,
     protected AccountService accountService;
 
     @Inject
-    private WebUtils webUtils;
+    protected WebUtils webUtils;
 
     protected abstract SERVICE getService();
 

@@ -1,6 +1,7 @@
 package ad4si2.lfp.web.controllers.admin.account;
 
 import ad4si2.lfp.data.entities.account.Account;
+import ad4si2.lfp.data.entities.account.AccountRole;
 import ad4si2.lfp.data.services.account.AccountService;
 import ad4si2.lfp.utils.web.AjaxResponse;
 import ad4si2.lfp.web.controllers.BaseRestController;
@@ -11,6 +12,11 @@ import javax.annotation.Nonnull;
 @RestController
 @RequestMapping("/rest/admin/account")
 public class AccountRestController extends BaseRestController<Long, Account, AccountService> {
+
+    @RequestMapping(value = "/roles", method = RequestMethod.GET)
+    public AjaxResponse roles() {
+        return webUtils.successResponse(AccountRole.values());
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public AjaxResponse list() {
