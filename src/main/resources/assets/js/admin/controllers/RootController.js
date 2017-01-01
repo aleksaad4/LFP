@@ -67,7 +67,7 @@ export default class RootController {
         }
 
         that.currentSkin = "bluegray";
-        that.sideMenu = true;
+        that.sideMenu = false;
     }
 
     /**

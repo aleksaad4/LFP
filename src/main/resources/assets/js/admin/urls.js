@@ -1,4 +1,5 @@
 module.exports = {
     login: "rest/login",
-    loginCheck: "rest/loginCheck"
+    loginCheck: "rest/loginCheck",
+    account: "rest/admin/account"
 };

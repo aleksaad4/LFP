@@ -55,6 +55,14 @@ public class Account implements Serializable, IDeleted, IEntity<Long, Account>, 
     @Column
     private String email;
 
+    @Nullable
+    @Column
+    private Long creatorAccountId;
+
+    @Transient
+    @Nullable
+    private Account creatorAccount;
+
     public Account() {
     }
 
@@ -75,6 +83,7 @@ public class Account implements Serializable, IDeleted, IEntity<Long, Account>, 
         this.name = other.name;
         this.avatarUrl = other.avatarUrl;
         this.email = other.email;
+        this.creatorAccountId = other.creatorAccountId;
     }
 
     @Override
@@ -90,12 +99,23 @@ public class Account implements Serializable, IDeleted, IEntity<Long, Account>, 
     @Nullable
     @Override
     public Long getAccountId() {
-        return id;
+        return creatorAccountId;
     }
 
     @Override
     public void setAccountId(@Nonnull final Long accountId) {
-        // do nothing
+        this.creatorAccountId = accountId;
+    }
+
+    @Nullable
+    @Override
+    public Account getAccount() {
+        return creatorAccount;
+    }
+
+    @Override
+    public void setAccount(@Nonnull final Account account) {
+        this.creatorAccount = account;
     }
 
     @Nonnull

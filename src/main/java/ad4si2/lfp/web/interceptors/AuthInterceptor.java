@@ -39,7 +39,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         }
 
         // проставляем аккаунт в event
-        webEventsService.currentEvent().setAccountId(account.getAccountId());
+        webEventsService.currentEvent().setAccountId(account.getId());
 
         return super.preHandle(request, response, handler);
     }

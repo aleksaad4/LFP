@@ -1,97 +1,80 @@
-/**
- * Created by semyon on 22.06.16.
- */
-function CollectionRepeatDirective(RepeatParser, $parse) {
-    var pageable;
-    var ctrl;
+function CollectionRepeatDirective(RepeatParser) {
+    let pageable;
+    let ctrl;
+
+    function getVal(array, key, defaultValue) {
+        return array[key] != null ? array[key] : defaultValue;
+    }
+
     return {
         restrict: "EA",
         require: "^collection",
         scope: "=",
         bindToController: true,
-        controller: ["$scope", function ($scope) {
+        controller: ["$scope", function (scope) {
             ctrl = this;
         }],
-        controllerAs: "$ctrlRepDir",
+        controllerAs: "collectionRepeat",
         compile: function (tElement, tAttrs) {
-            var parent = tElement.parent();
+            // есть ли вообще пагинация?
+            let pageable = getVal(tAttrs, "pageable", tAttrs["data-pageable"]);
+            // сколько элементов на странице, по умолчанию 10
+            let itemPerPage = getVal(tAttrs, "itemPerPage", getVal(tAttrs, "data-item-per-page", 10));
 
-            pageable = tAttrs["pageable"];
-            if (!pageable) {
-                pageable = tAttrs["data-pageable"];
-            }
+            // должна быть repeat дериктива
+            if (!tAttrs.repeat) throw new Error('repeat', "Expected 'repeat' expression");
 
-            var itemPerPage = tAttrs["itemPerPage"];
-            if (!itemPerPage) {
-                itemPerPage = tAttrs["data-item-per-page"];
-            }
-            if (!itemPerPage) {
-                itemPerPage = 10;
-            }
-
-            if (!tAttrs.repeat) throw new Error('repeat', "Expected 'repeat' expression.");
-
-            var parserResult = RepeatParser.parse(tAttrs.repeat);
-
-            // достаём body этой директивы
-            var children = tElement.children();
-
-            // обернём детей в <div></div>
-            var template = angular.element('<div></div>');
-            var repeatExpression = parserResult.repeatExpression();
-
+            // парсим repeat директиву
+            let repeatParseResult = RepeatParser.parse(tAttrs.repeat);
+            let repeatExpression = repeatParseResult.repeatExpression();
             // получаем левые и правые стороны выражения repeat
             const repExpSplit = repeatExpression.split(" in ");
-
             // назнвание item'a
             const itemName = repExpSplit[0];
-
             // всё справа от 'in' (название коллекции и фильтры)
             const repExpRightHandSplit = repExpSplit[1].split(" ");
-
             // название коллекции
             const collectionName = repExpRightHandSplit[0];
-
             // возможные фильтры, которые применяются к коллекции ещё до search, groupBy и paging
             let possibleFilters = '';
-
             // добавим всё что было справа от названия колле
             if (repExpRightHandSplit.length > 1) {
-                for (var i = 1; i < repExpRightHandSplit.length; i++) {
-                    var obj = repExpRightHandSplit[i];
+                for (let i = 1; i < repExpRightHandSplit.length; i++) {
+                    let obj = repExpRightHandSplit[i];
                     possibleFilters += " " + obj;
                 }
             }
+            repeatExpression = itemName + " in collectionRepeat.$filtered = (" + collectionName + possibleFilters;
 
-            repeatExpression = itemName + " in $ctrlRepDir.$filtered = (" + collectionName + possibleFilters;
-
-            var attrDirective = "ng-repeat";
+            let attrDirective = "ng-repeat";
 
             // включить поиск
             repeatExpression += " | filter: (collection.searchable ? collection.search : ''))";
-
             // включить сортировку
             repeatExpression += " | orderBy:collection.sortType:collection.sortReverse";
             // включить пейджинг
             if (pageable) {
                 repeatExpression += " | limitTo : " + itemPerPage + " : (collection.curPage - 1) * " + itemPerPage;
             }
-
             repeatExpression += " as resultCollection";
 
+            // достаём body этой директивы
+            let children = tElement.children();
+            // обернём детей в <div></div>
+            let template = angular.element('<div class="lv-item"></div>');
             template.attr(attrDirective, repeatExpression);
             template.append(children);
 
-            // Append this new template to our compile element
+            // добавим наш элемент для отображения пустой коллекции
             tElement.html('');
             tElement.append(template);
-            tElement.append("<div class='empty-collection' data-ng-hide='resultCollection.length'>Нет элементов</div>");
+            tElement.append("<div class='lv-item' data-ng-if='resultCollection.length == 0'><div class='lv-title'>Нет элементов</div></div>");
 
             return {
                 pre: function (scope, element, attributes, controller) {
                 },
                 post: function (scope, element, attributes, collection) {
-                    var items = collectionName;
+                    const items = collectionName;
                     collection.items = scope.$eval(items);
                     collection.itemPerPage = itemPerPage;
                     scope.$watchCollection(items, function (data) {
@@ -109,6 +92,6 @@ function CollectionRepeatDirective(RepeatParser, $parse) {
 
 }
 
-CollectionRepeatDirective.$inject = ["RepeatParser", "$parse"];
+CollectionRepeatDirective.$inject = ["RepeatParser"];
 
 export default CollectionRepeatDirective;

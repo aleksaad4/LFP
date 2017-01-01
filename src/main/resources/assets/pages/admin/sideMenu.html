@@ -12,20 +12,19 @@
     </div>
 
     <ul class="main-menu">
-        <li ng-repeat="menuItem in mCtrl.menu"
-            ng-click="mCtrl.menuItemClick($index)" ng-class="{'active toggled': mCtrl.isMenuItemSelected($index),
-            'empty' : !mCtrl.menuItemHaveSubItem($index)}"
-            class="sub-menu">
+        <li data-ng-repeat="menuItem in mCtrl.menu"
+            data-ng-click="mCtrl.menuItemClick($index)" data-ng-class="{'active toggled': mCtrl.isMenuItemSelected($index),
+            'sub-menu' : !mCtrl.menuItemHaveSubItem($index)}">
 
             <a>
                 <i class="{{menuItem.icon}}"></i>
-                <span ng-bind="menuItem.name"></span>
+                <span data-ng-bind="menuItem.name"></span>
             </a>
 
             <ul data-ng-if="mCtrl.isMenuItemSelected($index)">
-                <li ng-class="{active: mCtrl.isSubMenuItemSelected($parent.$index, $index)}"
-                    ng-repeat="subMenuItem in menuItem.subMenu">
-                    <a ui-sref="{{menuItem.url}}.{{subMenuItem.url}}">
+                <li data-ng-class="{active: mCtrl.isSubMenuItemSelected($parent.$index, $index)}"
+                    data-ng-repeat="subMenuItem in menuItem.subMenu">
+                    <a data-ui-sref="{{menuItem.url}}.{{subMenuItem.url}}">
                         <i class="{{menuItem.icon}}"></i><span>{{subMenuItem.name}}</span>
                     </a>
                 </li>

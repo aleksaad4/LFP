@@ -1,5 +1,5 @@
 import urls from "../urls";
-import {BaseFormController} from "./BaseFormController";
+import {BaseFormController} from "./base/BaseFormController";
 
 
 export default class LoginController extends BaseFormController {

@@ -30,6 +30,11 @@ public class FileUploadController {
             return webUtils.errorResponse(EntityValidatorResult.validatorResult("common.file_absent", "File absent"));
         }
 
+        // проверяем, что файл картинка
+        if (!file.getContentType().startsWith("image")) {
+            return webUtils.errorResponse(EntityValidatorResult.validatorResult("common.file_is_not_image", "File is_not_image"));
+        }
+
         try {
             // загружаем файл
             final LfpFile created = fileService.create(new LfpFile(file.getName(), file.getContentType(), LfpFile.FileType.IMAGE), file.getBytes());

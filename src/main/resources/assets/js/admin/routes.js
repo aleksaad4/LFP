@@ -1,11 +1,10 @@
 /**
  * Конфигурация путей для AngularJS
  */
-
 import mainRoutes from "./routes/MainRoutes";
-import exampleRoutes from "./routes/ExampleRoutes";
+import accountsRoutes from "./routes/AccountsRoutes";
 
 let allRoutes = [];
 allRoutes = allRoutes.concat(mainRoutes);
-// allRoutes = allRoutes.concat(exampleRoutes);
+allRoutes = allRoutes.concat(accountsRoutes);
 module.exports = allRoutes;
