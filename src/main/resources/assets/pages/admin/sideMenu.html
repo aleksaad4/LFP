@@ -13,8 +13,7 @@
 
     <ul class="main-menu">
         <li data-ng-repeat="menuItem in mCtrl.menu"
-            data-ng-click="mCtrl.menuItemClick($index)" data-ng-class="{'active toggled': mCtrl.isMenuItemSelected($index),
-            'sub-menu' : !mCtrl.menuItemHaveSubItem($index)}">
+            data-ng-click="mCtrl.menuItemClick($index)" data-ng-class="{'active toggled': mCtrl.isMenuItemSelected($index), 'sub-menu' : mCtrl.menuItemHaveSubItem($index)}">
 
             <a>
                 <i class="{{menuItem.icon}}"></i>

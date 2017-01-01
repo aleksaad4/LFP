@@ -1,7 +1,6 @@
 import "expose?$!expose?jQuery!jquery";
 
 import "./skin/less/vendors/bootstrap/js/bootstrap.min.js";
-import "./skin/less/skin.less";
 
 import "angular/js/angular";
 import "angular-animate/js/angular-animate";
@@ -15,6 +14,7 @@ import "angular-bootstrap-slider/js/slider";
 import "angular-chosen-localytics/js/chosen.jquery";
 import "angular-chosen-localytics/js/chosen.proto";
 import "angular-chosen-localytics/js/chosen";
+import "angular-chosen-localytics/css/chosen";
 
 import "angular-cookies/js/angular-cookies";
 
@@ -168,3 +168,5 @@ import "Waves/js/waves.min.js";
 
 import "expose?$!expose?vis!vis/js/vis.js";
 import "vis/css/vis-fixed.css";
+
+import "./skin/less/skin.less";

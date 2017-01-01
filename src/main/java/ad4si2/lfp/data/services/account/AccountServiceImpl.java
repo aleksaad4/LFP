@@ -60,7 +60,8 @@ public class AccountServiceImpl implements AccountService, ApplicationListener<A
                 .checkIsEmpty("password", entry, Account::getPassword)
                 .checkMaxSize("password", 256, entry, Account::getPassword)
                 .checkMaxSize("name", 256, entry, Account::getName)
-                .checkMaxSize("email", 256, entry, Account::getEmail);
+                .checkMaxSize("email", 256, entry, Account::getEmail)
+                .checkIsNull("role", entry, Account::getRole);
 
         // проверки на уникальность
         result.checkDuplicate("login", entry, Account::getLogin, login -> repository.findByLoginAndDeletedFalse(login), forUpdate)

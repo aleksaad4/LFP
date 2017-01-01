@@ -1,6 +1,6 @@
 <div class="form-group" ng-class="{'has-error': $ctrl.form.errors[$ctrl.fieldName] != null}">
     <!-- подпись к контролу -->
-    <label class="control-label" ng-bind="fCtrl.label" ng-if="fCtrl.label"></label>
+    <label class="control-label" ng-bind="$ctrl.label" ng-if="$ctrl.label"></label>
 
     <!-- сюда помещается сам контрол -->
     <div ng-transclude=""></div>

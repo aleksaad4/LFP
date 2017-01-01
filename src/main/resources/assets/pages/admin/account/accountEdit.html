@@ -4,44 +4,43 @@
 
         <div class="card">
             <div class="card-header ch-alt">
-                <h2>Аккаунт</h2>
+                <h2 data-ng-bind="ctrl.form.object.id != null ? 'Редактирование' : 'Создание'"></h2>
             </div>
 
             <div class="card-header">
                 <form-messages form="ctrl.form"></form-messages>
 
                 <form-control-messages field-name="login" label="Логин" form="ctrl.form">
-                    <div class="fg-line">
-                        <input type="text" class="form-control" placeholder="Логин"
-                               data-ng-model="ctrl.form.object.login">
+                    <div class="input-group">
+                        <div class="fg-line">
+                            <input type="text" class="form-control" placeholder="Логин"
+                                   data-ng-model="ctrl.form.object.login">
+                        </div>
+                        <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
                     </div>
                 </form-control-messages>
 
                 <form-control-messages field-name="password" label="Пароль" form="ctrl.form">
-                    <div class="fg-line">
-                        <input type="password" class="form-control" placeholder="Пароль"
-                               data-ng-model="ctrl.form.object.password">
+                    <div class="input-group">
+                        <div class="fg-line">
+                            <input type="password" class="form-control" placeholder="Пароль"
+                                   data-ng-model="ctrl.form.object.password">
+                        </div>
+                        <span class="input-group-addon"><i class="zmdi zmdi-lock"></i></span>
                     </div>
                 </form-control-messages>
 
-                <!--<form-control-messages field-name="type" label="Тип" form="ctrl.form" ng-if="ctrl.roles != null">-->
-                    <!--<select chosen data-placeholder="Выберите тип..."-->
-                            <!--data-ng-model="ctrl.form.object.role"-->
-                            <!--data-ng-options="r.title for r in ctrl.roles"-->
-                            <!--data-ng-disabled="ctrl.form.object.id != null">-->
-                    <!--</select>-->
-                <!--</form-control-messages>-->
-
-                <select chosen data-placeholder="Select a country..." class="form-control">
-                    <option value="United States">United States</option>
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Afghanistan">Afghanistan</option>
-                    <option value="Aland Islands">Aland Islands</option>
-                    <option value="Albania">Albania</option>
-                    <option value="Algeria">Algeria</option>
-                    <option value="American Samoa">American Samoa</option>
-                </select>
-
+                <form-control-messages field-name="type" label="Тип" form="ctrl.form" ng-if="ctrl.roles != null">
+                    <select chosen data-placeholder="Выберите тип..."
+                            class="form-control"
+                            data-disable-search="true"
+                            data-allow-single-deselect="false"
+                            data-ng-model="ctrl.form.object.role"
+                            data-ng-options="r.title for r in ctrl.roles"
+                            data-ng-disabled="ctrl.form.object.id != null">
+                        <option value=""></option>
+                    </select>
+                </form-control-messages>
             </div>
         </div>
     </div>

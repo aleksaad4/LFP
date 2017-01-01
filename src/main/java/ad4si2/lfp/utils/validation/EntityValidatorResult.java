@@ -109,6 +109,17 @@ public class EntityValidatorResult {
     }
 
     @Nonnull
+    public <T, FIELD_TYPE> EntityValidatorResult checkIsNull(@Nonnull final String fieldName, @Nonnull final T object,
+                                                             @Nonnull final Function<T, FIELD_TYPE> getter) {
+        final FIELD_TYPE fieldValue = getter.apply(object);
+        if (fieldValue == null) {
+            addError(new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_is_empty",
+                    "Object [" + object.getClass().getSimpleName() + "] field [" + fieldName + "] is empty"));
+        }
+        return this;
+    }
+
+    @Nonnull
     public <T extends IEntity, FIELD_TYPE> EntityValidatorResult checkDuplicate(@Nonnull final String fieldName, @Nonnull final T object,
                                                                                 @Nonnull final Function<T, FIELD_TYPE> getter,
                                                                                 @Nonnull final Function<FIELD_TYPE, List<T>> finder,
