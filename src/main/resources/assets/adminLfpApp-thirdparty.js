@@ -11,7 +11,11 @@ import "angular-bootstrap-colorpicker/css/colorpicker";
 import "angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module";
 
 import "angular-bootstrap-slider/js/slider";
+
+import "angular-chosen-localytics/js/chosen.jquery";
+import "angular-chosen-localytics/js/chosen.proto";
 import "angular-chosen-localytics/js/chosen";
+
 import "angular-cookies/js/angular-cookies";
 
 import "angular-datatables/css/angular-datatables.css";
