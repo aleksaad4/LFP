@@ -1,5 +1,7 @@
 package ad4si2.lfp.utils.data;
 
+import ad4si2.lfp.utils.events.data.ChangeEvent;
+import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.exceptions.LfpRuntimeException;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,32 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Date;
 import java.util.function.Consumer;
 
 @Transactional
-public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY>, ID extends Serializable,
-        REPO extends RepositoryWithDeleted<ENTITY, ID>> extends IFindService<ENTITY, ID, REPO> {
+public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY> & IAccountable, ID extends Serializable,
+        REPO extends RepositoryWithDeleted<ENTITY, ID>> extends ICRUDService<ENTITY, ID, REPO> {
 
     @Nonnull
-    default List<ENTITY> create(@Nonnull final Collection<ENTITY> ts) {
-        final List<ENTITY> res = new ArrayList<>();
-        for (final ENTITY t : ts) {
-            res.add(create(t));
-        }
-        return res;
-    }
-
-    @Nonnull
-    default ENTITY create(@Nonnull final ENTITY t) {
-        return create(t, null, null);
-    }
-
-    default ENTITY update(@Nonnull final ENTITY t) {
-        return update(t, null, null);
-    }
+    ChangesEventDispatcher getEventDispatcher();
 
     @Nonnull
     default ENTITY create(@Nonnull final ENTITY t, @Nullable final Consumer<ENTITY> preAction,
@@ -49,8 +34,23 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY>, ID 
             preAction.accept(t);
         }
 
+        // обновляем дату и admin-а
+        // todo: set admin
+        t.setD(new Date());
+
+        // рассылаем PRE событие о создании нового объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.createEvent(t, ChangeEvent.ChatChangeWhen.PRE));
+
         // сохраняем
         final ENTITY saved = getRepo().save(t);
+
+        // дополнительная обработка после сохранения
+        if (postAction != null) {
+            postAction.accept(t);
+        }
+
+        // рассылаем POST событие о создании нового объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.createEvent(t, ChangeEvent.ChatChangeWhen.POST));
 
         return saved;
     }
@@ -66,10 +66,20 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY>, ID 
             throw new LfpRuntimeException("Can't create [" + t + "], validation failed [" + validatorResult + "]");
         }
 
+        // detached-old
+        final ENTITY old = getById(t.getId(), false).copy();
+
         // дополнительная обработка перед сохранением
         if (preAction != null) {
             preAction.accept(t);
         }
+
+        // обновляем дату и admin-а
+        // todo: set admin
+        t.setD(new Date());
+
+        // рассылаем PRE событие об обновлении объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.updateEvent(t, old, ChangeEvent.ChatChangeWhen.PRE));
 
         // сохраняем объект
         final ENTITY updated = getRepo().save(t);
@@ -79,11 +89,10 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY>, ID 
             postAction.accept(updated);
         }
 
-        return updated;
-    }
+        // рассылаем POST событие об обновлении объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.updateEvent(t, old, ChangeEvent.ChatChangeWhen.POST));
 
-    default void delete(@Nonnull final ENTITY t) {
-        delete(t, null);
+        return updated;
     }
 
     default void delete(@Nonnull final ENTITY t, @Nullable final Consumer<ENTITY> preCheckF) {
@@ -92,14 +101,19 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY>, ID 
             preCheckF.accept(t);
         }
 
+        // рассылаем PRE событие об удалении объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.deleteEvent(t, ChangeEvent.ChatChangeWhen.PRE));
+
         // помечаем удалённым и сохраняем
         final ENTITY item = getById(t.getId(), false);
         item.setDeleted(true);
-    }
 
-    default void delete(@Nonnull final Collection<ENTITY> ts) {
-        for (final ENTITY t : ts) {
-            delete(t);
-        }
+        // обновляем дату и admin-а
+        // todo: set admin
+        t.setD(new Date());
+
+        // рассылаем POST событие об удалении объекта
+        getEventDispatcher().dispatchEvent(ChangeEvent.deleteEvent(t, ChangeEvent.ChatChangeWhen.POST));
+
     }
 }

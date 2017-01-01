@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class AccountServiceImpl implements AccountService, ApplicationListener<ApplicationReadyEvent> {
 
     @Inject

@@ -1,6 +1,7 @@
 package ad4si2.lfp.utils.web;
 
 import ad4si2.lfp.utils.validation.EntityValidatorError;
+import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +63,11 @@ public class WebUtils {
     @Nonnull
     public static String getRequestUrl(@Nonnull final HttpServletRequest request) {
         return request.getRequestURI() + (request.getQueryString() != null ? "?" + request.getQueryString() : "");
+    }
+
+    @Nonnull
+    public AjaxResponse errorResponse(@Nonnull final EntityValidatorResult result) {
+        return errorResponse(result.getErrors());
     }
 
     @Nonnull
