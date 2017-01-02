@@ -49,14 +49,15 @@
                         return element.addClass('loading').attr('disabled', true).trigger('chosen:updated');
                     };
                     stopLoading = function () {
-                        return element.removeClass('loading').attr('disabled', (element.attr('ng-disabled') ? attr.disabled : false))
+                        let disabled = element.attr('ng-disabled') ? attr.disabled : false;
+                        return element.removeClass('loading').attr('disabled', element.context.disabled).trigger('chosen:updated');
                     };
                     chosen = null;
                     defaultText = null;
                     empty = false;
                     initOrUpdate = function () {
                         if (chosen) {
-                            return element.trigger('chosen:updated');
+                            return element.attr('disabled', element.context.disabled).trigger('chosen:updated');
                         } else {
                             chosen = element.chosen(options).data('chosen');
                             return defaultText = chosen.default_text;
@@ -86,7 +87,7 @@
                         initOrUpdate();
                     }
                     attr.$observe('disabled', function () {
-                        return element.trigger('chosen:updated');
+                        return element.attr('disabled', element.context.disabled).trigger('chosen:updated');
                     });
                     if (attr.ngOptions && ngModel) {
                         match = attr.ngOptions.match(NG_OPTIONS_REGEXP);
