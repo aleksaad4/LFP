@@ -13,7 +13,7 @@ function CollectionDirective() {
 
             title: "=", // заголовок блока
 
-            showLoading: "=", // нужно ли показывать процесс загрузки
+            isLoading: "=", // нужно ли показывать процесс загрузки
 
             actionable: "=", // нужно ли показывать action-кнопку
             actionClick: "&", // действие при клике на action-кнопку

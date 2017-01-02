@@ -1,6 +1,10 @@
-export class BaseListController {
+import {BaseController} from "./BaseController";
+
+export class BaseListController extends BaseController {
 
     constructor(restAngular, baseUrl) {
+        super();
+
         const that = this;
 
         that.restAngular = restAngular;
@@ -11,13 +15,9 @@ export class BaseListController {
         that.baseUrl = baseUrl;
 
         // начинаем загрузку объектов
-        that.restAngular.all(baseUrl)
-            .getList()
-            .then(function successCallback(objects) {
-                that.objects = objects;
-            }, function errorCallback(data) {
-
-            });
+        that.doAction(that.restAngular.all(baseUrl).getList(), function (objects) {
+            that.objects = objects;
+        })
     }
 
     // добавить объект в список

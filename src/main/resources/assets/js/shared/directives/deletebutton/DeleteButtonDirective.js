@@ -1,7 +1,3 @@
-/**
- * директива кнопки удаления объектов с подтверждением
- * Created by Olesya
- */
 function DeleteButtonDirective() {
     return {
         restrict: 'EA',
@@ -16,28 +12,29 @@ function DeleteButtonDirective() {
             // объект, который передаётся в callback (как item)
             object: "="
         },
-        templateUrl: "/pages/workplace/elements/deleteButton.html",
+        templateUrl: "/pages/shared/directives/deleteButton.html",
         controller: function () {
-            var that = this;
+            const that = this;
 
-            if (typeof that.overlay == 'undefined') {
-                that.overlay = true;
-            }
+            const deleteCallback = that.confirmCallback;
 
-            var deleteCallback = that.confirmCallback;
-
-            that.buttonTitle = this.buttonText ? this.buttonText : "Удалить";
+            // название кнопки
+            that.button = this.buttonText ? this.buttonText : "Удалить";
+            // вопрос
             that.question = this.questionText ? this.questionText : "Вы уверены, что хотите удалить объект?";
 
-            that.requestForDelete = function (item) {
+            // обработчик нажатия на кнопку удаления
+            that.requestForDelete = function () {
                 that.touched = true;
             };
 
+            // подтверждение удаления
             that.submitDelete = function () {
                 deleteCallback({item: that.object});
                 that.touched = false;
             };
 
+            // отмена удаления
             that.cancelDelete = function () {
                 that.touched = false;
             };

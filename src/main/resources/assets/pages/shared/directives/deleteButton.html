@@ -1,0 +1,25 @@
+<span class="pull-right">
+    <!-- показываем кнопку "Удалить" -->
+    <button class="btn waves-effect btn-danger" data-ng-class="dCtrl.cssClass" data-ng-click="dCtrl.requestForDelete();"
+            data-ng-if="!dCtrl.touched">{{dCtrl.button}}</button>
+
+    <div data-ng-if="dCtrl.touched && dCtrl.overlay" class="delete-overlay">
+        <div class="delete-block">
+            <h3 data-ng-bind="dCtrl.question"></h3>
+            <br/>
+            <button class="m-r-5 btn waves-effect btn-success" ng-click="dCtrl.submitDelete();">
+                Да
+            </button>
+            <button class="btn waves-effect btn-danger" ng-click="dCtrl.cancelDelete();">
+                Нет
+            </button>
+        </div>
+    </div>
+
+        <div data-ng-if="dCtrl.touched && !dCtrl.overlay">
+            <span data-ng-bind="dCtrl.question"></span>
+            <button class="btn waves-effect btn-success" data-ng-class="dCtrl.cssClass"
+                    ng-click="dCtrl.submitDelete();">Да</button>
+            <button class="btn waves-effect btn-danger" data-ng-class="dCtrl.cssClass" ng-click="dCtrl.cancelDelete();">Нет</button>
+    </div>
+</span>

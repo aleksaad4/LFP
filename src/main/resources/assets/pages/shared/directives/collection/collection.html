@@ -1,8 +1,12 @@
 <div class="card listview lv-bordered">
 
-    <!--<div class="overlay va-loader" ng-if="collection.showLoading">-->
-    <!--<i class="fa fa-refresh fa-spin"></i>-->
-    <!--</div>-->
+    <div class="overlay va-loader" data-ng-if="collection.isLoading">
+        <div class="preloader pls-teal">
+            <svg class="pl-circular" viewBox="25 25 50 50">
+                <circle class="plc-path" cx="50" cy="50" r="20"></circle>
+            </svg>
+        </div>
+    </div>
 
     <div class="card-header ch-alt m-b-20">
         <h2 data-ng-bind="collection.title"></h2>

@@ -1,19 +1,18 @@
 <div class="sidebar-inner c-overflow">
     <div class="profile-menu">
         <a href="">
-            <div class="profile-pic">
-                <img src="img/profile-pics/1.jpg" alt="">
-            </div>
+            <avatar avatar-url="mCtrl.accountService.account.avatarUrl" name="mCtrl.accountService.account.name">
+            </avatar>
 
-            <div class="profile-info">
-                Malinda Hollaway
+            <div class="profile-info" data-ng-bind="mCtrl.accountService.account.name != null ? mCtrl.accountService.account.name : mCtrl.accountService.account.login">
             </div>
         </a>
     </div>
 
     <ul class="main-menu">
         <li data-ng-repeat="menuItem in mCtrl.menu"
-            data-ng-click="mCtrl.menuItemClick($index)" data-ng-class="{'active toggled': mCtrl.isMenuItemSelected($index), 'sub-menu' : mCtrl.menuItemHaveSubItem($index)}">
+            data-ng-click="mCtrl.menuItemClick($index)"
+            data-ng-class="{'active toggled': mCtrl.isMenuItemSelected($index), 'sub-menu' : mCtrl.menuItemHaveSubItem($index)}">
 
             <a>
                 <i class="{{menuItem.icon}}"></i>

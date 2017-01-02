@@ -5,7 +5,7 @@ import urls from "../urls";
 
 export default class RootController {
 
-    constructor(scope, rootScope, controller, location, state, timeout, restAngular) {
+    constructor(scope, rootScope, controller, location, state, timeout, restAngular, accountService) {
         const that = this;
 
         that.rootScope = rootScope;
@@ -13,6 +13,7 @@ export default class RootController {
         that.state = state;
         that.timeout = timeout;
         that.restAngular = restAngular;
+        that.accountService = accountService;
 
         that.user = null;
 
@@ -129,10 +130,17 @@ export default class RootController {
      */
     handleAuthorizeData(data) {
         // аккаунт
-        this.account = data.account;
+        this.accountService.setAccount(data.account);
         // запоминаем меню
         this.menu = data.menu;
     }
+
+    /**
+     * Функция выхода на страницу логина
+     */
+    logout() {
+        this.accountService.logout();
+    }
 }
 
-RootController.$inject = ["$scope", "$rootScope", "$controller", "$location", "$state", "$timeout", "Restangular"];
+RootController.$inject = ["$scope", "$rootScope", "$controller", "$location", "$state", "$timeout", "Restangular", "AccountService"];

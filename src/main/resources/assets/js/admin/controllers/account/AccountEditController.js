@@ -3,10 +3,11 @@ import urls from "../../urls";
 
 export default class AccountEditController extends BaseCrudController {
 
-    constructor(scope, state, stateParams, restAngular, FileUploader) {
-        super(scope, state, stateParams, restAngular);
+    constructor(scope, state, stateParams, restAngular, FileUploader, accountService) {
+        super(scope, state, stateParams, restAngular, "accounts");
 
         const that = this;
+        that.accountService = accountService;
         that.fileUploader = new FileUploader({url: urls.fileupload.image});
 
         // типы аккаунтов
@@ -40,4 +41,4 @@ export default class AccountEditController extends BaseCrudController {
     }
 }
 
-AccountEditController.$inject = ["$scope", "$state", "$stateParams", "Restangular", "FileUploader"];
+AccountEditController.$inject = ["$scope", "$state", "$stateParams", "Restangular", "FileUploader", "AccountService"];

@@ -1,8 +1,8 @@
 import urls from "../urls";
-import {BaseFormController} from "./base/BaseFormController";
+import {BaseController} from "./base/BaseController";
 
 
-export default class LoginController extends BaseFormController {
+export default class LoginController extends BaseController {
 
     constructor(scope, state, stateParams, Restangular) {
         super();

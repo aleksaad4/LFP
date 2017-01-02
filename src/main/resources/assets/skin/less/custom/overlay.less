@@ -1,4 +1,4 @@
-.overlay-wrapper .overlay {
+.overlay-wrapper .overlay, .card .overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -6,6 +6,7 @@
   height: 100%;
   z-index: 50;
   background: rgba(255, 255, 255, 0.7);
+  text-align: center;
 
   &:before {
     content: '';
@@ -13,5 +14,24 @@
     width: 1px;
     vertical-align: middle;
     display: inline-block;
+  }
+}
+
+.delete-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  background: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  z-index: 100;
+
+  .delete-block {
+    width: 100%;
+    top: 50%;
+    margin-top: -100px;
+    position: absolute;
   }
 }

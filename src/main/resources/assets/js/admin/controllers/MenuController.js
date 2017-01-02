@@ -1,11 +1,12 @@
 export default class MenuController {
 
-    constructor(scope, state, rootScope) {
+    constructor(scope, state, rootScope, accountService) {
         const that = this;
 
         that.scope = scope;
         that.state = state;
         that.rootScope = rootScope;
+        that.accountService = accountService;
 
         // всё меню
         that.menu = scope.rCtrl.menu;
@@ -144,4 +145,4 @@ export default class MenuController {
     };
 }
 
-MenuController.$inject = ["$scope", "$state", "$rootScope", "$stateParams", "Restangular"];
+MenuController.$inject = ["$scope", "$state", "$rootScope", "AccountService"];
