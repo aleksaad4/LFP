@@ -25,12 +25,12 @@ public class ResourceController {
     public AjaxResponse loadImage(@RequestBody final MultipartFile file) {
         // проверяем, что файл не пуст
         if (file == null || file.isEmpty()) {
-            return webUtils.errorResponse(EntityValidatorResult.validatorResult("common.file_absent", "File absent"));
+            return webUtils.errorResponse(EntityValidatorResult.validatorResult("File absent", "common.file_absent"));
         }
 
         // проверяем, что файл картинка
         if (!file.getContentType().startsWith("image")) {
-            return webUtils.errorResponse(EntityValidatorResult.validatorResult("common.file_is_not_image", "File is not image"));
+            return webUtils.errorResponse(EntityValidatorResult.validatorResult("File is not image", "common.file_is_not_image"));
         }
 
         try {
@@ -40,7 +40,7 @@ public class ResourceController {
             return webUtils.successResponse(created);
         } catch (IOException e) {
             // неудалось загрузить файл
-            return webUtils.errorResponse(EntityValidatorResult.validatorResult("common.file_can_t_load", "Can't load file"));
+            return webUtils.errorResponse(EntityValidatorResult.validatorResult("Can't load file", "common.file_can_t_load"));
         }
     }
 

@@ -12,12 +12,25 @@
              data-is-loading="ctrl.form.isLoading">
             <collection-body collection-repeat data-repeat="obj in ctrl.objects"
                              data-pageable="true">
-                <div class="lv-title" data-ng-bind="obj.login">
-                </div>
-                <div class="lv-actions actions">
-                    <a data-ui-sref="accounts.edit({id: obj.id})" data-ng-click="flow.showDetail();">
-                        <i class="zmdi zmdi-edit"></i>
-                    </a>
+                <div class="media">
+                    <div class="pull-left" data-ng-if="obj.avatarUrl != null">
+                        <img class="lv-img-sm" ng-src="{{obj.avatarUrl}}" alt="">
+                    </div>
+
+                    <div class="media-body">
+                        <div class="lv-title" data-ng-bind="obj.name != null ? obj.name : obj.login">
+                        </div>
+                        <ul class="lv-attrs">
+                            <li>Тип: <span data-ng-bind="obj.role.title"></span></li>
+                            <li data-ng-if="obj.email != null">email: <span data-ng-bind="obj.email"></span>
+                            </li>
+                        </ul>
+                        <div class="lv-actions actions">
+                            <a data-ui-sref="accounts.edit({id: obj.id})" data-ng-click="flow.showDetail();">
+                                <i class="zmdi zmdi-edit"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </collection-body>
         </div>

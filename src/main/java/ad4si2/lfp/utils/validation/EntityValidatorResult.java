@@ -4,7 +4,9 @@ import ad4si2.lfp.utils.data.IDeleted;
 import ad4si2.lfp.utils.data.IEntity;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,17 +24,17 @@ public class EntityValidatorResult {
     }
 
     @Nonnull
-    public static EntityValidatorResult validatorResult(@Nonnull final String errorCode, @Nonnull final String errorMessage) {
+    public static EntityValidatorResult validatorResult(@Nonnull final String errorMessage, @Nonnull final String errorCode) {
         final EntityValidatorResult result = new EntityValidatorResult();
-        result.addError(new EntityValidatorError(errorCode, errorMessage));
+        result.addError(new EntityValidatorError(errorMessage, errorCode));
         return result;
     }
 
     @Nonnull
-    public static EntityValidatorResult validatorResult(@Nonnull final String fieldName, @Nonnull final String errorCode,
-                                                        @Nonnull final String errorMessage) {
+    public static EntityValidatorResult validatorResult(@Nonnull final String fieldName, @Nonnull final String errorMessage,
+                                                        @Nonnull final String errorCode) {
         final EntityValidatorResult result = new EntityValidatorResult();
-        result.addError(new EntityValidatorError(fieldName, errorCode, errorMessage));
+        result.addError(new EntityValidatorError(fieldName, errorMessage, errorCode));
         return result;
     }
 
@@ -140,6 +142,60 @@ public class EntityValidatorResult {
                         addError(error);
                     }
                 }
+            }
+        }
+        return this;
+    }
+
+    @Nonnull
+    public <T extends IEntity, FIELD_TYPE_1, FIELD_TYPE_2> EntityValidatorResult checkDuplicate(@Nonnull final String fieldName1,
+                                                                                                @Nonnull final String fieldName2,
+                                                                                                @Nonnull final T object,
+                                                                                                @Nonnull final Function<T, FIELD_TYPE_1> getter1,
+                                                                                                @Nonnull final Function<T, FIELD_TYPE_2> getter2,
+                                                                                                @Nonnull final BiFunction<FIELD_TYPE_1, FIELD_TYPE_2, List<T>> finder,
+                                                                                                final boolean forUpdate) {
+        final FIELD_TYPE_1 fieldValue1 = getter1.apply(object);
+        final FIELD_TYPE_2 fieldValue2 = getter2.apply(object);
+        if (fieldValue1 != null && fieldValue2 != null) {
+            final List<T> list = finder.apply(fieldValue1, fieldValue2);
+            if (!list.isEmpty()) {
+                final EntityValidatorError error = new EntityValidatorError(
+                        "Object [" + object.getClass().getSimpleName() + "] with [" + fieldName1 + " : " + fieldValue1 + "] and [" + fieldName2 + " : " + fieldValue2 + "] already exists",
+                        object.getClass().getSimpleName().toLowerCase() + "_" + fieldName1 + "_" + fieldName2 + "_exists");
+                if (!forUpdate) {
+                    // создание нового объекта, а уже нашелся такой
+                    addError(error);
+                } else {
+                    // обновление объекта, проверка что тот, что нашелся - не наш
+                    if (list.stream().noneMatch(e -> e.getId() == object.getId())) {
+                        // среди этих объектов есть какой-то, но не наш
+                        addError(error);
+                    }
+                }
+            }
+        }
+        return this;
+    }
+
+    @Nonnull
+    public <T, F extends IEntity<ID, F>, ID> EntityValidatorResult checkLinkedValue(@Nonnull final String fieldName,
+                                                                                    @Nonnull final T object,
+                                                                                    @Nullable final ID linkedId,
+                                                                                    @Nonnull final Function<ID, F> getter,
+                                                                                    final boolean mustNonnull) {
+        final EntityValidatorError error = new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_incorrect",
+                "Can'f find [" + fieldName + "] with id [" + linkedId + "] for object [" + object.getClass().getSimpleName() + "]");
+
+        // вообще не задан, а должен быть
+        if (linkedId == null && mustNonnull) {
+            addError(error);
+        } else if (linkedId != null) {
+            // задан, но не обязательный
+            // проверим, что объект находится
+            final F entity = getter.apply(linkedId);
+            if (entity == null) {
+                addError(error);
             }
         }
         return this;

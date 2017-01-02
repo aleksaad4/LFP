@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "account")
 public class Account implements Serializable, IDeleted, IEntity<Long, Account>, IAccountable {
 
     @Id

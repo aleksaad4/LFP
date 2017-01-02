@@ -64,7 +64,7 @@ public class LoginRestController {
         final Account account = accountService.findByLoginAndPasswordAndDeletedFalse(loginRequestData.getLogin(), loginRequestData.getPassword());
         if (account == null) {
             // невышло авторизоваться
-            return webUtils.errorResponse(EntityValidatorResult.validatorResult("common.login_failed", "Incorrect login or password"));
+            return webUtils.errorResponse(EntityValidatorResult.validatorResult("Incorrect login or password", "common.login_failed"));
         }
 
         // успешная авторизация
