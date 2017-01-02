@@ -22,8 +22,6 @@ export class BaseCrudController extends BaseFormController {
             // загружаем объект по id
             that.load();
         }
-
-
     }
 
     load() {
@@ -38,7 +36,7 @@ export class BaseCrudController extends BaseFormController {
     save() {
         const that = this;
 
-        let create = that.objId == null;
+        let create = that.objId == null || that.objId == 0 || that.objId == "";
         const saveFunc = create
             // сохранение
             ? that.restAngular.all(that.listController.baseUrl).post
@@ -46,7 +44,7 @@ export class BaseCrudController extends BaseFormController {
             : that.restAngular.all(that.listController.baseUrl).patch;
 
         // выполняем сохранение
-        that.doActionS(saveFunc(that.form.object).get(),
+        that.doActionS(saveFunc(that.form.object),
             function success(data) {
                 that.form.object = data;
                 if (create) {

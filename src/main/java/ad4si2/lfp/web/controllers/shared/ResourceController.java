@@ -5,9 +5,7 @@ import ad4si2.lfp.data.services.storage.FileService;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import ad4si2.lfp.utils.web.AjaxResponse;
 import ad4si2.lfp.utils.web.WebUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
@@ -15,7 +13,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/rest/account/")
-public class FileUploadController {
+public class ResourceController {
 
     @Inject
     private FileService fileService;
@@ -23,8 +21,8 @@ public class FileUploadController {
     @Inject
     private WebUtils webUtils;
 
-    @RequestMapping(value = "loadImage")
-    public AjaxResponse loadImage(@RequestParam("file") final MultipartFile file) {
+    @RequestMapping(value = "loadImage", method = RequestMethod.POST)
+    public AjaxResponse loadImage(@RequestBody final MultipartFile file) {
         // проверяем, что файл не пуст
         if (file == null || file.isEmpty()) {
             return webUtils.errorResponse(EntityValidatorResult.validatorResult("common.file_absent", "File absent"));
@@ -32,12 +30,13 @@ public class FileUploadController {
 
         // проверяем, что файл картинка
         if (!file.getContentType().startsWith("image")) {
-            return webUtils.errorResponse(EntityValidatorResult.validatorResult("common.file_is_not_image", "File is_not_image"));
+            return webUtils.errorResponse(EntityValidatorResult.validatorResult("common.file_is_not_image", "File is not image"));
         }
 
         try {
             // загружаем файл
             final LfpFile created = fileService.create(new LfpFile(file.getName(), file.getContentType(), LfpFile.FileType.IMAGE), file.getBytes());
+            created.setUrl("/rest/account/file/" + created.getId() + "/");
             return webUtils.successResponse(created);
         } catch (IOException e) {
             // неудалось загрузить файл
@@ -45,4 +44,10 @@ public class FileUploadController {
         }
     }
 
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/file/{fileId}")
+    public byte[] getImage(@PathVariable(value = "fileId") final Long fileId) throws IOException {
+        final LfpFile file = fileService.getById(fileId, false);
+        return fileService.getFileContent(file);
+    }
 }

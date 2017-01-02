@@ -223,6 +223,12 @@
       "codemirror": [
         "bower_components/codemirror/lib/*.js",
         "bower_components/codemirror/lib/*.css"
+      ],
+      "angular-chosen-localytics": [
+        "bower_components/chosen/chosen.jquery.js",
+        "bower_components/chosen/chosen.proto.js",
+        "bower_components/chosen/chosen.css",
+        "bower_components/angular-chosen-localytics/chosen.js"
       ]
     }
   },

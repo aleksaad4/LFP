@@ -16,31 +16,72 @@ export class BaseFormController {
     }
 
     /**
-     * Выполнение операции по загрузке чего-либо
-     * @param action загрузочный action
+     * Выполнение операции по загрузке файла
+     * @param fileUploader загрузчик файла
+     * @param file файл для загрузки
+     * @param fieldName название поля для отображения ошибок возле него (если не задано - то #main)
      * @param success success callback, may be null
      * @param error error callback, may be null
-     * @param setSuccessFlag нужно ли после успешной операции переводить флаг success в true
-     * (чтобы тем самым отобразить на интерфейсе сообщение об успехе операции)
      */
-    doAction(action, success, error, setSuccessFlag) {
+    loadFile(fileUploader, file, fieldName, success, error) {
+        const that = this;
+
+        // добавляем файл в очередь
+        fileUploader.addToQueue(file);
+
+        // обработчик ошибки
+        fileUploader.onErrorItem = function (item, response, status, headers) {
+            // завершаем загрузку не успешно
+            that.handleError(response, fieldName);
+            that.fileUploader.clearQueue();
+        };
+
+        // обработчик успешной загрузки
+        fileUploader.onSuccessItem = function (item, response, status, headers) {
+            // тут нужно проверить статус ответа от сервера
+            if (response.status == 'OK') {
+                // успешно завершаем загрузку
+                that.handleSuccess(false);
+                that.fileUploader.clearQueue();
+                // вызываем success-callback
+                if (success != null) {
+                    success(response.result);
+                }
+            } else {
+                // завершаем загрузку не успешно
+                that.handleError(response, fieldName);
+                that.fileUploader.clearQueue();
+                // вызываем error-callback
+                if (error != null) {
+                    error(response.result);
+                }
+            }
+        };
+
+        // начинаем загрузку
+        that.startLoading();
+        // загружаем файл
+        fileUploader.uploadItem(0);
+    }
+
+    doAction(action, successClb, errorClb, setSuccessFlag) {
         const that = this;
 
         // начинаем загрузку
         that.startLoading();
-        action.then(function (data) {
+        action.then(function success(data) {
             // успешно завершаем загрузку
             that.handleSuccess(setSuccessFlag);
             // вызываем success-callback
-            if (success != null) {
-                success(data);
+            if (successClb != null) {
+                successClb(data);
             }
-        }, function (data) {
+        }, function error(data) {
             // завершаем загрузку не успешно
             that.handleError(data);
             // вызываем error-callback
-            if (error != null) {
-                error(data);
+            if (errorClb != null) {
+                errorClb(data);
             }
         });
     }
@@ -65,11 +106,11 @@ export class BaseFormController {
      * Неуспешное выполнение операции
      * @param data
      */
-    handleError(data) {
+    handleError(data, defaultKey) {
         // неуспех операции
         this.form.success = false;
         // вытаскиваем ошибки
-        const errors = this.extractErrors(data);
+        const errors = this.extractErrors(data, defaultKey);
         // добавляем ошибки в массив
         $.extend(this.form.errors, errors);
 
@@ -77,7 +118,7 @@ export class BaseFormController {
         this.finishLoading();
     }
 
-    extractErrors(data) {
+    extractErrors(data, defaultKey) {
         const errors = data.errors;
 
         const result = {};
@@ -86,10 +127,10 @@ export class BaseFormController {
         if (!errors) {
             if (data.status == 403) {
                 // forbidden
-                this.form.errors["#main"] = "Доступ запрещен";
+                this.form.errors[defaultKey == null ? "#main" : defaultKey] = "Доступ запрещен";
             } else {
                 // internal server error
-                this.form.errors["#main"] = "Внутренняя ошибка системы, повторите запрос позже";
+                this.form.errors[defaultKey == null ? "#main" : defaultKey] = "Внутренняя ошибка системы, повторите запрос позже";
             }
             return;
         }
@@ -101,7 +142,7 @@ export class BaseFormController {
             const msg = error.message;
             if (!fieldKey) {
                 // ошибка без привязки к полю
-                result["#main"] = msg;
+                result[defaultKey == null ? "#main" : defaultKey] = msg;
             } else {
                 result[fieldKey] = msg;
             }

@@ -43,6 +43,10 @@ public class LfpFile implements IDeleted, IEntity<Long, LfpFile> {
     @Enumerated
     private FileType type;
 
+    @Transient
+    @Nullable
+    private String url;
+
     public LfpFile() {
     }
 
@@ -114,5 +118,9 @@ public class LfpFile implements IDeleted, IEntity<Long, LfpFile> {
 
     public enum FileType {
         IMAGE
+    }
+
+    public void setUrl(@Nullable final String url) {
+        this.url = url;
     }
 }
