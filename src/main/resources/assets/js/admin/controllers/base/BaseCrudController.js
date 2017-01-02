@@ -78,7 +78,6 @@ export class BaseCrudController extends BaseFormController {
             function (data) {
                 that[valuesName] = data;
             });
-
     }
 }
 

@@ -1,4 +1,4 @@
-package ad4si2.lfp.data.entities.team;
+package ad4si2.lfp.data.entities.football;
 
 import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.utils.data.IAccountable;
@@ -12,8 +12,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "country")
-public class Country implements Serializable, IDeleted, IEntity<Long, Country>, IAccountable {
+@Table(name = "league")
+public class League implements Serializable, IDeleted, IEntity<Long, League>, IAccountable {
 
     @Id
     @GeneratedValue
@@ -37,22 +37,35 @@ public class Country implements Serializable, IDeleted, IEntity<Long, Country>, 
 
     @Nullable
     @Column
-    private String iconUrl;
+    private String imageUrl;
+
+    @Column
+    private Long countryId;
+
+    @Nullable
+    @Column
+    private Long tourCount;
 
     @Transient
     @Nullable
     private Account account;
 
-    public Country() {
+    @Transient
+    @Nullable
+    private Country country;
+
+    public League() {
     }
 
-    public Country(@Nonnull final Country other) {
+    public League(@Nonnull final League other) {
         this.id = other.id;
         this.d = other.d;
         this.deleted = other.deleted;
         this.accountId = other.accountId;
         this.name = other.name;
-        this.iconUrl = other.iconUrl;
+        this.imageUrl = other.imageUrl;
+        this.countryId = other.countryId;
+        this.tourCount = other.tourCount;
     }
 
     @Override
@@ -106,8 +119,12 @@ public class Country implements Serializable, IDeleted, IEntity<Long, Country>, 
 
     @Nonnull
     @Override
-    public Country copy() {
-        return new Country(this);
+    public League copy() {
+        return new League(this);
+    }
+
+    public void setCountry(@Nullable final Country country) {
+        this.country = country;
     }
 
     @Nonnull
@@ -116,20 +133,35 @@ public class Country implements Serializable, IDeleted, IEntity<Long, Country>, 
     }
 
     @Nullable
-    public String getIconUrl() {
-        return iconUrl;
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public Long getCountryId() {
+        return countryId;
+    }
+
+    @Nullable
+    public Long getTourCount() {
+        return tourCount;
+    }
+
+    @Nullable
+    public Country getCountry() {
+        return country;
     }
 
     @Override
     public String toString() {
-        return "Country {" +
+        return "League {" +
                 "id=" + id +
                 ", d=" + d +
                 ", deleted=" + deleted +
                 ", accountId=" + accountId +
                 ", name='" + name + '\'' +
-                ", iconUrl='" + iconUrl + '\'' +
-                ", account=" + account +
+                ", iconUrl='" + imageUrl + '\'' +
+                ", countryId=" + countryId +
+                ", tourCount=" + tourCount +
                 '}';
     }
 }

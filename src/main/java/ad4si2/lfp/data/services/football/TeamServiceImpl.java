@@ -1,7 +1,7 @@
-package ad4si2.lfp.data.services.team;
+package ad4si2.lfp.data.services.football;
 
-import ad4si2.lfp.data.entities.team.Team;
-import ad4si2.lfp.data.repositories.team.TeamRepository;
+import ad4si2.lfp.data.entities.football.Team;
+import ad4si2.lfp.data.repositories.football.TeamRepository;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.stereotype.Service;

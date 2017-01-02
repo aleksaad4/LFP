@@ -16,12 +16,15 @@ public class MenuBuilder {
         if (account.getRole() == AccountRole.ADMIN) {
             final List<MenuItem> items = new ArrayList<>();
 
-            items.add(new MenuItem("Аккаунты", "accounts", "fa fa-history"));
+            // аккаунты
+            items.add(new MenuItem("Аккаунты", "accounts", "zmdi zmdi-account"));
 
-            final List<MenuItem> subMenu = new ArrayList<>();
-            subMenu.add(new MenuItem("Подпункт1", "one", "fa fa-history"));
-            subMenu.add(new MenuItem("Подпункт2", "two", "fa fa-history"));
-            items.add(new MenuItem("Второй пункт меню", "teams", "fa fa-history", subMenu));
+            // футбол
+            final List<MenuItem> footballSubMenu = new ArrayList<>();
+            footballSubMenu.add(new MenuItem("Страны", "countries", ""));
+            footballSubMenu.add(new MenuItem("Лиги", "leagues", "zmdi zmdi-star"));
+            footballSubMenu.add(new MenuItem("Команды", "teams", "zmdi zmdi-accounts"));
+            items.add(new MenuItem("Футбол", "football", "", footballSubMenu));
 
             return items;
         } else {

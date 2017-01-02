@@ -1,6 +1,6 @@
-package ad4si2.lfp.data.repositories.team;
+package ad4si2.lfp.data.repositories.football;
 
-import ad4si2.lfp.data.entities.team.Team;
+import ad4si2.lfp.data.entities.football.Team;
 import ad4si2.lfp.utils.data.RepositoryWithDeleted;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
-package ad4si2.lfp.data.services.team;
+package ad4si2.lfp.data.services.football;
 
-import ad4si2.lfp.data.entities.team.League;
-import ad4si2.lfp.data.repositories.team.LeagueRepository;
+import ad4si2.lfp.data.entities.football.League;
+import ad4si2.lfp.data.repositories.football.LeagueRepository;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.validation.EntityValidatorError;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;

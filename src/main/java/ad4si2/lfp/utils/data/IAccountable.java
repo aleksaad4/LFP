@@ -16,7 +16,7 @@ public interface IAccountable {
     @Nullable
     Account getAccount();
 
-    void setAccount(@Nonnull final Account account);
+    void setAccount(@Nullable final Account account);
 
     @Nonnull
     Date getD();

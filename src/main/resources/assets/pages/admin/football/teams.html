@@ -1,0 +1,44 @@
+<flow screen-size="xs,sm">
+    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12" master>
+        <div class="collection" collection
+             data-title="'Команды'"
+             data-searchable="true"
+             data-sort-header="ctrl.header"
+             data-sort-default-value="name"
+             data-actionable="true"
+             data-action-click="flow.showDetail();"
+             data-action-link="football.teams.edit({id:null})"
+             data-pageable="true"
+             data-is-loading="ctrl.form.isLoading">
+            <collection-body collection-repeat data-repeat="obj in ctrl.objects"
+                             data-pageable="true">
+                <div class="media">
+                    <div class="pull-left" data-ng-if="obj.imageUrl != null">
+                        <img class="lv-img-sm" ng-src="{{obj.imageUrl}}" alt="">
+                    </div>
+
+                    <div class="media-body">
+                        <div class="lv-title" data-ng-bind="obj.name">
+                        </div>
+                        <ul class="lv-attrs" data-ng-if="obj.country != null">
+                            <li>Страна: <span data-ng-bind="obj.country.name"></span></li>
+                        </ul>
+                        <div class="lv-actions actions">
+                            <a data-ui-sref="football.teams.edit({id: obj.id})" data-ng-click="flow.showDetail();">
+                                <i class="zmdi zmdi-edit"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </collection-body>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12" detail>
+        <div class="btn btn-info hidden-lg hidden-md col-sm-12 col-xs-12 row-margin-1 m-b-10"
+             data-ng-click="flow.showMaster()">Назад
+        </div>
+        <div data-ui-view="details">
+        </div>
+    </div>
+</flow>

@@ -1,4 +1,4 @@
-package ad4si2.lfp.data.entities.team;
+package ad4si2.lfp.data.entities.football;
 
 import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.utils.data.IAccountable;
@@ -12,8 +12,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "league")
-public class League implements Serializable, IDeleted, IEntity<Long, League>, IAccountable {
+@Table(name = "team")
+public class Team implements Serializable, IDeleted, IEntity<Long, Team>, IAccountable {
 
     @Id
     @GeneratedValue
@@ -35,16 +35,16 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
     @Column(nullable = false)
     private String name;
 
-    @Nullable
-    @Column
-    private String iconUrl;
-
-    @Column
-    private Long countryId;
+    @Nonnull
+    @Column(nullable = false)
+    private String city;
 
     @Nullable
     @Column
-    private Long tourCount;
+    private String imageUrl;
+
+    @Column(nullable = false)
+    private long countryId;
 
     @Transient
     @Nullable
@@ -54,18 +54,18 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
     @Nullable
     private Country country;
 
-    public League() {
+    public Team() {
     }
 
-    public League(@Nonnull final League other) {
+    public Team(@Nonnull final Team other) {
         this.id = other.id;
         this.d = other.d;
         this.deleted = other.deleted;
         this.accountId = other.accountId;
         this.name = other.name;
-        this.iconUrl = other.iconUrl;
+        this.imageUrl = other.imageUrl;
         this.countryId = other.countryId;
-        this.tourCount = other.tourCount;
+        this.city = other.city;
     }
 
     @Override
@@ -119,8 +119,8 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
 
     @Nonnull
     @Override
-    public League copy() {
-        return new League(this);
+    public Team copy() {
+        return new Team(this);
     }
 
     public void setCountry(@Nullable final Country country) {
@@ -133,17 +133,12 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
     }
 
     @Nullable
-    public String getIconUrl() {
-        return iconUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public Long getCountryId() {
+    public long getCountryId() {
         return countryId;
-    }
-
-    @Nullable
-    public Long getTourCount() {
-        return tourCount;
     }
 
     @Nullable
@@ -151,17 +146,22 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
         return country;
     }
 
+    @Nonnull
+    public String getCity() {
+        return city;
+    }
+
     @Override
     public String toString() {
-        return "League {" +
+        return "Team {" +
                 "id=" + id +
                 ", d=" + d +
                 ", deleted=" + deleted +
                 ", accountId=" + accountId +
                 ", name='" + name + '\'' +
-                ", iconUrl='" + iconUrl + '\'' +
+                ", city='" + city + '\'' +
+                ", iconUrl='" + imageUrl + '\'' +
                 ", countryId=" + countryId +
-                ", tourCount=" + tourCount +
                 '}';
     }
 }

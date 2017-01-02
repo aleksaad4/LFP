@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+
+        <div class="card">
+            <div class="card-header ch-alt">
+                <h2 data-ng-bind="ctrl.form.object.id != null ? 'Редактирование' : 'Создание'"></h2>
+            </div>
+
+            <div class="card-header">
+                <form-control-messages field-name="name" label="Название" form="ctrl.form">
+                    <div class="fg-line">
+                        <input type="text" class="form-control" placeholder="Название"
+                               data-ng-model="ctrl.form.object.name">
+                    </div>
+                </form-control-messages>
+
+                <form-control-messages field-name="image" label="Изображение" form="ctrl.form">
+                    <fileinput file-change="ctrl.choseImage(item);" accept="image/*"
+                               preview-url="ctrl.form.object.imageUrl"></fileinput>
+                </form-control-messages>
+
+                <div>
+                    <button class="btn btn-primary waves-effect" data-ng-click="ctrl.extendedSave();">Сохранить</button>
+                    <delete-button
+                            data-ng-if="ctrl.form.object.id != null"
+                            class="pull-right"
+                            overlay="true"
+                            on-delete="ctrl.remove()">Удалить
+                    </delete-button>
+                </div>
+
+                <form-messages class="m-t-15" form="ctrl.form"></form-messages>
+            </div>
+        </div>
+    </div>
+</div>

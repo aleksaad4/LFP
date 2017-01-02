@@ -23,6 +23,8 @@ public class LfpExceptionHandler {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
+        e.printStackTrace();
+
         final HashMap<String, String> valueMap = new HashMap<>();
         valueMap.put("message", e.getMessage());
         return new ResponseEntity<>(new JSONObject(valueMap), status);

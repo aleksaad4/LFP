@@ -1,10 +1,7 @@
 package ad4si2.lfp.web.controllers;
 
 import ad4si2.lfp.data.services.account.AccountService;
-import ad4si2.lfp.utils.data.IAccountCRUDService;
-import ad4si2.lfp.utils.data.IAccountable;
-import ad4si2.lfp.utils.data.IDeleted;
-import ad4si2.lfp.utils.data.IEntity;
+import ad4si2.lfp.utils.data.*;
 import ad4si2.lfp.utils.validation.EntityValidator;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import ad4si2.lfp.utils.web.AjaxResponse;
@@ -14,6 +11,11 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class BaseRestController<ID extends Serializable,
         ENTITY extends IDeleted & IEntity<ID, ENTITY> & IAccountable,
@@ -31,7 +33,7 @@ public abstract class BaseRestController<ID extends Serializable,
         // список
         final List<ENTITY> all = getService().findAll(false);
         // подгружаем аккаунты
-        all.forEach(this::setAccount);
+        fillEntityList(all);
 
         return webUtils.successResponse(all);
     }
@@ -45,7 +47,7 @@ public abstract class BaseRestController<ID extends Serializable,
 
         // сохранение в БД
         final ENTITY created = getService().create(entity);
-        setAccount(created);
+        fillEntity(created);
 
         return webUtils.successResponse(created);
     }
@@ -59,14 +61,14 @@ public abstract class BaseRestController<ID extends Serializable,
 
         // сохранение в БД
         final ENTITY updated = getService().update(entity);
-        setAccount(updated);
+        fillEntity(updated);
 
         return webUtils.successResponse(updated);
     }
 
     public AjaxResponse get(@Nonnull final ID id) {
         final ENTITY e = getService().getById(id, false);
-        setAccount(e);
+        fillEntity(e);
 
         return webUtils.successResponse(e);
     }
@@ -80,10 +82,68 @@ public abstract class BaseRestController<ID extends Serializable,
         return webUtils.successResponse("OK");
     }
 
-    protected void setAccount(@Nonnull final ENTITY e) {
-        if (e.getAccountId() != null) {
-            e.setAccount(accountService.getById(e.getAccountId(), true));
+    /**
+     * Заполняем дополнительные поля перед возвращением сущности
+     *
+     * @param entity entity
+     */
+    protected void fillEntity(@Nonnull final ENTITY entity) {
+        // аккаунт
+        fillLinkedValues(entity, e -> e.getAccountId(), accountService, (e, le) -> e.setAccount(le));
+    }
+
+    /**
+     * Заполняем дополнительные поля перед возвращением сущности
+     *
+     * @param entities list of entity
+     */
+    protected void fillEntityList(@Nonnull final List<ENTITY> entities) {
+        // аккаунт
+        fillLinkedValues(entities, e -> e.getAccountId(), accountService, (e, le) -> e.setAccount(le));
+    }
+
+    /**
+     * Метод для заполнения дополнительного поля сущности перед возвращением её на front
+     * <p>
+     * Находим связанную сущность по id и проставляем её
+     *
+     * @param entity          исходная сущность
+     * @param linkedIdGetter  метод для получения id связанной сущности
+     * @param service         сервис для получения связанной сущности
+     * @param setter          метод для выставления связанной сущности в исходную сущность
+     * @param <LINKED_ENTITY> тип связанной сущности
+     * @param <LINKED_ID>     тип исходной сущности
+     */
+    protected <LINKED_ENTITY extends IDeleted & IEntity<LINKED_ID, LINKED_ENTITY>, LINKED_ID extends Serializable>
+    void fillLinkedValues(@Nonnull final ENTITY entity,
+                          @Nonnull final Function<ENTITY, LINKED_ID> linkedIdGetter,
+                          @Nonnull final IFindService<LINKED_ENTITY, LINKED_ID, ?> service,
+                          @Nonnull final BiConsumer<ENTITY, LINKED_ENTITY> setter) {
+        if (linkedIdGetter.apply(entity) != null) {
+            setter.accept(entity, service.findById(linkedIdGetter.apply(entity), true));
         }
     }
 
+    /**
+     * Метод для заполнения дополнительного поля в каждой сущности из списка в перед возвращением её на front
+     * <p>
+     * Достаём одним запросом все необходимые связанные сущности
+     * И потом пробегаемся по списке сущностей и проставляем связанную сущность в каждой из них
+     *
+     * @param entities        список исходных сущностей
+     * @param linkedIdGetter  метод для получения id связанной сущности
+     * @param service         сервис для получения связанной сущности
+     * @param setter          метод для выставления связанной сущности в исходную сущность
+     * @param <LINKED_ENTITY> тип связанной сущности
+     * @param <LINKED_ID>     тип исходной сущности
+     */
+    protected <LINKED_ENTITY extends IDeleted & IEntity<LINKED_ID, LINKED_ENTITY>, LINKED_ID extends Serializable>
+    void fillLinkedValues(@Nonnull final List<ENTITY> entities,
+                          @Nonnull final Function<ENTITY, LINKED_ID> linkedIdGetter,
+                          @Nonnull final IFindService<LINKED_ENTITY, LINKED_ID, ?> service,
+                          @Nonnull final BiConsumer<ENTITY, LINKED_ENTITY> setter) {
+        final Set<LINKED_ID> ids = entities.stream().filter(e -> linkedIdGetter.apply(e) != null).map(linkedIdGetter).collect(Collectors.toSet());
+        final Map<LINKED_ID, LINKED_ENTITY> id2linkedEntity = service.findAllByIdIn(ids, true).stream().collect(Collectors.toMap(e -> e.getId(), e -> e));
+        entities.stream().filter(e -> linkedIdGetter.apply(e) != null).forEach((e) -> setter.accept(e, id2linkedEntity.get(linkedIdGetter.apply(e))));
+    }
 }

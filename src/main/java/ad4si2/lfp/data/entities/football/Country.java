@@ -1,4 +1,4 @@
-package ad4si2.lfp.data.entities.team;
+package ad4si2.lfp.data.entities.football;
 
 import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.utils.data.IAccountable;
@@ -8,13 +8,12 @@ import ad4si2.lfp.utils.data.IEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
-import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "team")
-public class Team implements Serializable, IDeleted, IEntity<Long, Team>, IAccountable {
+@Table(name = "country")
+public class Country implements Serializable, IDeleted, IEntity<Long, Country>, IAccountable {
 
     @Id
     @GeneratedValue
@@ -36,37 +35,24 @@ public class Team implements Serializable, IDeleted, IEntity<Long, Team>, IAccou
     @Column(nullable = false)
     private String name;
 
-    @Nonnull
-    @Column(nullable = false)
-    private String city;
-
     @Nullable
     @Column
-    private String iconUrl;
-
-    @Column(nullable = false)
-    private long countryId;
+    private String imageUrl;
 
     @Transient
     @Nullable
     private Account account;
 
-    @Transient
-    @Nullable
-    private Country country;
-
-    public Team() {
+    public Country() {
     }
 
-    public Team(@Nonnull final Team other) {
+    public Country(@Nonnull final Country other) {
         this.id = other.id;
         this.d = other.d;
         this.deleted = other.deleted;
         this.accountId = other.accountId;
         this.name = other.name;
-        this.iconUrl = other.iconUrl;
-        this.countryId = other.countryId;
-        this.city = other.city;
+        this.imageUrl = other.imageUrl;
     }
 
     @Override
@@ -120,12 +106,8 @@ public class Team implements Serializable, IDeleted, IEntity<Long, Team>, IAccou
 
     @Nonnull
     @Override
-    public Team copy() {
-        return new Team(this);
-    }
-
-    public void setCountry(@Nullable final Country country) {
-        this.country = country;
+    public Country copy() {
+        return new Country(this);
     }
 
     @Nonnull
@@ -134,35 +116,20 @@ public class Team implements Serializable, IDeleted, IEntity<Long, Team>, IAccou
     }
 
     @Nullable
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public long getCountryId() {
-        return countryId;
-    }
-
-    @Nullable
-    public Country getCountry() {
-        return country;
-    }
-
-    @Nonnull
-    public String getCity() {
-        return city;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     @Override
     public String toString() {
-        return "Team {" +
+        return "Country {" +
                 "id=" + id +
                 ", d=" + d +
                 ", deleted=" + deleted +
                 ", accountId=" + accountId +
                 ", name='" + name + '\'' +
-                ", city='" + city + '\'' +
-                ", iconUrl='" + iconUrl + '\'' +
-                ", countryId=" + countryId +
+                ", iconUrl='" + imageUrl + '\'' +
+                ", account=" + account +
                 '}';
     }
 }

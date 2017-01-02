@@ -23,7 +23,7 @@
                 <li data-ng-class="{active: mCtrl.isSubMenuItemSelected($parent.$index, $index)}"
                     data-ng-repeat="subMenuItem in menuItem.subMenu">
                     <a data-ui-sref="{{menuItem.url}}.{{subMenuItem.url}}">
-                        <i class="{{menuItem.icon}}"></i><span>{{subMenuItem.name}}</span>
+                        <i class="{{subMenuItem.icon}}"></i><span>{{subMenuItem.name}}</span>
                     </a>
                 </li>
             </ul>
