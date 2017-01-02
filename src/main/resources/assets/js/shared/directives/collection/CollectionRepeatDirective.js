@@ -51,7 +51,7 @@ function CollectionRepeatDirective(RepeatParser) {
             // включить поиск
             repeatExpression += " | filter: (collection.searchable ? collection.search : ''))";
             // включить сортировку
-            repeatExpression += " | orderBy:collection.sortType:collection.sortReverse";
+            repeatExpression += " | orderBy:collection.sortCurrentValue:collection.sortReverse";
             // включить пейджинг
             if (pageable) {
                 repeatExpression += " | limitTo : " + itemPerPage + " : (collection.curPage - 1) * " + itemPerPage;
