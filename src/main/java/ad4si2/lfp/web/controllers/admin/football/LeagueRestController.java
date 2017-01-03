@@ -21,6 +21,11 @@ public class LeagueRestController extends BaseRestController<Long, League, Leagu
     @Inject
     private CountryService countryService;
 
+    @RequestMapping(value = "/countries", method = RequestMethod.GET)
+    public AjaxResponse countries() {
+        return webUtils.successResponse(countryService.findAll(false));
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public AjaxResponse list() {
         return super.list();

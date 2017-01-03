@@ -1,6 +1,5 @@
 package ad4si2.lfp.web.controllers.admin.football;
 
-import ad4si2.lfp.data.entities.account.AccountRole;
 import ad4si2.lfp.data.entities.football.Team;
 import ad4si2.lfp.data.services.football.CountryService;
 import ad4si2.lfp.data.services.football.TeamService;
@@ -22,9 +21,9 @@ public class TeamRestController extends BaseRestController<Long, Team, TeamServi
     @Inject
     private CountryService countryService;
 
-    @RequestMapping(value = "/roles", method = RequestMethod.GET)
-    public AjaxResponse roles() {
-        return webUtils.successResponse(AccountRole.values());
+    @RequestMapping(value = "/countries", method = RequestMethod.GET)
+    public AjaxResponse countries() {
+        return webUtils.successResponse(countryService.findAll(false));
     }
 
     @RequestMapping(method = RequestMethod.GET)

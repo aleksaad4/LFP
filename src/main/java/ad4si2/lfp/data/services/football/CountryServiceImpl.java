@@ -3,6 +3,7 @@ package ad4si2.lfp.data.services.football;
 import ad4si2.lfp.data.entities.football.Country;
 import ad4si2.lfp.data.repositories.football.CountryRepository;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
+import ad4si2.lfp.utils.events.web.WebEventsService;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,19 @@ public class CountryServiceImpl implements CountryService {
     @Inject
     private ChangesEventDispatcher eventDispatcher;
 
+    @Inject
+    private WebEventsService webEventsService;
+
     @Nonnull
     @Override
     public CountryRepository getRepo() {
         return repository;
+    }
+
+    @Nonnull
+    @Override
+    public WebEventsService getWebEventService() {
+        return webEventsService;
     }
 
     @Nonnull

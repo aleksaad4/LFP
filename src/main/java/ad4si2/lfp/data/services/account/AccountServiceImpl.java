@@ -4,6 +4,7 @@ import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.data.entities.account.AccountRole;
 import ad4si2.lfp.data.repositories.account.AccountRepository;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
+import ad4si2.lfp.utils.events.web.WebEventsService;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -25,10 +26,19 @@ public class AccountServiceImpl implements AccountService, ApplicationListener<A
     @Inject
     private ChangesEventDispatcher eventDispatcher;
 
+    @Inject
+    private WebEventsService webEventsService;
+
     @Nonnull
     @Override
     public AccountRepository getRepo() {
         return repository;
+    }
+
+    @Nonnull
+    @Override
+    public WebEventsService getWebEventService() {
+        return webEventsService;
     }
 
     @Nonnull

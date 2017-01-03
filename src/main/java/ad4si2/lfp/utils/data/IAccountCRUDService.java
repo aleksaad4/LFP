@@ -1,7 +1,9 @@
 package ad4si2.lfp.utils.data;
 
+import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.utils.events.data.ChangeEvent;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
+import ad4si2.lfp.utils.events.web.WebEventsService;
 import ad4si2.lfp.utils.exceptions.LfpRuntimeException;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,9 @@ public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTIT
     ChangesEventDispatcher getEventDispatcher();
 
     @Nonnull
+    WebEventsService getWebEventService();
+
+    @Nonnull
     default ENTITY create(@Nonnull final ENTITY t, @Nullable final Consumer<ENTITY> preAction,
                           @Nullable final Consumer<ENTITY> postAction) {
         // валидируем создаваемый объект
@@ -35,8 +40,7 @@ public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTIT
         }
 
         // обновляем дату и admin-а
-        // todo: set admin
-        t.setD(new Date());
+        setAdminAndDate(t);
 
         // рассылаем PRE событие о создании нового объекта
         getEventDispatcher().dispatchEvent(ChangeEvent.createEvent(t, ChangeEvent.ChatChangeWhen.PRE));
@@ -75,8 +79,7 @@ public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTIT
         }
 
         // обновляем дату и admin-а
-        // todo: set admin
-        t.setD(new Date());
+        setAdminAndDate(t);
 
         // рассылаем PRE событие об обновлении объекта
         getEventDispatcher().dispatchEvent(ChangeEvent.updateEvent(t, old, ChangeEvent.ChatChangeWhen.PRE));
@@ -109,11 +112,17 @@ public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTIT
         item.setDeleted(true);
 
         // обновляем дату и admin-а
-        // todo: set admin
-        t.setD(new Date());
+        setAdminAndDate(t);
 
         // рассылаем POST событие об удалении объекта
         getEventDispatcher().dispatchEvent(ChangeEvent.deleteEvent(t, ChangeEvent.ChatChangeWhen.POST));
+    }
 
+    default void setAdminAndDate(@Nonnull final ENTITY t) {
+        final Account a = getWebEventService().getAccountFromEvent();
+        if (a != null) {
+            t.setAccountId(a.getId());
+        }
+        t.setD(new Date());
     }
 }

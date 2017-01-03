@@ -20,9 +20,9 @@
                             data-placeholder="Выберите страну..."
                             class="form-control"
                             data-disable-search="false"
-                            data-allow-single-deselect="false"
+                            data-allow-single-deselect="true"
                             data-ng-model="ctrl.form.object.countryId"
-                            data-ng-options="r.title as r.id for r in ctrl.roles track by r.id">
+                            data-ng-options="r.id as r.name for r in ctrl.countries">
                         <option value=""></option>
                     </select>
                 </form-control-messages>

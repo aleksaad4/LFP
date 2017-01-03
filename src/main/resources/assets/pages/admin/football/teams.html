@@ -14,11 +14,11 @@
                              data-pageable="true">
                 <div class="media">
                     <div class="pull-left" data-ng-if="obj.imageUrl != null">
-                        <img class="lv-img-sm" ng-src="{{obj.imageUrl}}" alt="">
+                        <img class="lv-img-sm brd-0" ng-src="{{obj.imageUrl}}" alt="">
                     </div>
 
                     <div class="media-body">
-                        <div class="lv-title" data-ng-bind="obj.name">
+                        <div class="lv-title" data-ng-bind="obj.name + '(' + obj.city + ')'">
                         </div>
                         <ul class="lv-attrs" data-ng-if="obj.country != null">
                             <li>Страна: <span data-ng-bind="obj.country.name"></span></li>

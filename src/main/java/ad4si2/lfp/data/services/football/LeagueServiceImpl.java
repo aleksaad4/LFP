@@ -3,6 +3,7 @@ package ad4si2.lfp.data.services.football;
 import ad4si2.lfp.data.entities.football.League;
 import ad4si2.lfp.data.repositories.football.LeagueRepository;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
+import ad4si2.lfp.utils.events.web.WebEventsService;
 import ad4si2.lfp.utils.validation.EntityValidatorError;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,16 @@ public class LeagueServiceImpl implements LeagueService {
     private ChangesEventDispatcher eventDispatcher;
 
     @Inject
+    private WebEventsService webEventsService;
+
+    @Inject
     private CountryService countryService;
+
+    @Nonnull
+    @Override
+    public WebEventsService getWebEventService() {
+        return webEventsService;
+    }
 
     @Nonnull
     @Override
