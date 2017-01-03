@@ -3,11 +3,10 @@ import urls from "../../urls";
 
 export default class CountryEditController extends BaseCrudController {
 
-    constructor(scope, state, stateParams, restAngular, FileUploader, accountService) {
+    constructor(scope, state, stateParams, restAngular, FileUploader) {
         super(scope, state, stateParams, restAngular, "football.teams");
 
         const that = this;
-        that.accountService = accountService;
         that.fileUploader = new FileUploader({url: urls.fileupload.image});
 
         // страны
@@ -48,4 +47,4 @@ export default class CountryEditController extends BaseCrudController {
     }
 }
 
-CountryEditController.$inject = ["$scope", "$state", "$stateParams", "Restangular", "FileUploader", "AccountService"];
+CountryEditController.$inject = ["$scope", "$state", "$stateParams", "Restangular", "FileUploader"];

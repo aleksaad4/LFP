@@ -34,7 +34,7 @@
                             data-disable-search="true"
                             data-allow-single-deselect="false"
                             data-ng-model="ctrl.form.object.role"
-                            data-ng-options="r.title for r in ctrl.roles track by r.id"
+                            data-ng-options="r.title for r in ctrl.roles track by r.name"
                             data-ng-disabled="ctrl.form.object.id != null">
                         <option value=""></option>
                     </select>

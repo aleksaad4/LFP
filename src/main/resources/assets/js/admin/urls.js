@@ -10,5 +10,6 @@ module.exports = {
         country: "rest/admin/country",
         league: "rest/admin/league",
         team: "rest/admin/team"
-    }
+    },
+    tournament: "rest/admin/tournament"
 };

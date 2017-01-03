@@ -14,35 +14,31 @@
                     </div>
                 </form-control-messages>
 
-                <form-control-messages field-name="country" label="Страна" form="ctrl.form"
-                                       ng-if="ctrl.countries != null">
+                <form-control-messages field-name="type" label="Тип" form="ctrl.form" ng-if="ctrl.types != null">
                     <select chosen
-                            data-placeholder="Выберите страну..."
+                            data-placeholder="Выберите тип..."
                             class="form-control"
-                            data-disable-search="false"
-                            data-allow-single-deselect="true"
-                            data-ng-model="ctrl.form.object.countryId"
-                            data-ng-options="r.id as r.name for r in ctrl.countries">
+                            data-disable-search="true"
+                            data-allow-single-deselect="false"
+                            data-ng-model="ctrl.form.object.type"
+                            data-ng-options="r.title for r in ctrl.types track by r.nam"
+                            data-ng-disabled="ctrl.form.object.id != null">
                         <option value=""></option>
                     </select>
                 </form-control-messages>
 
-                <form-control-messages field-name="tourCount" label="Количество туров" form="ctrl.form">
+                <form-control-messages ng-if="ctrl.form.object.type.name == 'CHAMPIONSHIP'" field-name="roundCount"
+                                       label="Количество кругов" form="ctrl.form">
                     <div class="fg-line">
-                        <input type="number" class="form-control" placeholder="Количество туров"
-                               data-ng-model="ctrl.form.object.tourCount">
+                        <input type="number" class="form-control" placeholder="Количество кругов"
+                               data-ng-model="ctrl.form.object.roundCount">
                     </div>
                 </form-control-messages>
 
-                <form-control-messages field-name="image" label="Изображение" form="ctrl.form">
-                    <fileinput file-change="ctrl.choseImage(item);" accept="image/*"
-                               preview-url="ctrl.form.object.imageUrl"></fileinput>
-                </form-control-messages>
-
                 <div>
-                    <button class="btn btn-primary waves-effect" data-ng-click="ctrl.extendedSave();">Сохранить</button>
+                    <button class="btn btn-primary waves-effect" data-ng-click="ctrl.save();">Сохранить</button>
                     <delete-button
-                            data-ng-if="ctrl.form.object.id != null"
+                            data-ng-if="ctrl.canDelete()"
                             class="pull-right"
                             overlay="true"
                             on-delete="ctrl.remove()">Удалить

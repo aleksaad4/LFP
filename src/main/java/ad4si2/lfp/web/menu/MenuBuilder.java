@@ -26,6 +26,9 @@ public class MenuBuilder {
             footballSubMenu.add(new MenuItem("Команды", "teams", "zmdi zmdi-accounts"));
             items.add(new MenuItem("Футбол", "football", "", footballSubMenu));
 
+            // турниры
+            items.add(new MenuItem("Турниры", "tournaments", ""));
+
             return items;
         } else {
             return new ArrayList<>();

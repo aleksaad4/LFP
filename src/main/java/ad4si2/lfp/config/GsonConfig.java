@@ -1,6 +1,8 @@
 package ad4si2.lfp.config;
 
 import ad4si2.lfp.data.entities.account.AccountRole;
+import ad4si2.lfp.data.entities.tournament.TournamentStatus;
+import ad4si2.lfp.data.entities.tournament.TournamentType;
 import ad4si2.lfp.utils.gson.EnumDeserializer;
 import ad4si2.lfp.utils.gson.EnumSerializer;
 import ad4si2.lfp.utils.gson.GsonAnnotationExclusionStrategy;
@@ -20,6 +22,10 @@ public class GsonConfig {
                 .setPrettyPrinting()
                 .registerTypeAdapter(AccountRole.class, new EnumSerializer())
                 .registerTypeAdapter(AccountRole.class, new EnumDeserializer())
+                .registerTypeAdapter(TournamentStatus.class, new EnumSerializer())
+                .registerTypeAdapter(TournamentStatus.class, new EnumDeserializer())
+                .registerTypeAdapter(TournamentType.class, new EnumSerializer())
+                .registerTypeAdapter(TournamentType.class, new EnumDeserializer())
                 .registerTypeAdapter(Date.class, (JsonSerializer<Date>) (src, typeOfSrc, context) -> new JsonPrimitive(src.getTime()))
                 .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsLong()))
                 .create();
