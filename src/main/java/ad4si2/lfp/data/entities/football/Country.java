@@ -83,7 +83,7 @@ public class Country implements Serializable, IDeleted, IEntity<Long, Country>, 
     }
 
     @Override
-    public void setAccount(@Nonnull final Account account) {
+    public void setAccount(@Nullable final Account account) {
         this.account = account;
     }
 

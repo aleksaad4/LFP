@@ -1,4 +1,4 @@
-package ad4si2.lfp.data.entities.football;
+package ad4si2.lfp.data.entities.tournament;
 
 import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.utils.data.IAccountable;
@@ -8,17 +8,22 @@ import ad4si2.lfp.utils.data.IEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
-import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Date;
 
+@Inheritance
 @Entity
-@Table(name = "team")
-public class Team implements Serializable, IDeleted, IEntity<Long, Team>, IAccountable {
+@Table(name = "tournament")
+public class Tournament implements Serializable, IDeleted, IEntity<Long, Tournament>, IAccountable {
 
     @Id
     @GeneratedValue
     private long id;
+
+    @Nonnull
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationDate = new Date();
 
     @Nonnull
     @Column(nullable = false)
@@ -36,37 +41,47 @@ public class Team implements Serializable, IDeleted, IEntity<Long, Team>, IAccou
     @Column(nullable = false)
     private String name;
 
-    @Nonnull
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String city;
+    private TournamentStatus status = TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TournamentType type;
+
+    /**
+     * Какая лига лежит в основе турнира
+     * Может быть использовано, например, для автоматической загрузки и обновлении календаря футбольных матчей
+     * А так же загрузки онлайн-результатов
+     */
     @Nullable
     @Column
-    private String imageUrl;
-
-    @Column(nullable = false)
-    private long countryId;
+    private Long leagueId;
 
     @Transient
     @Nullable
     private Account account;
 
-    @Transient
-    @Nullable
-    private Country country;
-
-    public Team() {
+    public Tournament() {
     }
 
-    public Team(@Nonnull final Team other) {
+    public Tournament(@Nonnull final Tournament other) {
         this.id = other.id;
         this.d = other.d;
         this.deleted = other.deleted;
         this.accountId = other.accountId;
         this.name = other.name;
-        this.imageUrl = other.imageUrl;
-        this.countryId = other.countryId;
-        this.city = other.city;
+        this.status = other.status;
+        this.type = other.type;
+        this.leagueId = other.leagueId;
+        this.creationDate = other.creationDate;
+    }
+
+    public Tournament(final long id, @Nonnull final Date creationDate, @Nonnull final String name, final TournamentType type) {
+        this.creationDate = creationDate;
+        this.id = id;
+        this.name = name;
+        this.type = type;
     }
 
     @Override
@@ -119,50 +134,46 @@ public class Team implements Serializable, IDeleted, IEntity<Long, Team>, IAccou
     }
 
     @Nonnull
-    @Override
-    public Team copy() {
-        return new Team(this);
-    }
-
-    public void setCountry(@Nullable final Country country) {
-        this.country = country;
-    }
-
-    @Nonnull
     public String getName() {
         return name;
     }
 
-    @Nullable
-    public String getImageUrl() {
-        return imageUrl;
+    public TournamentStatus getStatus() {
+        return status;
     }
 
-    public long getCountryId() {
-        return countryId;
-    }
-
-    @Nullable
-    public Country getCountry() {
-        return country;
+    public TournamentType getType() {
+        return type;
     }
 
     @Nonnull
-    public String getCity() {
-        return city;
+    @Override
+    public Tournament copy() {
+        return new Tournament(this);
     }
 
     @Override
     public String toString() {
-        return "Team {" +
+        return "Tournament {" +
                 "id=" + id +
+                ", creationDate=" + creationDate +
                 ", d=" + d +
                 ", deleted=" + deleted +
                 ", accountId=" + accountId +
                 ", name='" + name + '\'' +
-                ", city='" + city + '\'' +
-                ", iconUrl='" + imageUrl + '\'' +
-                ", countryId=" + countryId +
+                ", status=" + status +
+                ", type=" + type +
+                ", leagueId=" + leagueId +
                 '}';
+    }
+
+    @Nullable
+    public Long getLeagueId() {
+        return leagueId;
+    }
+
+    @Nonnull
+    public Date getCreationDate() {
+        return creationDate;
     }
 }

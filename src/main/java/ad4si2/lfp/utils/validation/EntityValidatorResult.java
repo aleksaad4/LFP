@@ -91,6 +91,18 @@ public class EntityValidatorResult {
     }
 
     @Nonnull
+    public <T> EntityValidatorResult checkPositiveValue(@Nonnull final String fieldName,
+                                                        @Nonnull final T object,
+                                                        @Nonnull final Function<T, Integer> getter) {
+        final Integer fieldValue = getter.apply(object);
+        if (fieldValue != null && fieldValue < 0) {
+            addError(new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_incorrect",
+                    "Object [" + object.getClass().getSimpleName() + "] field [" + fieldName + "] has incorrect value [" + fieldValue + "]"));
+        }
+        return this;
+    }
+
+    @Nonnull
     public EntityValidatorResult checkDeleted(@Nonnull final IDeleted iDeleted) {
         if (iDeleted.isDeleted()) {
             addError(new EntityValidatorError("common.entity_deleted",
@@ -117,6 +129,24 @@ public class EntityValidatorResult {
         if (fieldValue == null) {
             addError(new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_is_empty",
                     "Object [" + object.getClass().getSimpleName() + "] field [" + fieldName + "] is empty"));
+        }
+        return this;
+    }
+
+    @Nonnull
+    public <T extends IEntity, FIELD_TYPE> EntityValidatorResult checkNotModify(@Nonnull final String fieldName,
+                                                                                @Nonnull final T object,
+                                                                                @Nullable final T oldObject,
+                                                                                @Nonnull final Function<T, FIELD_TYPE> getter) {
+        // по какой-то причине старый объект не найден - это странно, но в таком случае будут ошибки ранее (например, редактирование отсутствующего объекта)
+        if (oldObject == null) {
+            return this;
+        }
+        final FIELD_TYPE newFieldValue = getter.apply(object);
+        final FIELD_TYPE oldFieldValue = getter.apply(oldObject);
+        if (newFieldValue != oldFieldValue) {
+            addError(new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_can_t_modify",
+                    "Object [" + object.getClass().getSimpleName() + "] can't modify field [" + fieldName + "]"));
         }
         return this;
     }

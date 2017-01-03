@@ -63,9 +63,7 @@ public class LeagueServiceImpl implements LeagueService {
         result.checkLinkedValue("country", entry, entry.getCountryId(), (linkedId) -> countryService.findById(linkedId, false), true);
 
         // если количество туров задано, оно должно быть больше 0
-        if (entry.getTourCount() != null && entry.getTourCount() < 0) {
-            result.addError(new EntityValidatorError("tourCount", "Incorrect value of tour count [" + entry.getTourCount() + "]", "league_tour_count_incorrect"));
-        }
+        result.checkPositiveValue("tourCount", entry, League::getTourCount);
 
         return result;
     }

@@ -44,7 +44,7 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
 
     @Nullable
     @Column
-    private Long tourCount;
+    private Integer tourCount;
 
     @Transient
     @Nullable
@@ -96,7 +96,7 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
     }
 
     @Override
-    public void setAccount(@Nonnull final Account account) {
+    public void setAccount(@Nullable final Account account) {
         this.account = account;
     }
 
@@ -142,7 +142,7 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
     }
 
     @Nullable
-    public Long getTourCount() {
+    public Integer getTourCount() {
         return tourCount;
     }
 

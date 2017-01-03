@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@Inheritance
 @Entity
 @Table(name = "account")
 public class Account implements Serializable, IDeleted, IEntity<Long, Account>, IAccountable {
@@ -114,7 +115,7 @@ public class Account implements Serializable, IDeleted, IEntity<Long, Account>, 
     }
 
     @Override
-    public void setAccount(@Nonnull final Account account) {
+    public void setAccount(@Nullable final Account account) {
         this.creatorAccount = account;
     }
 
