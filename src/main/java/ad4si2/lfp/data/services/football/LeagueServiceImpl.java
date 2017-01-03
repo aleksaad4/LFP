@@ -4,7 +4,6 @@ import ad4si2.lfp.data.entities.football.League;
 import ad4si2.lfp.data.repositories.football.LeagueRepository;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.events.web.WebEventsService;
-import ad4si2.lfp.utils.validation.EntityValidatorError;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +59,7 @@ public class LeagueServiceImpl implements LeagueService {
         result.checkDuplicate("name", entry, League::getName, name -> repository.findByNameAndDeletedFalse(name), forUpdate);
 
         // проверка, что связанные объекты существуют
-        result.checkLinkedValue("country", entry, entry.getCountryId(), (linkedId) -> countryService.findById(linkedId, false), true);
+        result.checkLinkedValue("country", entry, entry.getCountryId(), (linkedId) -> countryService.findById(linkedId, false), false);
 
         // если количество туров задано, оно должно быть больше 0
         result.checkPositiveValue("tourCount", entry, League::getTourCount);

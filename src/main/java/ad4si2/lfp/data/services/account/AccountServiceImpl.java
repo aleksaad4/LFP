@@ -74,8 +74,7 @@ public class AccountServiceImpl implements AccountService, ApplicationListener<A
                 .checkIsNull("role", entry, Account::getRole);
 
         // проверки на уникальность
-        result.checkDuplicate("login", entry, Account::getLogin, login -> repository.findByLoginAndDeletedFalse(login), forUpdate)
-                .checkDuplicate("email", entry, Account::getEmail, email -> repository.findByEmailAndDeletedFalse(email), forUpdate);
+        result.checkDuplicate("login", entry, Account::getLogin, login -> repository.findByLoginAndDeletedFalse(login), forUpdate);
 
         if (forUpdate) {
             // нельзя обновлять тип аккаунта

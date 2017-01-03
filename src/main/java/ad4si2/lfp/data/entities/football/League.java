@@ -39,6 +39,7 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
     @Column
     private String imageUrl;
 
+    @Nullable
     @Column
     private Long countryId;
 
@@ -137,6 +138,7 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
         return imageUrl;
     }
 
+    @Nullable
     public Long getCountryId() {
         return countryId;
     }
