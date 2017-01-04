@@ -29,9 +29,9 @@ public class Championship extends Tournament {
     }
 
     public Championship(final long id, @Nonnull final Date creationDate, @Nonnull final String name,
-                        @Nonnull final TournamentType type, @Nonnull final TournamentStatus status,
+                        @Nonnull final TournamentType type, @Nonnull final TournamentStatus status, @Nullable final Long leagueId,
                         @Nullable final Integer roundCount) {
-        super(id, creationDate, name, type, status);
+        super(id, creationDate, name, type, status, leagueId);
         this.roundCount = roundCount;
     }
 

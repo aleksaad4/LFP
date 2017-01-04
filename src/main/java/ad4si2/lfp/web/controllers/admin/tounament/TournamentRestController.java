@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,19 +40,18 @@ public class TournamentRestController {
      * Функция завершения первого шага создания турнира
      * После завершения этого шага уже не может быть изменён состав участников и количество кругов
      */
-    @RequestMapping(value = "/{id}/finishFirstStep", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/finish1Step", method = RequestMethod.GET)
     public AjaxResponse finishFirstStep(@PathVariable("id") @Nonnull final Long id) {
-        // завершаем первый шаг
-        final TournamentStatusModifyResult result = tournamentService.finishFirstStep(id);
+        return finishStep(id, tId -> tournamentService.toSetupLeagueAndTourCountStatus(tId));
+    }
 
-        // не удалось
-        if (!result.isOk()) {
-            return webUtils.errorResponse(result.getResult());
-        }
-
-        // noinspection ConstantConditions
-        final TournamentDTO dto = convertToDTO(result.getT());
-        return webUtils.successResponse(dto);
+    /**
+     * Функция завершения второго шага создания турнира
+     * После завершения этого шага уже не может быть изменена выбранная лига и изменено количество туров (для чемпионата)
+     */
+    @RequestMapping(value = "/{id}/finish2Step", method = RequestMethod.GET)
+    public AjaxResponse finishSecondStep(@PathVariable("id") @Nonnull final Long id) {
+        return finishStep(id, tId -> tournamentService.toSetupTourList(tId));
     }
 
     @RequestMapping(value = "/types", method = RequestMethod.GET)
@@ -64,8 +64,11 @@ public class TournamentRestController {
         return webUtils.successResponse(accountService.findPlayersWithDeletedFalse());
     }
 
-    @RequestMapping(value = "/leagues", method = RequestMethod.GET)
-    public AjaxResponse leagues() {
+    @RequestMapping(value = "/{id}/leagues", method = RequestMethod.GET)
+    public AjaxResponse leagues(@PathVariable("id") @Nonnull final Long id) {
+        // todo: подобрать только разрешенные лиги
+        // todo: а так же разрешенные количества туров
+
         return webUtils.successResponse(leagueService.findAll(false));
     }
 
@@ -116,7 +119,7 @@ public class TournamentRestController {
         if (t.getStatus() != TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS) {
             final Set<Long> pIds = tournamentService.findTournamentPlayerLinks(t.getId()).stream().map(TournamentPlayerLink::getPlayerId).collect(Collectors.toSet());
             final Set<Long> newPlayerIds = dto.getPlayers().stream().map(Account::getId).collect(Collectors.toSet());
-            if (pIds.equals(newPlayerIds)) {
+            if (!pIds.equals(newPlayerIds)) {
                 validatorResult.addError(new EntityValidatorError("players", "Can't modify players list for tournament with status [" + t.getStatus() + "]", "tournament_players_can_t_modify"));
             }
         }
@@ -146,17 +149,39 @@ public class TournamentRestController {
         }
     }
 
+    /**
+     * Завершение очередного шага турнира
+     *
+     * @param id id турнира
+     * @param f  функция завершения шага
+     * @return результат
+     */
+    @Nonnull
+    private AjaxResponse finishStep(final long id, @Nonnull final Function<Long, TournamentStatusModifyResult> f) {
+        // завершаем шаг
+        final TournamentStatusModifyResult result = f.apply(id);
+
+        // не удалось
+        if (!result.isOk()) {
+            return webUtils.errorResponse(result.getResult());
+        }
+
+        // noinspection ConstantConditions
+        final TournamentDTO dto = convertToDTO(result.getT());
+        return webUtils.successResponse(dto);
+    }
+
     @Nonnull
     private Tournament convertFromDTO(@Nonnull final TournamentDTO dto) {
         final Tournament t;
         switch (dto.getType()) {
             case CHAMPIONSHIP:
                 t = new Championship(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),
-                        dto.getName(), dto.getType(), dto.getStatus(), dto.getRoundCount());
+                        dto.getName(), dto.getType(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS, dto.getLeague() != null ? dto.getLeague().getId() : null, dto.getRoundCount());
                 break;
             case CUP:
                 t = new Cup(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),
-                        dto.getName(), dto.getType(), dto.getStatus());
+                        dto.getName(), dto.getType(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS, dto.getLeague() != null ? dto.getLeague().getId() : null);
                 break;
             default:
                 throw new UnsupportedOperationException("Can't create tournament with unknown type [" + dto.getType() + "]");

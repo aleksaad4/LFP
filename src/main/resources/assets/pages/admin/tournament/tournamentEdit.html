@@ -27,7 +27,7 @@
                     </select>
                 </form-control-messages>
 
-                <form-control-messages field-name="players" label="Участники" form="ctrl.form"
+                <form-control-messages field-name="players" label="{{ctrl.getPlayersLabel()}}" form="ctrl.form"
                                        ng-if="ctrl.players != null">
                     <select chosen
                             data-placeholder="Выберите участников турнира..."
@@ -58,8 +58,8 @@
                             class="form-control"
                             data-disable-search="false"
                             data-allow-single-deselect="true"
-                            data-ng-model="ctrl.form.object.leagueId"
-                            data-ng-options="r.id as r.name for r in ctrl.leagues"
+                            data-ng-model="ctrl.form.object.league"
+                            data-ng-options="r as r.name for r in ctrl.leagues track by r.id"
                             data-ng-disabled="!ctrl.isNStep(2)">
                         <option value=""></option>
                     </select>
@@ -75,19 +75,19 @@
                     </confirm-button>
                 </div>
 
-                <confirm-button class="m-t-15"
+                <confirm-button class="d-block m-t-15"
                                 button-text="Перейти к определению количества туров в турнире"
                                 question-text="После завершения текущего шага создания турнира невозможно будет изменить состав участников. Вы хотите продолжить?"
                                 overlay="true"
-                                on-confirm="ctrl.finishFirstStep()"
+                                on-confirm="ctrl.finishNStep(1)"
                                 main-btn-css-class="btn-block btn-success" data-ng-if="ctrl.isNStep(1)">
                 </confirm-button>
 
-                <confirm-button class="m-t-15"
+                <confirm-button class="d-block m-t-15"
                                 button-text="Перейти к созданию туров в турнире"
                                 question-text="После завершения текущего этапе невозможно будет изменить привязку к лиге. Вы хотите продолжить?"
                                 overlay="true"
-                                on-confirm="ctrl.finishSecondStep()"
+                                on-confirm="ctrl.finishNStep(2)"
                                 main-btn-css-class="btn-block btn-success" data-ng-if="ctrl.isNStep(2)">
                 </confirm-button>
 

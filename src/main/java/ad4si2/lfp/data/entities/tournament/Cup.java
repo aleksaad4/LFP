@@ -1,6 +1,7 @@
 package ad4si2.lfp.data.entities.tournament;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import java.util.Date;
 
@@ -18,8 +19,8 @@ public class Cup extends Tournament {
     }
 
     public Cup(final long id, @Nonnull final Date creationDate, @Nonnull final String name,
-               @Nonnull final TournamentType type, @Nonnull final TournamentStatus status) {
-        super(id, creationDate, name, type, status);
+               @Nonnull final TournamentType type, @Nonnull final TournamentStatus status, @Nullable final Long leagueId) {
+        super(id, creationDate, name, type, status, leagueId);
     }
 
     @Nonnull

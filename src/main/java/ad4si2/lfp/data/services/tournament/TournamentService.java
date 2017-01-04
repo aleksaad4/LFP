@@ -25,5 +25,8 @@ public interface TournamentService extends IAccountCRUDService<Tournament, Long,
     List<TournamentPlayerLink> findTournamentPlayerLinks(@Nonnull final Set<Long> tournamentIds);
 
     @Nonnull
-    TournamentStatusModifyResult finishFirstStep(final long tournamentId);
+    TournamentStatusModifyResult toSetupLeagueAndTourCountStatus(final long tournamentId);
+
+    @Nonnull
+    TournamentStatusModifyResult toSetupTourList(final long tournamentId);
 }

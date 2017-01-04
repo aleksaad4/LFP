@@ -35,7 +35,7 @@ export class BaseCrudController extends BaseFormController {
             });
     }
 
-    save() {
+    save(successClb) {
         const that = this;
 
         let create = that.objId == null || that.objId == 0 || that.objId == "";
@@ -56,6 +56,9 @@ export class BaseCrudController extends BaseFormController {
                 } else {
                     that.listController.replaceObj(that.form.object);
                 }
+                if (successClb != null) {
+                    successClb(create);
+                }
             });
     }
 
@@ -75,6 +78,15 @@ export class BaseCrudController extends BaseFormController {
         const that = this;
 
         that.doAction(that.restAngular.all(that.listController.baseUrl).all(valuesName).getList(),
+            function (data) {
+                that[valuesName] = data;
+            });
+    }
+
+    loadLinkedValues(valuesName) {
+        const that = this;
+
+        that.doAction(that.restAngular.one(that.listController.baseUrl, that.objId).all(valuesName).getList(),
             function (data) {
                 that[valuesName] = data;
             });

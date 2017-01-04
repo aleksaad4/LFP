@@ -11,8 +11,26 @@ export default class TournamentEditController extends BaseCrudController {
         that.loadValues("types");
         // игроки
         that.loadValues("players");
-        // лиги
-        that.loadValues("leagues");
+        // лиги для уже созданного турнира
+        if (that.form.object != null) {
+            that.loadLinkedValues("leagues");
+        }
+    }
+
+    getPlayersLabel() {
+        let pCount = (this.form.object == null || this.form.object.players == null) ? 0 : this.form.object.players.length;
+        return "Участники [" + pCount + "]";
+    }
+
+    extendedSave() {
+        const that = this;
+
+        that.save(created => {
+            // если это было создание турнира - то загружаем список лиг
+            if (created) {
+                that.loadLinkedValues("leagues");
+            }
+        });
     }
 
     /**
@@ -26,21 +44,22 @@ export default class TournamentEditController extends BaseCrudController {
     }
 
     isNStep(index) {
-        return this.form.object != null && (this.form.object.status.id + 1 == index);
+        return this.form.object != null && this.form.object.status != null && (this.form.object.status.id + 1 == index);
     }
 
     isStepGreaterThanN(index) {
-        return this.form.object != null && (this.form.object.status.id + 1 >= index);
+        return this.form.object != null && this.form.object.status != null && (this.form.object.status.id + 1 >= index);
     }
 
-    finishFirstStep() {
+    finishNStep(index) {
         const that = this;
 
-        // выполняем завершение первого шага
+        // выполняем завершение очередного шага
         that.doActionS(that.restAngular.one(that.listController.baseUrl, that.form.object.id)
-                .customGET("finishFirstStep"),
+                .one("finish" + index + "Step").get(),
             function success(data) {
                 that.form.object = data;
+                that.listController.replaceObj(that.form.object);
             });
     }
 }

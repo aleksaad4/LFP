@@ -1,7 +1,6 @@
 function ConfirmButtonDirective() {
     return {
         restrict: 'EA',
-        replace: true,
         scope: {
             confirmCallback: "&onConfirm",
             buttonText: "@",

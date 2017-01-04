@@ -74,7 +74,7 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Nonnull
     @Override
-    public TournamentStatusModifyResult finishFirstStep(final long tournamentId) {
+    public TournamentStatusModifyResult toSetupLeagueAndTourCountStatus(final long tournamentId) {
         // проверим, что все добавленные игроки активны
         final Set<Long> playerIds = findTournamentPlayerLinks(tournamentId).stream().map(TournamentPlayerLink::getPlayerId).collect(Collectors.toSet());
         final List<Account> players = accountService.findAllByIdIn(playerIds, false).stream().filter(p -> !p.isBlocked()).collect(Collectors.toList());
@@ -93,6 +93,24 @@ public class TournamentServiceImpl implements TournamentService {
         // если всё хорошо, то изменяем статус турнира на 'CONFIGURATION_TOUR_COUNT_SETTINGS'
         final Tournament forUpdate = t.copy();
         forUpdate.setStatus(TournamentStatus.CONFIGURATION_TOUR_COUNT_SETTINGS);
+        final Tournament updated = update(forUpdate);
+
+        return TournamentStatusModifyResult.success(updated);
+    }
+
+    @Nonnull
+    public TournamentStatusModifyResult toSetupTourList(final long tournamentId) {
+        final Tournament t = getById(tournamentId, false);
+
+        if (t.getType() == TournamentType.CHAMPIONSHIP) {
+            // todo: проверим, что выбранная лига разрешена для этого турнира
+            // todo: или проверим, что выбранное количество туров разрешено для этого турнира
+            // todo: сохранить количество кругов в таком случае
+        }
+
+        // если всё хорошо, то изменяем статус турнира на 'CONFIGURATION_TOUR_COUNT_SETTINGS'
+        final Tournament forUpdate = t.copy();
+        forUpdate.setStatus(TournamentStatus.CONFIGURATION_TOUR_LIST_SETTINGS);
         final Tournament updated = update(forUpdate);
 
         return TournamentStatusModifyResult.success(updated);
@@ -166,7 +184,8 @@ public class TournamentServiceImpl implements TournamentService {
             result.checkPositiveValue("roundCount", (Championship) entry, Championship::getRoundCount);
 
             // обновлять количество кругов можно только на этапе настройки состава участников
-            if (entry.getStatus() != TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS) {
+            // или на этапе привязке к лиге и выборе количества туров
+            if (entry.getStatus() != TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS && entry.getStatus() != TournamentStatus.CONFIGURATION_TOUR_COUNT_SETTINGS) {
                 result.checkNotModify("roundCount", (Championship) entry, (Championship) findById(entry.getId(), false), Championship::getRoundCount);
             }
         }

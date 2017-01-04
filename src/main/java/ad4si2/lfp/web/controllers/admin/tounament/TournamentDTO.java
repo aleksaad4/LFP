@@ -25,7 +25,7 @@ public class TournamentDTO {
     @Nullable
     private Integer roundCount;
 
-    @Nonnull
+    @Nullable
     private TournamentStatus status;
 
     @Nullable
@@ -42,7 +42,7 @@ public class TournamentDTO {
 
     public TournamentDTO(final long id, @Nonnull final Date creationDate, @Nonnull final String name,
                          @Nonnull final TournamentType type,
-                         @Nonnull final TournamentStatus status, @Nullable final Account account,
+                         @Nullable final TournamentStatus status, @Nullable final Account account,
                          @Nullable final League league) {
         this.id = id;
         this.creationDate = creationDate;
@@ -80,7 +80,7 @@ public class TournamentDTO {
         return roundCount;
     }
 
-    @Nonnull
+    @Nullable
     public TournamentStatus getStatus() {
         return status;
     }

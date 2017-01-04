@@ -80,12 +80,13 @@ public abstract class Tournament implements Serializable, IDeleted, IEntity<Long
     }
 
     public Tournament(final long id, @Nonnull final Date creationDate, @Nonnull final String name,
-                      @Nonnull final TournamentType type, @Nonnull final TournamentStatus status) {
+                      @Nonnull final TournamentType type, @Nonnull final TournamentStatus status, @Nullable final Long leagueId) {
         this.creationDate = creationDate;
         this.id = id;
         this.name = name;
         this.type = type;
         this.status = status;
+        this.leagueId = leagueId;
     }
 
     @Override
