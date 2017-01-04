@@ -37,8 +37,8 @@ public class TournamentDTO {
     @Nullable
     private League league;
 
-    @Nonnull
-    private Date creationDate = new Date();
+    @Nullable
+    private Date creationDate;
 
     public TournamentDTO(final long id, @Nonnull final Date creationDate, @Nonnull final String name,
                          @Nonnull final TournamentType type,
@@ -100,7 +100,7 @@ public class TournamentDTO {
         return league;
     }
 
-    @Nonnull
+    @Nullable
     public Date getCreationDate() {
         return creationDate;
     }

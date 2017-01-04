@@ -11,7 +11,7 @@ import java.util.List;
 public interface AccountRepository extends RepositoryWithDeleted<Account, Long> {
 
     @Nonnull
-    List<Account> findByLoginAndPasswordAndDeletedFalse(@Nonnull final String login, @Nonnull final String password);
+    List<Account> findByLoginAndPasswordAndDeletedFalseAndBlockedFalse(@Nonnull final String login, @Nonnull final String password);
 
     @Nonnull
     List<Account> findByLoginAndDeletedFalse(@Nonnull final String login);

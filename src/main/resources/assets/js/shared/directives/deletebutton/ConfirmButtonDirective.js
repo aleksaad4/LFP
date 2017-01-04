@@ -1,41 +1,44 @@
-function DeleteButtonDirective() {
+function ConfirmButtonDirective() {
     return {
         restrict: 'EA',
         replace: true,
         scope: {
-            confirmCallback: "&onDelete",
+            confirmCallback: "&onConfirm",
             buttonText: "@",
             questionText: "@",
             overlay: "<",
             // css класс для кнопок
             cssClass: "@",
+            mainBtnCssClass: "@",
             // объект, который передаётся в callback (как item)
             object: "="
         },
-        templateUrl: "/pages/shared/directives/deleteButton.html",
+        templateUrl: "/pages/shared/directives/confirmButton.html",
         controller: function () {
             const that = this;
 
-            const deleteCallback = that.confirmCallback;
+            const cc = that.confirmCallback;
 
             // название кнопки
             that.button = this.buttonText ? this.buttonText : "Удалить";
             // вопрос
             that.question = this.questionText ? this.questionText : "Вы уверены, что хотите удалить объект?";
+            // css класс для главной кнопки
+            that.btnCssClass = this.mainBtnCssClass ? this.mainBtnCssClass : "btn-danger pull-right";
 
-            // обработчик нажатия на кнопку удаления
-            that.requestForDelete = function () {
+            // обработчик нажатия на кнопку
+            that.requestForConfirm = function () {
                 that.touched = true;
             };
 
-            // подтверждение удаления
-            that.submitDelete = function () {
-                deleteCallback({item: that.object});
+            // подтверждение
+            that.submitConfirm = function () {
+                cc({item: that.object});
                 that.touched = false;
             };
 
-            // отмена удаления
-            that.cancelDelete = function () {
+            // отмена
+            that.cancelConfirm = function () {
                 that.touched = false;
             };
         },
@@ -45,4 +48,4 @@ function DeleteButtonDirective() {
 
 }
 
-export default DeleteButtonDirective;
+export default ConfirmButtonDirective;

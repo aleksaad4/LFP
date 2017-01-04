@@ -21,8 +21,23 @@
                             data-disable-search="true"
                             data-allow-single-deselect="false"
                             data-ng-model="ctrl.form.object.type"
-                            data-ng-options="r.title for r in ctrl.types track by r.nam"
+                            data-ng-options="r.title for r in ctrl.types track by r.name"
                             data-ng-disabled="ctrl.form.object.id != null">
+                        <option value=""></option>
+                    </select>
+                </form-control-messages>
+
+                <form-control-messages field-name="players" label="Участники" form="ctrl.form"
+                                       ng-if="ctrl.players != null">
+                    <select chosen
+                            data-placeholder="Выберите участников турнира..."
+                            class="form-control"
+                            multiple
+                            data-disable-search="false"
+                            data-allow-single-deselect="false"
+                            data-ng-model="ctrl.form.object.players"
+                            data-ng-options="(r.name != null ? r.name : r.login) disable when r.blocked for r in ctrl.players track by r.id"
+                            data-ng-disabled="!(ctrl.form.object.id == null || ctrl.isNStep(1))">
                         <option value=""></option>
                     </select>
                 </form-control-messages>
@@ -30,19 +45,44 @@
                 <form-control-messages ng-if="ctrl.form.object.type.name == 'CHAMPIONSHIP'" field-name="roundCount"
                                        label="Количество кругов" form="ctrl.form">
                     <div class="fg-line">
-                        <input type="number" class="form-control" placeholder="Количество кругов"
+                        <input data-ng-disabled="!(ctrl.form.object.id == null || ctrl.isNStep(1))"
+                               type="number" class="form-control" placeholder="Количество кругов"
                                data-ng-model="ctrl.form.object.roundCount">
                     </div>
                 </form-control-messages>
 
+                <form-control-messages field-name="leagueId" label="Лига" form="ctrl.form"
+                                       ng-if="ctrl.leagues != null && ctrl.isStepGreaterThanN(2)">
+                    <select chosen
+                            data-placeholder="Выберите лигу..."
+                            class="form-control"
+                            data-disable-search="false"
+                            data-allow-single-deselect="true"
+                            data-ng-model="ctrl.form.object.leagueId"
+                            data-ng-options="r.id as r.name for r in ctrl.leagues"
+                            data-ng-disabled="!ctrl.isNStep(2)">
+                        <option value=""></option>
+                    </select>
+                </form-control-messages>
+
                 <div>
                     <button class="btn btn-primary waves-effect" data-ng-click="ctrl.save();">Сохранить</button>
-                    <delete-button
+                    <confirm-button
                             data-ng-if="ctrl.canDelete()"
                             class="pull-right"
                             overlay="true"
-                            on-delete="ctrl.remove()">Удалить
-                    </delete-button>
+                            on-confirm="ctrl.remove()">Удалить
+                    </confirm-button>
+                </div>
+
+                <div class="m-t-15">
+                    <confirm-button
+                            button-text="Перейти к определению количества туров в турнире"
+                            question-text="После завершения текущего шага создания турнира невозможно будет изменить состав участников. Вы хотите продолжить?"
+                            overlay="true"
+                            on-confirm="ctrl.finishFirstStep()"
+                            main-btn-css-class="btn-block btn-success" data-ng-if="ctrl.isNStep(1)">
+                    </confirm-button>
                 </div>
 
                 <form-messages class="m-t-15" form="ctrl.form"></form-messages>

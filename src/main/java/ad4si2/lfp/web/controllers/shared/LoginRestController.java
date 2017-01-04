@@ -61,7 +61,7 @@ public class LoginRestController {
         }
 
         // noinspection ConstantConditions
-        final Account account = accountService.findByLoginAndPasswordAndDeletedFalse(loginRequestData.getLogin(), loginRequestData.getPassword());
+        final Account account = accountService.findActiveByLoginAndPassword(loginRequestData.getLogin(), loginRequestData.getPassword());
         if (account == null) {
             // невышло авторизоваться
             return webUtils.errorResponse(EntityValidatorResult.validatorResult("Incorrect login or password", "common.login_failed"));

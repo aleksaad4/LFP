@@ -2,18 +2,21 @@ package ad4si2.lfp.data.services.account;
 
 import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.data.entities.account.AccountRole;
+import ad4si2.lfp.data.entities.account.Admin;
+import ad4si2.lfp.data.entities.account.Player;
 import ad4si2.lfp.data.repositories.account.AccountRepository;
+import ad4si2.lfp.data.repositories.account.PlayerRepository;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.events.web.WebEventsService;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -22,6 +25,9 @@ public class AccountServiceImpl implements AccountService, ApplicationListener<A
 
     @Inject
     private AccountRepository repository;
+
+    @Inject
+    private PlayerRepository playerRepository;
 
     @Inject
     private ChangesEventDispatcher eventDispatcher;
@@ -49,13 +55,19 @@ public class AccountServiceImpl implements AccountService, ApplicationListener<A
 
     @Nullable
     @Override
-    public Account findByLoginAndPasswordAndDeletedFalse(@Nonnull final String login, @Nonnull final String password) {
-        final List<Account> accounts = repository.findByLoginAndPasswordAndDeletedFalse(login, password);
+    public Account findActiveByLoginAndPassword(@Nonnull final String login, @Nonnull final String password) {
+        final List<Account> accounts = repository.findByLoginAndPasswordAndDeletedFalseAndBlockedFalse(login, password);
         if (accounts.isEmpty()) {
             return null;
         } else {
             return accounts.get(0);
         }
+    }
+
+    @Nonnull
+    @Override
+    public List<Player> findPlayersWithDeletedFalse() {
+        return playerRepository.findAllByDeletedFalse();
     }
 
     @Nonnull
@@ -88,7 +100,7 @@ public class AccountServiceImpl implements AccountService, ApplicationListener<A
     public void onApplicationEvent(final ApplicationReadyEvent applicationReadyEvent) {
         // создаём админа admin/admin, если его нет
         if (repository.findByLoginAndDeletedFalse("admin").isEmpty()) {
-            create(new Account("admin", "admin", AccountRole.ADMIN));
+            create(new Admin("admin", "admin", AccountRole.ADMIN));
         }
     }
 }

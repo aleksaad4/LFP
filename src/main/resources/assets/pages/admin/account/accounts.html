@@ -21,7 +21,10 @@
                         <div class="lv-title" data-ng-bind="obj.name != null ? obj.name : obj.login">
                         </div>
                         <ul class="lv-attrs">
-                            <li>Тип: <span data-ng-bind="obj.role.title"></span></li>
+                            <li class="bgm-red c-white" data-ng-if="obj.blocked">Заблокирован
+                            </li>
+                            <li data-ng-class="{'bgm-green' : obj.role.name == 'ADMIN', 'bgm-blue' : obj.role.name == 'PLAYER'}"
+                                class="b-0 c-white">Тип: <span data-ng-bind="obj.role.title"></span></li>
                             <li data-ng-if="obj.email != null">email: <span data-ng-bind="obj.email"></span>
                             </li>
                         </ul>

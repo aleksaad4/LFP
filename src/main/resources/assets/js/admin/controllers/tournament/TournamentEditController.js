@@ -7,13 +7,41 @@ export default class TournamentEditController extends BaseCrudController {
 
         const that = this;
 
-        // страны
+        // типы турниров
         that.loadValues("types");
+        // игроки
+        that.loadValues("players");
+        // лиги
+        that.loadValues("leagues");
     }
 
+    /**
+     * Можно ли удалить турнир?
+     */
     canDelete() {
-        // todo: удалять только с определенным статусом
-        return this.form.object.id != null;
+        // удалить можно только существующий турнир
+        // который находится на этапе настройки
+        return this.form.object != null && this.form.object.id != null
+            && this.form.object.status.isConfiguration;
+    }
+
+    isNStep(index) {
+        return this.form.object != null && (this.form.object.status.id + 1 == index);
+    }
+
+    isStepGreaterThanN(index) {
+        return this.form.object != null && (this.form.object.status.id + 1 >= index);
+    }
+
+    finishFirstStep() {
+        const that = this;
+
+        // выполняем завершение первого шага
+        that.doActionS(that.restAngular.one(that.listController.baseUrl, that.form.object.id)
+                .customGET("finishFirstStep"),
+            function success(data) {
+                that.form.object = data;
+            });
     }
 }
 

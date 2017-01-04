@@ -1,0 +1,25 @@
+<span>
+    <!-- показываем кнопку "Удалить" -->
+    <button class="btn waves-effect" data-ng-class="dCtrl.btnCssClass" data-ng-click="dCtrl.requestForConfirm();"
+            data-ng-if="!dCtrl.touched">{{dCtrl.button}}</button>
+
+    <div data-ng-if="dCtrl.touched && dCtrl.overlay" class="confirm-overlay">
+        <div class="confirm-block">
+            <h3 data-ng-bind="dCtrl.question"></h3>
+            <br/>
+            <button class="m-r-5 btn waves-effect btn-success" ng-click="dCtrl.submitConfirm();">
+                Да
+            </button>
+            <button class="btn waves-effect btn-danger" ng-click="dCtrl.cancelConfirm();">
+                Нет
+            </button>
+        </div>
+    </div>
+
+        <div data-ng-if="dCtrl.touched && !dCtrl.overlay">
+            <span data-ng-bind="dCtrl.question"></span>
+            <button class="btn waves-effect btn-success" data-ng-class="dCtrl.cssClass"
+                    ng-click="dCtrl.submitConfirm();">Да</button>
+            <button class="btn waves-effect btn-danger" data-ng-class="dCtrl.cssClass" ng-click="dCtrl.cancelConfirm();">Нет</button>
+    </div>
+</span>

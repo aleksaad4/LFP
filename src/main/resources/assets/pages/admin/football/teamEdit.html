@@ -14,7 +14,7 @@
                     </div>
                 </form-control-messages>
 
-                <form-control-messages field-name="country" label="Страна" form="ctrl.form"
+                <form-control-messages field-name="countryId" label="Страна" form="ctrl.form"
                                        ng-if="ctrl.countries != null">
                     <select chosen
                             data-placeholder="Выберите страну..."
@@ -41,12 +41,12 @@
 
                 <div>
                     <button class="btn btn-primary waves-effect" data-ng-click="ctrl.extendedSave();">Сохранить</button>
-                    <delete-button
+                    <confirm-button
                             data-ng-if="ctrl.form.object.id != null"
                             class="pull-right"
                             overlay="true"
-                            on-delete="ctrl.remove()">Удалить
-                    </delete-button>
+                            on-delete="ctrl.remove()">
+                    </confirm-button>
                 </div>
 
                 <form-messages class="m-t-15" form="ctrl.form"></form-messages>

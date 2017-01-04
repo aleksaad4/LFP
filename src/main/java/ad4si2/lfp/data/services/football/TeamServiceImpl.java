@@ -6,10 +6,10 @@ import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.events.web.WebEventsService;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 @Service
 @Transactional

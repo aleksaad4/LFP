@@ -4,6 +4,8 @@ public enum TournamentStatus {
 
     // на этапе выбора игроков можно добавлять и удалять игроков из турнира
     CONFIGURATION_PLAYERS_SETTINGS("Настройка: выбор игроков", true),
+    CONFIGURATION_TOUR_COUNT_SETTINGS("Настройка: определение списка туров", true),
+    CONFIGURATION_TOUR_LIST_SETTINGS("Настройка: создание туров", true),
 
     CREATED("Не стартовал", false),
     PROGRESS("Идёт", false),

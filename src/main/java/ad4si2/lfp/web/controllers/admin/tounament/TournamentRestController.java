@@ -3,13 +3,12 @@ package ad4si2.lfp.web.controllers.admin.tounament;
 import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.data.entities.account.Player;
 import ad4si2.lfp.data.entities.football.League;
-import ad4si2.lfp.data.entities.tournament.Championship;
-import ad4si2.lfp.data.entities.tournament.Tournament;
-import ad4si2.lfp.data.entities.tournament.TournamentPlayerLink;
-import ad4si2.lfp.data.entities.tournament.TournamentType;
+import ad4si2.lfp.data.entities.tournament.*;
 import ad4si2.lfp.data.services.account.AccountService;
 import ad4si2.lfp.data.services.football.LeagueService;
 import ad4si2.lfp.data.services.tournament.TournamentService;
+import ad4si2.lfp.data.services.tournament.TournamentStatusModifyResult;
+import ad4si2.lfp.utils.validation.EntityValidatorError;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import ad4si2.lfp.utils.web.AjaxResponse;
 import ad4si2.lfp.utils.web.WebUtils;
@@ -20,18 +19,6 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Работа с турнирами идёт на интерфейсе в несколько шагов
- * Шаг 1:
- * status : CONFIGURATION_PLAYERS_SETTINGS
- * На этом этапе можно редактировать список участников турнира, а так же количество кругов, если это Чемпионат
- * По завершению этапа вызывается функция finishStep1
- * В ней идёт проверка, можно ли перейти к заполнению турнира содержимым с выбранным количеством участников и типом турнира
- * Стоит так же отобразить предупреждение на интерфейсе, что после завершения этого шага нельзя будет изменить состав участников турнира
- * <p>
- * Шаг 2:
- *
- */
 @RestController
 @RequestMapping("/rest/admin/tournament")
 public class TournamentRestController {
@@ -47,6 +34,40 @@ public class TournamentRestController {
 
     @Inject
     private TournamentService tournamentService;
+
+    /**
+     * Функция завершения первого шага создания турнира
+     * После завершения этого шага уже не может быть изменён состав участников и количество кругов
+     */
+    @RequestMapping(value = "/{id}/finishFirstStep", method = RequestMethod.GET)
+    public AjaxResponse finishFirstStep(@PathVariable("id") @Nonnull final Long id) {
+        // завершаем первый шаг
+        final TournamentStatusModifyResult result = tournamentService.finishFirstStep(id);
+
+        // не удалось
+        if (!result.isOk()) {
+            return webUtils.errorResponse(result.getResult());
+        }
+
+        // noinspection ConstantConditions
+        final TournamentDTO dto = convertToDTO(result.getT());
+        return webUtils.successResponse(dto);
+    }
+
+    @RequestMapping(value = "/types", method = RequestMethod.GET)
+    public AjaxResponse types() {
+        return webUtils.successResponse(new TournamentType[]{TournamentType.CHAMPIONSHIP, TournamentType.CUP});
+    }
+
+    @RequestMapping(value = "/players", method = RequestMethod.GET)
+    public AjaxResponse players() {
+        return webUtils.successResponse(accountService.findPlayersWithDeletedFalse());
+    }
+
+    @RequestMapping(value = "/leagues", method = RequestMethod.GET)
+    public AjaxResponse leagues() {
+        return webUtils.successResponse(leagueService.findAll(false));
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public AjaxResponse list() {
@@ -67,7 +88,7 @@ public class TournamentRestController {
     @RequestMapping(method = RequestMethod.POST)
     public AjaxResponse create(@RequestBody @Nonnull final TournamentDTO dto) {
         // турнир
-        final Tournament t = new Tournament(dto.getId(), dto.getCreationDate(), dto.getName(), dto.getType());
+        final Tournament t = convertFromDTO(dto);
 
         // валидация
         final EntityValidatorResult validatorResult = tournamentService.validateEntry(t, false);
@@ -77,7 +98,7 @@ public class TournamentRestController {
         }
 
         // сохранение в БД
-        final Tournament created = tournamentService.create(t);
+        final Tournament created = tournamentService.create(t, dto.getPlayers());
         final TournamentDTO createdDto = convertToDTO(created);
 
         return webUtils.successResponse(createdDto);
@@ -86,16 +107,26 @@ public class TournamentRestController {
     @RequestMapping(method = RequestMethod.PATCH)
     public AjaxResponse update(@RequestBody @Nonnull final TournamentDTO dto) {
         // турнир
-        final Tournament t = new Tournament(dto.getId(), dto.getCreationDate(), dto.getName(), dto.getType());
+        final Tournament t = convertFromDTO(dto);
 
         // валидация
-        final EntityValidatorResult validatorResult = tournamentService.validateEntry(t, false);
+        final EntityValidatorResult validatorResult = tournamentService.validateEntry(t, true);
+
+        // а так же проверим, что состав участников не может изменяться, если турнир находится уже не в том статусе
+        if (t.getStatus() != TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS) {
+            final Set<Long> pIds = tournamentService.findTournamentPlayerLinks(t.getId()).stream().map(TournamentPlayerLink::getPlayerId).collect(Collectors.toSet());
+            final Set<Long> newPlayerIds = dto.getPlayers().stream().map(Account::getId).collect(Collectors.toSet());
+            if (pIds.equals(newPlayerIds)) {
+                validatorResult.addError(new EntityValidatorError("players", "Can't modify players list for tournament with status [" + t.getStatus() + "]", "tournament_players_can_t_modify"));
+            }
+        }
+
         if (validatorResult.hasErrors()) {
             return webUtils.errorResponse(validatorResult);
         }
 
         // сохранение в БД
-        final Tournament updated = tournamentService.update(t);
+        final Tournament updated = tournamentService.update(t, dto.getPlayers());
         final TournamentDTO updatedDto = convertToDTO(updated);
 
         return webUtils.successResponse(updatedDto);
@@ -116,6 +147,24 @@ public class TournamentRestController {
     }
 
     @Nonnull
+    private Tournament convertFromDTO(@Nonnull final TournamentDTO dto) {
+        final Tournament t;
+        switch (dto.getType()) {
+            case CHAMPIONSHIP:
+                t = new Championship(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),
+                        dto.getName(), dto.getType(), dto.getStatus(), dto.getRoundCount());
+                break;
+            case CUP:
+                t = new Cup(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),
+                        dto.getName(), dto.getType(), dto.getStatus());
+                break;
+            default:
+                throw new UnsupportedOperationException("Can't create tournament with unknown type [" + dto.getType() + "]");
+        }
+        return t;
+    }
+
+    @Nonnull
     private TournamentDTO convertToDTO(@Nonnull final Tournament t) {
         // какие аккаунты нужно подгрузить
         final Set<Long> accountIds = new HashSet<>();
@@ -127,6 +176,7 @@ public class TournamentRestController {
 
         // загружаем все связки: турнир - игрок
         final List<TournamentPlayerLink> links = tournamentService.findTournamentPlayerLinks(t.getId());
+        accountIds.addAll(links.stream().map(TournamentPlayerLink::getPlayerId).collect(Collectors.toSet()));
 
         // подготовим удобные мап-ы для заполнения дополнительных полей в dto
         final Map<Long, Account> id2account = accountService.findAllByIdIn(accountIds, true).stream().collect(Collectors.toMap(Account::getId, a -> a));
@@ -182,7 +232,11 @@ public class TournamentRestController {
             if (t.getType() == TournamentType.CHAMPIONSHIP) {
                 dto.setRoundCount(((Championship) t).getRoundCount());
             }
-            dto.setPlayers(id2links.get(t.getId()).stream().map(l -> (Player) id2account.get(l.getPlayerId())).collect(Collectors.toList()));
+            // добавляем игроков, если они есть
+            if (id2links.get(t.getId()) != null) {
+                dto.setPlayers(id2links.get(t.getId()).stream().map(l -> (Player) id2account.get(l.getPlayerId())).collect(Collectors.toList()));
+            }
+            result.add(dto);
         }
 
         return result;

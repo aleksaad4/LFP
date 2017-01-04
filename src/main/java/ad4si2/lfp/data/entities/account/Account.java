@@ -13,7 +13,7 @@ import java.util.Date;
 @Inheritance
 @Entity
 @Table(name = "account")
-public class Account implements Serializable, IDeleted, IEntity<Long, Account>, IAccountable {
+public abstract class Account implements Serializable, IDeleted, IEntity<Long, Account>, IAccountable {
 
     @Id
     @GeneratedValue
@@ -31,6 +31,9 @@ public class Account implements Serializable, IDeleted, IEntity<Long, Account>, 
 
     @Column(nullable = false)
     private boolean deleted = false;
+
+    @Column(nullable = false)
+    private boolean blocked = false;
 
     @Nonnull
     @Column(nullable = false)
@@ -85,6 +88,7 @@ public class Account implements Serializable, IDeleted, IEntity<Long, Account>, 
         this.avatarUrl = other.avatarUrl;
         this.email = other.email;
         this.creatorAccountId = other.creatorAccountId;
+        this.blocked = other.blocked;
     }
 
     @Override
@@ -137,28 +141,6 @@ public class Account implements Serializable, IDeleted, IEntity<Long, Account>, 
     }
 
     @Nonnull
-    @Override
-    public Account copy() {
-        return new Account(this);
-    }
-
-    @Override
-    public String toString() {
-        return "Account {" +
-                "id=" + id +
-                ", d=" + d +
-                ", creationDate=" + creationDate +
-                ", deleted=" + deleted +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", name='" + name + '\'' +
-                ", avatarUrl='" + avatarUrl + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
-
-    @Nonnull
     public Date getCreationDate() {
         return creationDate;
     }
@@ -190,5 +172,27 @@ public class Account implements Serializable, IDeleted, IEntity<Long, Account>, 
     @Nullable
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String toString() {
+        return "Account {" +
+                "id=" + id +
+                ", d=" + d +
+                ", creationDate=" + creationDate +
+                ", deleted=" + deleted +
+                ", blocked=" + blocked +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", name='" + name + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", email='" + email + '\'' +
+                ", creatorAccountId=" + creatorAccountId +
+                '}';
+    }
+
+    public boolean isBlocked() {
+        return blocked;
     }
 }

@@ -21,12 +21,11 @@
 
                 <div>
                     <button class="btn btn-primary waves-effect" data-ng-click="ctrl.extendedSave();">Сохранить</button>
-                    <delete-button
+                    <confirm-button
                             data-ng-if="ctrl.form.object.id != null"
-                            class="pull-right"
                             overlay="true"
-                            on-delete="ctrl.remove()">Удалить
-                    </delete-button>
+                            on-confirm="ctrl.remove()">
+                    </confirm-button>
                 </div>
 
                 <form-messages class="m-t-15" form="ctrl.form"></form-messages>

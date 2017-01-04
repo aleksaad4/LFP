@@ -14,7 +14,7 @@ import java.util.Date;
 @Inheritance
 @Entity
 @Table(name = "tournament")
-public class Tournament implements Serializable, IDeleted, IEntity<Long, Tournament>, IAccountable {
+public abstract class Tournament implements Serializable, IDeleted, IEntity<Long, Tournament>, IAccountable {
 
     @Id
     @GeneratedValue
@@ -41,10 +41,12 @@ public class Tournament implements Serializable, IDeleted, IEntity<Long, Tournam
     @Column(nullable = false)
     private String name;
 
+    @Nonnull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TournamentStatus status = TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS;
 
+    @Nonnull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TournamentType type;
@@ -77,11 +79,13 @@ public class Tournament implements Serializable, IDeleted, IEntity<Long, Tournam
         this.creationDate = other.creationDate;
     }
 
-    public Tournament(final long id, @Nonnull final Date creationDate, @Nonnull final String name, final TournamentType type) {
+    public Tournament(final long id, @Nonnull final Date creationDate, @Nonnull final String name,
+                      @Nonnull final TournamentType type, @Nonnull final TournamentStatus status) {
         this.creationDate = creationDate;
         this.id = id;
         this.name = name;
         this.type = type;
+        this.status = status;
     }
 
     @Override
@@ -138,18 +142,18 @@ public class Tournament implements Serializable, IDeleted, IEntity<Long, Tournam
         return name;
     }
 
+    @Nonnull
     public TournamentStatus getStatus() {
         return status;
     }
 
-    public TournamentType getType() {
-        return type;
+    public void setStatus(@Nonnull final TournamentStatus status) {
+        this.status = status;
     }
 
     @Nonnull
-    @Override
-    public Tournament copy() {
-        return new Tournament(this);
+    public TournamentType getType() {
+        return type;
     }
 
     @Override

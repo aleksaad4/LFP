@@ -16,7 +16,10 @@
                 </div>
                 <ul class="lv-attrs">
                     <li>Статус: <span data-ng-bind="obj.status.title"></span></li>
-                    <li>Тип: <span data-ng-bind="obj.type.title"></span></li>
+                    <li class="c-white b-0"
+                        data-ng-class="{'bgm-green' : obj.type.name == 'CHAMPIONSHIP', 'bgm-blue' : obj.type.name == 'CUP'}">
+                        Тип: <span data-ng-bind="obj.type.title"></span>
+                    </li>
                 </ul>
                 <div class="lv-actions actions">
                     <a data-ui-sref="tournaments.edit({id: obj.id})" data-ng-click="flow.showDetail();">

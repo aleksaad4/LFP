@@ -62,14 +62,24 @@
                                preview-url="ctrl.form.object.avatarUrl"></fileinput>
                 </form-control-messages>
 
+                <form-control-messages field-name="blocked" form="ctrl.form">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="ctrl.form.object.blocked">
+                            <i class="input-helper"></i>
+                            Заблокирован?
+                        </label>
+                    </div>
+                </form-control-messages>
+
                 <div>
                     <button class="btn btn-primary waves-effect" data-ng-click="ctrl.extendedSave();">Сохранить</button>
-                    <delete-button
+                    <confirm-button
                             data-ng-if="ctrl.form.object.id != null && ctrl.accountService.account.id != ctrl.form.object.id"
                             class="pull-right"
                             overlay="true"
-                            on-delete="ctrl.remove()">Удалить
-                    </delete-button>
+                            on-confirm="ctrl.remove()">
+                    </confirm-button>
                 </div>
 
                 <form-messages class="m-t-15" form="ctrl.form"></form-messages>
