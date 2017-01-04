@@ -95,7 +95,7 @@ public class EntityValidatorResult {
                                                         @Nonnull final T object,
                                                         @Nonnull final Function<T, Integer> getter) {
         final Integer fieldValue = getter.apply(object);
-        if (fieldValue != null && fieldValue > 0) {
+        if (fieldValue != null && fieldValue <= 0) {
             addError(new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_incorrect",
                     "Object [" + object.getClass().getSimpleName() + "] field [" + fieldName + "] has incorrect value [" + fieldValue + "]"));
         }

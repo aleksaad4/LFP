@@ -75,15 +75,21 @@
                     </confirm-button>
                 </div>
 
-                <div class="m-t-15">
-                    <confirm-button
-                            button-text="Перейти к определению количества туров в турнире"
-                            question-text="После завершения текущего шага создания турнира невозможно будет изменить состав участников. Вы хотите продолжить?"
-                            overlay="true"
-                            on-confirm="ctrl.finishFirstStep()"
-                            main-btn-css-class="btn-block btn-success" data-ng-if="ctrl.isNStep(1)">
-                    </confirm-button>
-                </div>
+                <confirm-button class="m-t-15"
+                                button-text="Перейти к определению количества туров в турнире"
+                                question-text="После завершения текущего шага создания турнира невозможно будет изменить состав участников. Вы хотите продолжить?"
+                                overlay="true"
+                                on-confirm="ctrl.finishFirstStep()"
+                                main-btn-css-class="btn-block btn-success" data-ng-if="ctrl.isNStep(1)">
+                </confirm-button>
+
+                <confirm-button class="m-t-15"
+                                button-text="Перейти к созданию туров в турнире"
+                                question-text="После завершения текущего этапе невозможно будет изменить привязку к лиге. Вы хотите продолжить?"
+                                overlay="true"
+                                on-confirm="ctrl.finishSecondStep()"
+                                main-btn-css-class="btn-block btn-success" data-ng-if="ctrl.isNStep(2)">
+                </confirm-button>
 
                 <form-messages class="m-t-15" form="ctrl.form"></form-messages>
             </div>
