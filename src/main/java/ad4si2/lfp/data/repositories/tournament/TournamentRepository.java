@@ -13,4 +13,7 @@ public interface TournamentRepository extends RepositoryWithDeleted<Tournament, 
     @Nonnull
     List<Tournament> findByNameAndDeletedFalse(@Nonnull final String name);
 
+    @Nonnull
+    List<Tournament> findByLeagueIdAndDeletedFalse(final long leagueId);
+
 }

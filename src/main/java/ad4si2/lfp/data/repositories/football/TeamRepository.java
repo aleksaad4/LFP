@@ -12,4 +12,7 @@ public interface TeamRepository extends RepositoryWithDeleted<Team, Long> {
 
     @Nonnull
     List<Team> findByNameAndCityAndDeletedFalse(@Nonnull final String name, @Nonnull final String city);
+
+    @Nonnull
+    List<Team> findByCountryIdAndDeletedFalse(final long countryId);
 }

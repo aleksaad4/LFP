@@ -12,4 +12,7 @@ public interface LeagueRepository extends RepositoryWithDeleted<League, Long> {
 
     @Nonnull
     List<League> findByNameAndDeletedFalse(@Nonnull final String name);
+
+    @Nonnull
+    List<League> findByCountryIdAndDeletedFalse(final long countryId);
 }

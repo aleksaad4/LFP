@@ -1,6 +1,7 @@
 package ad4si2.lfp.utils.data;
 
-import ad4si2.lfp.utils.exceptions.LfpRuntimeException;
+import ad4si2.lfp.utils.exceptions.ValidationException;
+import ad4si2.lfp.utils.validation.EntityValidatorError;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Transactional
 public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY>, ID extends Serializable,
@@ -41,7 +43,7 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY>, ID 
         final EntityValidatorResult validatorResult = validateEntry(t, false);
 
         if (validatorResult.hasErrors()) {
-            throw new LfpRuntimeException("Can't create [" + t + "], validation failed [" + validatorResult + "]");
+            throw new ValidationException(validatorResult);
         }
 
         // дополнительная обработка перед сохранением
@@ -63,7 +65,7 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY>, ID 
         final EntityValidatorResult validatorResult = validateEntry(t, true);
 
         if (validatorResult.hasErrors()) {
-            throw new LfpRuntimeException("Can't create [" + t + "], validation failed [" + validatorResult + "]");
+            throw new ValidationException(validatorResult);
         }
 
         // дополнительная обработка перед сохранением
@@ -101,5 +103,16 @@ public interface ICRUDService<ENTITY extends IDeleted & IEntity<ID, ENTITY>, ID 
         for (final ENTITY t : ts) {
             delete(t);
         }
+    }
+
+    @Nonnull
+    default <T extends IEntity<T_ID, T>, T_ID> Consumer<T> dcc(@Nonnull final Function<T_ID, List<ENTITY>> finder,
+                                                               @Nonnull final EntityValidatorResult result) {
+        return p -> {
+            final List<ENTITY> exists = finder.apply(p.getId());
+            if (!exists.isEmpty()) {
+                result.addError(new EntityValidatorError("Can't delete [" + p + "]", "common.can_t_delete"));
+            }
+        };
     }
 }

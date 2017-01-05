@@ -4,7 +4,7 @@ import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.utils.events.data.ChangeEvent;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.events.web.WebEventsService;
-import ad4si2.lfp.utils.exceptions.LfpRuntimeException;
+import ad4si2.lfp.utils.exceptions.ValidationException;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,7 @@ public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTIT
         final EntityValidatorResult validatorResult = validateEntry(t, false);
 
         if (validatorResult.hasErrors()) {
-            throw new LfpRuntimeException("Can't create [" + t + "], validation failed [" + validatorResult + "]");
+            throw new ValidationException(validatorResult);
         }
 
         // дополнительная обработка перед сохранением
@@ -43,7 +43,10 @@ public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTIT
         setAdminAndDate(t);
 
         // рассылаем PRE событие о создании нового объекта
-        getEventDispatcher().dispatchEvent(ChangeEvent.createEvent(t, ChangeEvent.ChatChangeWhen.PRE));
+        final EntityValidatorResult eventResult = getEventDispatcher().dispatchEvent(ChangeEvent.createEvent(t, ChangeEvent.ChatChangeWhen.PRE));
+        if (eventResult.hasErrors()) {
+            throw new ValidationException(eventResult);
+        }
 
         // сохраняем
         final ENTITY saved = getRepo().save(t);
@@ -67,7 +70,7 @@ public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTIT
         final EntityValidatorResult validatorResult = validateEntry(t, true);
 
         if (validatorResult.hasErrors()) {
-            throw new LfpRuntimeException("Can't create [" + t + "], validation failed [" + validatorResult + "]");
+            throw new ValidationException(validatorResult);
         }
 
         // detached-old
@@ -82,7 +85,10 @@ public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTIT
         setAdminAndDate(t);
 
         // рассылаем PRE событие об обновлении объекта
-        getEventDispatcher().dispatchEvent(ChangeEvent.updateEvent(t, old, ChangeEvent.ChatChangeWhen.PRE));
+        final EntityValidatorResult eventResult = getEventDispatcher().dispatchEvent(ChangeEvent.updateEvent(t, old, ChangeEvent.ChatChangeWhen.PRE));
+        if (eventResult.hasErrors()) {
+            throw new ValidationException(eventResult);
+        }
 
         // сохраняем объект
         final ENTITY updated = getRepo().save(t);
@@ -105,7 +111,10 @@ public interface IAccountCRUDService<ENTITY extends IDeleted & IEntity<ID, ENTIT
         }
 
         // рассылаем PRE событие об удалении объекта
-        getEventDispatcher().dispatchEvent(ChangeEvent.deleteEvent(t, ChangeEvent.ChatChangeWhen.PRE));
+        final EntityValidatorResult eventResult = getEventDispatcher().dispatchEvent(ChangeEvent.deleteEvent(t, ChangeEvent.ChatChangeWhen.PRE));
+        if (eventResult.hasErrors()) {
+            throw new ValidationException(eventResult);
+        }
 
         // помечаем удалённым и сохраняем
         final ENTITY item = getById(t.getId(), false);

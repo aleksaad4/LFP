@@ -2,13 +2,20 @@ package ad4si2.lfp.data.services.tournament;
 
 import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.data.entities.account.Player;
+import ad4si2.lfp.data.entities.football.League;
+import ad4si2.lfp.data.entities.tour.Tour;
 import ad4si2.lfp.data.entities.tournament.*;
 import ad4si2.lfp.data.repositories.tournament.TournamentPlayerLinkRepository;
 import ad4si2.lfp.data.repositories.tournament.TournamentRepository;
 import ad4si2.lfp.data.services.account.AccountService;
 import ad4si2.lfp.data.services.football.LeagueService;
+import ad4si2.lfp.utils.collection.CollectionUtils;
+import ad4si2.lfp.utils.events.data.ChangeEvent;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
+import ad4si2.lfp.utils.events.data.ChangesEventsListener;
 import ad4si2.lfp.utils.events.web.WebEventsService;
+import ad4si2.lfp.utils.exceptions.ValidationException;
+import ad4si2.lfp.utils.validation.EntityValidatorError;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class TournamentServiceImpl implements TournamentService {
+public class TournamentServiceImpl implements TournamentService, ChangesEventsListener {
 
     @Inject
     private TournamentRepository repository;
@@ -158,6 +165,16 @@ public class TournamentServiceImpl implements TournamentService {
         return updated;
     }
 
+    @Override
+    public void delete(@Nonnull final Tournament t) {
+        // нельзя удалить турнир, который уже не находится на стадии настройки
+        if (!t.getStatus().isConfiguration()) {
+            throw new ValidationException(EntityValidatorResult.validatorResult("Can't delete player", "common.can_t_delete"));
+        }
+
+        TournamentService.super.delete(t);
+    }
+
     @Nonnull
     @Override
     public EntityValidatorResult validateEntry(final Tournament entry, final boolean forUpdate) {
@@ -196,6 +213,64 @@ public class TournamentServiceImpl implements TournamentService {
         }
 
         return result;
+    }
+
+    @Nonnull
+    @Override
+    public EntityValidatorResult onEvent(@Nonnull final ChangeEvent event) {
+        final EntityValidatorResult res = new EntityValidatorResult();
+
+        event
+                // нельзя удалить игрока, если он уже участвовал в каком-то турнире
+                .doIf(Player.class, ChangeEvent.ChangeEventType.PRE_DELETE, p -> {
+                    // находим все связи турнир-игрок
+                    final List<TournamentPlayerLink> links = tournamentPlayerLinkRepository.findByPlayerId(p.getId());
+                    // находим все неудалённые турниры, где есть удаляемый игрок
+                    final List<Tournament> tournaments = findAllByIdIn(links.stream().map(TournamentPlayerLink::getTournamentId).collect(Collectors.toSet()), false);
+                    if (!tournaments.isEmpty()) {
+                        // если такие нашлись - то удалять игрока уже нельзя
+                        res.addError(new EntityValidatorError("Can't delete player", "common.can_t_delete"));
+                    }
+                })
+                // нельзя заблокировать игрока, если он участвует в незавершенном турнире
+                .doIf(Player.class, ChangeEvent.ChangeEventType.PRE_UPDATE, (p, oldP) -> {
+                    // операция блокировки игрока
+                    if (p.isBlocked() && !oldP.isBlocked()) {
+                        // находим все связи турнир-игрок
+                        final List<TournamentPlayerLink> links = tournamentPlayerLinkRepository.findByPlayerId(p.getId());
+                        // находим все неудалённые турниры, где есть редактируемый игрок
+                        // считаем количество незавершенных турниров
+                        final long unfinishTournamentCount = findAllByIdIn(links.stream().map(TournamentPlayerLink::getTournamentId).collect(Collectors.toSet()), false)
+                                .stream().filter(t -> t.getStatus() != TournamentStatus.FINISH).count();
+                        if (unfinishTournamentCount != 0) {
+                            // если такие нашлись - то блокировать игрока нельзя
+                            res.addError(new EntityValidatorError("blocked", "Can't block player", "common.player_can_t_block"));
+                        }
+                    }
+                })
+                // нельзя удалить лигу, если уже есть турнир по этой лиге
+                .doIf(League.class, ChangeEvent.ChangeEventType.PRE_DELETE, dcc(l -> repository.findByLeagueIdAndDeletedFalse(l), res))
+                // нельзя удалить тур, если турнир чемпионат и настройка турнира уже завершена
+                .doIf(Tour.class, ChangeEvent.ChangeEventType.PRE_DELETE, t -> {
+                    final Tournament tournament = getById(t.getTournamentId(), false);
+                    if (tournament.getType() == TournamentType.CHAMPIONSHIP && !tournament.getStatus().isConfiguration()) {
+                        res.addError(new EntityValidatorError("Can't delete [" + t + "]", "common.can_t_delete"));
+                    }
+                });
+
+        return res;
+    }
+
+    @Nonnull
+    @Override
+    public Set<ChangeEvent.ChangeEventType> getEventTypes() {
+        return CollectionUtils.asSet(ChangeEvent.ChangeEventType.PRE_DELETE, ChangeEvent.ChangeEventType.PRE_UPDATE);
+    }
+
+    @Nonnull
+    @Override
+    public Set<Class> getEntityTypes() {
+        return CollectionUtils.asSet(Player.class, League.class, Tour.class);
     }
 
 }

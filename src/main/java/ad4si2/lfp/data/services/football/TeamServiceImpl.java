@@ -1,8 +1,12 @@
 package ad4si2.lfp.data.services.football;
 
+import ad4si2.lfp.data.entities.football.Country;
 import ad4si2.lfp.data.entities.football.Team;
 import ad4si2.lfp.data.repositories.football.TeamRepository;
+import ad4si2.lfp.utils.collection.CollectionUtils;
+import ad4si2.lfp.utils.events.data.ChangeEvent;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
+import ad4si2.lfp.utils.events.data.ChangesEventsListener;
 import ad4si2.lfp.utils.events.web.WebEventsService;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.stereotype.Service;
@@ -10,10 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.Set;
 
 @Service
 @Transactional
-public class TeamServiceImpl implements TeamService {
+public class TeamServiceImpl implements TeamService, ChangesEventsListener {
 
     @Inject
     private TeamRepository repository;
@@ -64,5 +69,29 @@ public class TeamServiceImpl implements TeamService {
         result.checkLinkedValue("country", entry, entry.getCountryId(), (linkedId) -> countryService.findById(linkedId, false), true);
 
         return result;
+    }
+
+    @Nonnull
+    @Override
+    public EntityValidatorResult onEvent(@Nonnull final ChangeEvent event) {
+        final EntityValidatorResult res = new EntityValidatorResult();
+
+        event
+                // нельзя удалить страну, если есть команда из этой страны
+                .doIf(Country.class, ChangeEvent.ChangeEventType.PRE_DELETE, dcc(l -> repository.findByCountryIdAndDeletedFalse(l), res));
+
+        return res;
+    }
+
+    @Nonnull
+    @Override
+    public Set<ChangeEvent.ChangeEventType> getEventTypes() {
+        return CollectionUtils.asSet(ChangeEvent.ChangeEventType.PRE_DELETE);
+    }
+
+    @Nonnull
+    @Override
+    public Set<Class> getEntityTypes() {
+        return CollectionUtils.asSet(Country.class);
     }
 }

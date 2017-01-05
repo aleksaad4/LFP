@@ -1,5 +1,6 @@
 package ad4si2.lfp.utils.events.data;
 
+import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -25,7 +26,10 @@ public class ChangesEventDispatcherImpl implements ChangesEventDispatcher {
     private ApplicationContext applicationContext;
 
     @Override
-    public void dispatchEvent(@Nonnull final ChangeEvent changeEvent) {
+    @Nonnull
+    public EntityValidatorResult dispatchEvent(@Nonnull final ChangeEvent changeEvent) {
+        final EntityValidatorResult result = new EntityValidatorResult();
+
         // отфильтруем слушателей
         final List<ChangesEventsListener> listeners = selectListeners(changeEvent);
 
@@ -54,9 +58,11 @@ public class ChangesEventDispatcherImpl implements ChangesEventDispatcher {
                 }
             } else {
                 // PRE-события
-                listener.onEvent(changeEvent);
+                result.addErrors(listener.onEvent(changeEvent).getErrors());
             }
         }
+
+        return result;
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)

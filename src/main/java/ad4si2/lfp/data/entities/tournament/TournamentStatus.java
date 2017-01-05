@@ -2,9 +2,11 @@ package ad4si2.lfp.data.entities.tournament;
 
 public enum TournamentStatus {
 
-    // на этапе выбора игроков можно добавлять и удалять игроков из турнира
+    // на этом этапе можно добавлять и удалять игроков из турнира
     CONFIGURATION_PLAYERS_SETTINGS("Настройка: выбор игроков", true),
+    // на этом этапе можно выполнить привязку к лиге и задать количество туров
     CONFIGURATION_TOUR_COUNT_SETTINGS("Настройка: определение списка туров", true),
+    // на этом этапе можно задать список туров
     CONFIGURATION_TOUR_LIST_SETTINGS("Настройка: создание туров", true),
 
     CREATED("Не стартовал", false),

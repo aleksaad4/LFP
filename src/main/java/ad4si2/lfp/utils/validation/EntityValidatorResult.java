@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class EntityValidatorResult {
@@ -91,15 +92,23 @@ public class EntityValidatorResult {
     }
 
     @Nonnull
-    public <T> EntityValidatorResult checkPositiveValue(@Nonnull final String fieldName,
-                                                        @Nonnull final T object,
-                                                        @Nonnull final Function<T, Integer> getter) {
+    public <T> EntityValidatorResult checkValue(@Nonnull final String fieldName,
+                                                @Nonnull final T object,
+                                                @Nonnull final Function<T, Integer> getter,
+                                                @Nonnull final Predicate<Integer> predicate) {
         final Integer fieldValue = getter.apply(object);
-        if (fieldValue != null && fieldValue <= 0) {
+        if (fieldValue != null && !predicate.test(fieldValue)) {
             addError(new EntityValidatorError(fieldName, object.getClass().getSimpleName().toLowerCase() + "_" + fieldName + "_incorrect",
                     "Object [" + object.getClass().getSimpleName() + "] field [" + fieldName + "] has incorrect value [" + fieldValue + "]"));
         }
         return this;
+    }
+
+    @Nonnull
+    public <T> EntityValidatorResult checkPositiveValue(@Nonnull final String fieldName,
+                                                        @Nonnull final T object,
+                                                        @Nonnull final Function<T, Integer> getter) {
+        return checkValue(fieldName, object, getter, val -> val > 0);
     }
 
     @Nonnull
