@@ -206,15 +206,11 @@ public class TournamentRestController {
                         dto.getName(), dto.getType(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS,
                         dto.getLeague() != null ? dto.getLeague().getId() : null, dto.getRoundCount(), dto.getTourCount());
 
-                // если выбрана лига, но ещё не задано количество кругов или количество туров - то проставим его
-                if ((dto.getRoundCount() == null || dto.getTourCount() == null) && dto.getLeague() != null) {
+                // если выбрана лига, но ещё не задано количество туров - то проставим его
+                if (dto.getTourCount() == null && dto.getLeague() != null) {
                     // количество туров берем из лиги
                     ((Championship) t).setTourCount(dto.getLeague().getTourCount());
-                    // количество кругов считаем по количеству туров и количеству игроков
-                    // noinspection ConstantConditions
-                    ((Championship) t).setRoundCount(championshipEngine.getRoundCount(dto.getLeague().getTourCount(), dto.getPlayers().size()));
                 }
-
                 break;
             case CUP:
                 t = new Cup(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),

@@ -2,6 +2,8 @@
     <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
 
         <div class="card">
+            <loader is-loading="ctrl.form.isLoading"></loader>
+
             <div class="card-header ch-alt">
                 <h2 data-ng-bind="ctrl.form.object.id != null ? 'Редактирование' : 'Создание'"></h2>
             </div>
@@ -60,21 +62,22 @@
                             data-disable-search="false"
                             data-allow-single-deselect="true"
                             data-ng-model="ctrl.form.object.league"
+                            data-ng-change="ctrl.form.object.tourCount = null"
                             data-ng-options="r as r.name disable when !r.enabled for r in ctrl.leagues track by r.id">
                         <option value=""></option>
                     </select>
                 </form-control-messages>
 
-                <!--на шаге 2 отображаем так же контрол для выбора количества туров и кругов, если это чемпионат -->
+                <!--на шаге 2 отображаем так же контрол для выбора количества туров и кругов: если это чемпионат и если не выбрана лига-->
                 <form-control-messages field-name="tourCount" label="Количество туров" form="ctrl.form"
-                                       ng-if="ctrl.isNStep(2) && ctrl.form.object.type.name == 'CHAMPIONSHIP'">
+                                       ng-if="ctrl.isNStep(2) && ctrl.form.object.league.id == null && ctrl.form.object.type.name == 'CHAMPIONSHIP' && ctrl.tourAndRoundCounts != null">
                     <select chosen
                             data-placeholder="Выберите количество туров..."
                             class="form-control"
                             data-disable-search="true"
                             data-allow-single-deselect="true"
                             data-ng-model="ctrl.form.object.tourCount"
-                            data-ng-options="(r.left + '(' + r.right + ')') as r.left for r in ctrl.tourAndRoundCounts track by r.left">
+                            data-ng-options="r.left as (r.left + ' тур, ' + r.right + ' круг') for r in ctrl.tourAndRoundCounts">
                         <option value=""></option>
                     </select>
                 </form-control-messages>
@@ -82,11 +85,23 @@
                 <!--на шаге 3 и выше - отображаем просто выбранную лигу, если она выбрана вообще -->
                 <form-control-messages field-name="leagueId" label="Лига" form="ctrl.form"
                                        ng-if="ctrl.isStepGreaterThanN(3) && ctrl.form.object.league != null">
-                    <input class="form-control" type="text" disabled data-ng-model="ctrl.form.object.league.name">
+                    <p data-ng-bind="ctrl.form.object.league.name"></p>
+                </form-control-messages>
+
+                <!--на шаге 3 и выше - отображаем количество туров для чемпионата, если она выбрана вообще -->
+                <form-control-messages
+                        ng-if="ctrl.isStepGreaterThanN(3) && ctrl.form.object.type.name == 'CHAMPIONSHIP'"
+                        field-name="tourCount"
+                        label="Количество туров" form="ctrl.form">
+                    <div class="fg-line">
+                        <input disabled
+                               type="number" class="form-control" placeholder="Количество туров"
+                               data-ng-model="ctrl.form.object.tourCount">
+                    </div>
                 </form-control-messages>
 
                 <div>
-                    <button class="btn btn-primary waves-effect" data-ng-click="ctrl.save();">Сохранить</button>
+                    <button class="btn btn-primary waves-effect" data-ng-click="ctrl.extendedSave();">Сохранить</button>
                     <confirm-button
                             data-ng-if="ctrl.canDelete()"
                             class="pull-right"
@@ -110,6 +125,12 @@
                                 on-confirm="ctrl.finishNStep(2)"
                                 main-btn-css-class="btn-block btn-success" data-ng-if="ctrl.isNStep(2)">
                 </confirm-button>
+
+                <button class="btn waves-effect btn-success m-t-15"
+                        data-ui-sref="tours({tId: ctrl.form.object.id})"
+                        data-ng-if="ctrl.isStepGreaterThanN(3)">
+                    Перейти к управлению турами в турнире
+                </button>
 
                 <form-messages class="m-t-15" form="ctrl.form"></form-messages>
             </div>

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,18 @@ public class MatchServiceImpl implements MatchService, ChangesEventsListener {
     @Override
     public ChangesEventDispatcher getEventDispatcher() {
         return eventDispatcher;
+    }
+
+    @Nonnull
+    @Override
+    public List<Match> findByTourIdAndDeletedFalse(final long tourId) {
+        return repository.findByTourIdAndDeletedFalse(tourId);
+    }
+
+    @Nonnull
+    @Override
+    public List<Match> findByTourIdInAndDeletedFalse(final Set<Long> tourIds) {
+        return repository.findByTourIdInAndDeletedFalse(tourIds);
     }
 
     @Nonnull

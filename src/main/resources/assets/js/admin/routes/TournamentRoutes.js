@@ -28,5 +28,35 @@ module.exports = [
                 }
             }
         }
+    },
+    {
+        state: "tours",
+        options: {
+            url: "/:tId/tours",
+            parent: "authorized",
+            views: {
+                "content@authorized": {
+                    templateUrl: "/pages/admin/tour/tours.html",
+                    controller: "ToursController",
+                    controllerAs: "ctrl"
+                }
+            },
+            data: {
+                details: "tours.edit"
+            }
+        }
+    },
+    {
+        state: "tours.edit",
+        options: {
+            url: "/:id",
+            views: {
+                "details@tours": {
+                    templateUrl: "/pages/admin/tour/tourEdit.html",
+                    controller: "TourEditController",
+                    controllerAs: "ctrl"
+                }
+            }
+        }
     }
 ];

@@ -2,7 +2,7 @@ import {BaseFormController} from "./BaseFormController";
 
 export class BaseCrudController extends BaseFormController {
 
-    constructor(scope, state, stateParams, restAngular, stateName) {
+    constructor(scope, state, stateParams, restAngular, stateName, extraStateParams) {
         super();
 
         const that = this;
@@ -16,6 +16,8 @@ export class BaseCrudController extends BaseFormController {
         that.objId = that.stateParams['id'];
         // название базового состояния (от которого дальше идёт .edit)
         that.stateName = stateName;
+        // дополнительные параметры состояния, которые нужно указывать при изменении state
+        that.extraStateParams = extraStateParams;
 
         // контроллер списка
         that.listController = that.scope.$parent.ctrl;
@@ -32,7 +34,11 @@ export class BaseCrudController extends BaseFormController {
         that.doAction(that.restAngular.one(that.listController.baseUrl, that.objId).get(),
             function success(data) {
                 that.form.object = data;
+                that.objLoadedCallback();
             });
+    }
+
+    objLoadedCallback() {
     }
 
     save(successClb) {
@@ -52,7 +58,11 @@ export class BaseCrudController extends BaseFormController {
                 if (create) {
                     that.objId = data.id;
                     that.listController.addNewObj(that.form.object);
-                    that.state.go(that.stateName + ".edit", {id: data.id}, {notify: false});
+                    let params = {id: data.id};
+                    if (that.extraStateParams != null) {
+                        params = $.extend(params, that.extraStateParams);
+                    }
+                    that.state.go(that.stateName + ".edit", params, {notify: false});
                 } else {
                     that.listController.replaceObj(that.form.object);
                 }
@@ -69,26 +79,36 @@ export class BaseCrudController extends BaseFormController {
         that.doAction(that.restAngular.one(that.listController.baseUrl, that.form.object.id).remove(),
             function success(data) {
                 that.listController.deleteObj(that.form.object);
-                that.state.go(that.stateName, {reload: true});
+                let params = {};
+                if (that.extraStateParams != null) {
+                    params = $.extend(params, that.extraStateParams);
+                }
+                that.state.go(that.stateName, params, {reload: true});
             }
         )
     }
 
-    loadValues(valuesName) {
+    loadValues(valuesName, successClb) {
         const that = this;
 
         that.doAction(that.restAngular.all(that.listController.baseUrl).all(valuesName).getList(),
             function (data) {
                 that[valuesName] = data;
+                if (successClb != null) {
+                    successClb();
+                }
             });
     }
 
-    loadLinkedValues(valuesName) {
+    loadLinkedValues(valuesName, successClb) {
         const that = this;
 
         that.doAction(that.restAngular.one(that.listController.baseUrl, that.objId).all(valuesName).getList(),
             function (data) {
                 that[valuesName] = data;
+                if (successClb != null) {
+                    successClb();
+                }
             });
     }
 }

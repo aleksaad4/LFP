@@ -50,7 +50,7 @@ function CollectionDirective() {
             };
 
             // первая выбранная страница
-            that.currentPage = 1;
+            that.curPage = 1;
         },
         compile: function (tElement, tAttr) {
             // Q: почему не ng-class?

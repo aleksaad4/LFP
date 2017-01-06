@@ -11,5 +11,6 @@ module.exports = {
         league: "rest/admin/league",
         team: "rest/admin/team"
     },
-    tournament: "rest/admin/tournament"
+    tournament: "rest/admin/tournament",
+    tour: "rest/admin/tour"
 };

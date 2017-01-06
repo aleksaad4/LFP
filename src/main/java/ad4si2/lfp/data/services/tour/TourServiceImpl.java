@@ -4,6 +4,7 @@ import ad4si2.lfp.data.entities.forecast.MatchPredict;
 import ad4si2.lfp.data.entities.forecast.TourPredict;
 import ad4si2.lfp.data.entities.tour.Tour;
 import ad4si2.lfp.data.entities.tour.TourStatus;
+import ad4si2.lfp.data.entities.tournament.Championship;
 import ad4si2.lfp.data.repositories.tour.TourRepository;
 import ad4si2.lfp.data.services.forecast.TourPredictService;
 import ad4si2.lfp.data.services.tournament.TournamentService;
@@ -12,6 +13,7 @@ import ad4si2.lfp.utils.events.data.ChangeEvent;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.events.data.ChangesEventsListener;
 import ad4si2.lfp.utils.events.web.WebEventsService;
+import ad4si2.lfp.utils.exceptions.LfpRuntimeException;
 import ad4si2.lfp.utils.validation.EntityValidatorError;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -56,6 +60,29 @@ public class TourServiceImpl implements TourService, ChangesEventsListener {
     @Override
     public ChangesEventDispatcher getEventDispatcher() {
         return eventDispatcher;
+    }
+
+    @Nonnull
+    @Override
+    public List<Tour> findByTournamentIdAndDeletedFalse(final long tId) {
+        return repository.findByTournamentIdAndDeletedFalse(tId);
+    }
+
+    @Nonnull
+    @Override
+    public List<Tour> createTours(@Nonnull final Championship championship) {
+        // должно уже быть задано количество туров
+        if (championship.getTourCount() == null) {
+            throw new LfpRuntimeException("Can't create tours for championship [" + championship + "], because tour count is null");
+        }
+
+        // создаём указанное количество туров
+        final List<Tour> tours = new ArrayList<>();
+        for (int i = 0; i < championship.getTourCount(); i++) {
+            tours.add(create(new Tour(i + " тур", championship.getId())));
+        }
+
+        return tours;
     }
 
     @Nonnull

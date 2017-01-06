@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -53,6 +54,18 @@ public class MeetingServiceImpl implements MeetingService, ChangesEventsListener
     @Override
     public ChangesEventDispatcher getEventDispatcher() {
         return eventDispatcher;
+    }
+
+    @Nonnull
+    @Override
+    public List<Meeting> findByTourIdAndDeletedFalse(final long tourId) {
+        return repository.findByTourIdAndDeletedFalse(tourId);
+    }
+
+    @Nonnull
+    @Override
+    public List<Meeting> findByTourIdInAndDeletedFalse(final Set<Long> tourIds) {
+        return repository.findByTourIdInAndDeletedFalse(tourIds);
     }
 
     @Nonnull

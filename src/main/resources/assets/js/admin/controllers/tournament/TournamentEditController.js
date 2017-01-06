@@ -11,15 +11,12 @@ export default class TournamentEditController extends BaseCrudController {
         that.loadValues("types");
         // игроки
         that.loadValues("players");
-
-        // загружаем дополнительную информацию
-        that.loadExtraInfo();
     }
 
     /**
      * Загрузка дополнительной информации
      */
-    loadExtraInfo() {
+    objLoadedCallback() {
         const that = this;
         // если сейчас второй шаг - для выбора лиги и количества туров
         if (that.isNStep(2)) {
@@ -30,6 +27,14 @@ export default class TournamentEditController extends BaseCrudController {
         }
     }
 
+    extendedSave() {
+        const that = this;
+
+        that.save(() => {
+            // загружаем доп. информацию
+            that.objLoadedCallback();
+        });
+    }
 
     getPlayersLabel() {
         let pCount = (this.form.object == null || this.form.object.players == null) ? 0 : this.form.object.players.length;
@@ -64,7 +69,7 @@ export default class TournamentEditController extends BaseCrudController {
                 that.form.object = data;
                 that.listController.replaceObj(that.form.object);
                 // по завершении очередного шага загружаем необходимую дополнительную информацию
-                that.loadExtraInfo()
+                that.objLoadedCallback()
             });
     }
 }

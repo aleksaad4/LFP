@@ -62,7 +62,23 @@ public class Tour implements Serializable, IDeleted, IEntity<Long, Tour>, IAccou
     @Nullable
     private Account account;
 
+    public Tour(@Nonnull final String name, final long tournamentId) {
+        this.name = name;
+        this.tournamentId = tournamentId;
+    }
+
     public Tour() {
+    }
+
+    public Tour(final long id, @Nonnull final String name, final long tournamentId,
+                @Nullable final Date openDate, @Nullable final Date startDate, @Nullable final Date finishDate, @Nonnull final TourStatus status) {
+        this.id = id;
+        this.name = name;
+        this.tournamentId = tournamentId;
+        this.openDate = openDate;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.status = status;
     }
 
     public Tour(@Nonnull final Tour other) {

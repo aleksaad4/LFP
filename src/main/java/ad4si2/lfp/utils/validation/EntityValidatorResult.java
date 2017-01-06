@@ -176,7 +176,7 @@ public class EntityValidatorResult {
                     addError(error);
                 } else {
                     // обновление объекта, проверка что тот, что нашелся - не наш
-                    if (list.stream().noneMatch(e -> e.getId() == object.getId())) {
+                    if (list.stream().anyMatch(e -> !Objects.equals(e.getId(), object.getId()))) {
                         // среди этих объектов есть какой-то, но не наш
                         addError(error);
                     }
@@ -207,7 +207,7 @@ public class EntityValidatorResult {
                     addError(error);
                 } else {
                     // обновление объекта, проверка что тот, что нашелся - не наш
-                    if (list.stream().noneMatch(e -> e.getId() == object.getId())) {
+                    if (list.stream().anyMatch(e -> !Objects.equals(e.getId(), object.getId()))) {
                         // среди этих объектов есть какой-то, но не наш
                         addError(error);
                     }

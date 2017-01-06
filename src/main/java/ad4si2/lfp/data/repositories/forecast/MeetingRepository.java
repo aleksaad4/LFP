@@ -5,6 +5,7 @@ import ad4si2.lfp.utils.data.RepositoryWithDeleted;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -12,4 +13,7 @@ public interface MeetingRepository extends RepositoryWithDeleted<Meeting, Long> 
 
     @Nonnull
     List<Meeting> findByTourIdAndDeletedFalse(final long tourId);
+
+    @Nonnull
+    List<Meeting> findByTourIdInAndDeletedFalse(final Collection<Long> tourIds);
 }

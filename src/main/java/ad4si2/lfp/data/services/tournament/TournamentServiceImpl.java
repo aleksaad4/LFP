@@ -3,12 +3,17 @@ package ad4si2.lfp.data.services.tournament;
 import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.data.entities.account.Player;
 import ad4si2.lfp.data.entities.football.League;
+import ad4si2.lfp.data.entities.forecast.Meeting;
 import ad4si2.lfp.data.entities.tour.Tour;
 import ad4si2.lfp.data.entities.tournament.*;
 import ad4si2.lfp.data.repositories.tournament.TournamentPlayerLinkRepository;
 import ad4si2.lfp.data.repositories.tournament.TournamentRepository;
 import ad4si2.lfp.data.services.account.AccountService;
 import ad4si2.lfp.data.services.football.LeagueService;
+import ad4si2.lfp.data.services.forecast.MeetingService;
+import ad4si2.lfp.data.services.tour.TourService;
+import ad4si2.lfp.engine.ChampionshipEngine;
+import ad4si2.lfp.engine.DrawEngine;
 import ad4si2.lfp.utils.collection.CollectionUtils;
 import ad4si2.lfp.utils.events.data.ChangeEvent;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
@@ -24,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,6 +54,18 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
 
     @Inject
     private AccountService accountService;
+
+    @Inject
+    private ChampionshipEngine championshipEngine;
+
+    @Inject
+    private TourService tourService;
+
+    @Inject
+    private DrawEngine drawEngine;
+
+    @Inject
+    private MeetingService meetingService;
 
     @Nonnull
     @Override
@@ -110,15 +128,56 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
         final Tournament t = getById(tournamentId, false);
 
         if (t.getType() == TournamentType.CHAMPIONSHIP) {
-            // todo: проверим, что выбранная лига разрешена для этого турнира
-            // todo: или проверим, что выбранное количество туров разрешено для этого турнира
-            // todo: сохранить количество кругов в таком случае
+            final Championship c = (Championship) t;
+            final List<TournamentPlayerLink> links = findTournamentPlayerLinks(t.getId());
+
+            if (c.getLeagueId() != null) {
+                // проверим, что выбранная лига разрешена для этого турнира
+                final List<League> leagues = leagueService.findAll(false);
+                championshipEngine.markEnabledLeagues(c, links.size(), leagues);
+                final boolean leagueIsOk = leagues.stream().anyMatch(l -> l.getEnabled() != null && l.getEnabled() && Objects.equals(l.getId(), c.getLeagueId()));
+                if (!leagueIsOk) {
+                    return TournamentStatusModifyResult.error(EntityValidatorResult.validatorResult("league",
+                            "Incorrect league [" + t.getLeagueId() + "]", "tournament.league_incorrect"));
+                }
+            } else if (c.getTourCount() == null) {
+                // лига не выбрана, количество туров не задано и как собрались переходить к следующему шагу?
+                return TournamentStatusModifyResult.error(EntityValidatorResult.validatorResult("League and tour count is absent", "tournament.league_or_tour_is_empty"));
+            } else {
+                // проверим, что выбрано правильное количество туров
+                final boolean tourIsOk = championshipEngine.getTourAndRoundCounts(c, links.size()).stream().anyMatch(p -> Objects.equals(c.getTourCount(), p.getKey()));
+                if (!tourIsOk) {
+                    {
+                        return TournamentStatusModifyResult.error(EntityValidatorResult.validatorResult("tourCount",
+                                "Incorrect tour count [" + c.getTourCount() + "]", "tournament.tour_count_incorrect"));
+                    }
+                }
+            }
+
+            // если количество кругов не задано - то зададим его
+            if (c.getRoundCount() == null) {
+                // noinspection ConstantConditions
+                c.setRoundCount(championshipEngine.getRoundCount(c.getTourCount(), links.size()));
+            }
         }
 
         // если всё хорошо, то изменяем статус турнира на 'CONFIGURATION_TOUR_COUNT_SETTINGS'
         final Tournament forUpdate = t.copy();
         forUpdate.setStatus(TournamentStatus.CONFIGURATION_TOUR_LIST_SETTINGS);
         final Tournament updated = update(forUpdate);
+
+        // если это чемпионат, то создаём туры и генерируем встречи между игроками
+        if (t.getType() == TournamentType.CHAMPIONSHIP) {
+            final Championship c = (Championship) t;
+            // создаём туры
+            final List<Tour> tours = tourService.createTours(c);
+            // получим список игроков
+            final List<Long> playerIds = findTournamentPlayerLinks(c.getId()).stream().map(TournamentPlayerLink::getPlayerId).collect(Collectors.toList());
+            // вызываем функцию жеребьёвки, которая сгенерируем список встреч
+            final List<Meeting> meetings = drawEngine.drawPlayers(c, playerIds, tours);
+            // создаём встречи
+            meetingService.create(meetings);
+        }
 
         return TournamentStatusModifyResult.success(updated);
     }
@@ -199,11 +258,18 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
         if (entry.getType() == TournamentType.CHAMPIONSHIP) {
             // если количество кругов задано, оно должно быть больше 0
             result.checkPositiveValue("roundCount", (Championship) entry, Championship::getRoundCount);
+            // если количество туров задано, оно должно быть больше 0
+            result.checkPositiveValue("tourCount", (Championship) entry, Championship::getTourCount);
 
             // обновлять количество кругов можно только на этапе настройки состава участников
             // или на этапе привязке к лиге и выборе количества туров
             if (entry.getStatus() != TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS && entry.getStatus() != TournamentStatus.CONFIGURATION_TOUR_COUNT_SETTINGS) {
                 result.checkNotModify("roundCount", (Championship) entry, (Championship) findById(entry.getId(), false), Championship::getRoundCount);
+            }
+
+            // обновлять количество туров можно только на этапе выбора количества туров
+            if (entry.getStatus() != TournamentStatus.CONFIGURATION_TOUR_COUNT_SETTINGS) {
+                result.checkNotModify("tourCount", (Championship) entry, (Championship) findById(entry.getId(), false), Championship::getRoundCount);
             }
         }
 
