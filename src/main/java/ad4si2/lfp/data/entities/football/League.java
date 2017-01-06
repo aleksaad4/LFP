@@ -55,6 +55,13 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
     @Nullable
     private Country country;
 
+    /**
+     * Флаг для отметки лиги подходящей для турнира
+     */
+    @Transient
+    @Nullable
+    private Boolean enabled;
+
     public League() {
     }
 
@@ -165,5 +172,14 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
                 ", countryId=" + countryId +
                 ", tourCount=" + tourCount +
                 '}';
+    }
+
+    @Nullable
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(@Nullable final Boolean enabled) {
+        this.enabled = enabled;
     }
 }
