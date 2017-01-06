@@ -21,17 +21,17 @@ public class DrawEngine {
     /**
      * Метод для генерации списка встреч между игроками в турнире
      *
-     * @param t       турнир
-     * @param players игроки
-     * @param tours   туры
+     * @param t         турнир
+     * @param playerIds список id игроков
+     * @param tours     туры
      * @return список встреч во всех турах
      */
-    public List<Meeting> drawPlayers(@Nonnull final Championship t, @Nonnull final List<Player> players, @Nonnull final List<Tour> tours) {
+    public List<Meeting> drawPlayers(@Nonnull final Championship t, @Nonnull final List<Long> playerIds, @Nonnull final List<Tour> tours) {
         final List<Meeting> result = new ArrayList<>();
 
         // располагаем игроков в случайном порядке
         Random random = new Random();
-        int[] playerIndex = new int[players.size()];
+        int[] playerIndex = new int[playerIds.size()];
         for (int i = 0; i < playerIndex.length; i++) {
             playerIndex[i] = i;
         }
@@ -44,10 +44,10 @@ public class DrawEngine {
         }
 
         // получаем таблицу встреч в круге для заданного числа игроков
-        int[][] drawTable = getDrawTable(players.size());
+        int[][] drawTable = getDrawTable(playerIds.size());
 
         int startTour = 0;
-        int tourInRoundCount = championshipEngine.getTourInRoundCount(players.size());
+        int tourInRoundCount = championshipEngine.getTourInRoundCount(playerIds.size());
 
         for (int round = 0; round < t.getRoundCount(); round++) {
             // в каждом круге проходимся по левой нижней половине таблицы (i/строка > j/столбец)
@@ -64,12 +64,12 @@ public class DrawEngine {
                         indexJ = tmp;
                     }
 
-                    Player playerI = players.get(indexI);
-                    Player playerJ = players.get(indexJ);
+                    final Long playerIId = playerIds.get(indexI);
+                    final Long playerJId = playerIds.get(indexJ);
 
                     Tour tour = tours.get(startTour + drawTable[i][j]);
 
-                    Meeting meeting = new Meeting(playerI.getId(), playerJ.getId(), tour.getId());
+                    Meeting meeting = new Meeting(playerIId, playerJId, tour.getId());
                     result.add(meeting);
                 }
             }
