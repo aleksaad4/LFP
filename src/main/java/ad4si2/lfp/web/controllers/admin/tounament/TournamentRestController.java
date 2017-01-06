@@ -8,10 +8,12 @@ import ad4si2.lfp.data.services.account.AccountService;
 import ad4si2.lfp.data.services.football.LeagueService;
 import ad4si2.lfp.data.services.tournament.TournamentService;
 import ad4si2.lfp.data.services.tournament.TournamentStatusModifyResult;
+import ad4si2.lfp.engine.ChampionshipEngine;
 import ad4si2.lfp.utils.validation.EntityValidatorError;
 import ad4si2.lfp.utils.validation.EntityValidatorResult;
 import ad4si2.lfp.utils.web.AjaxResponse;
 import ad4si2.lfp.utils.web.WebUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nonnull;
@@ -35,6 +37,9 @@ public class TournamentRestController {
 
     @Inject
     private TournamentService tournamentService;
+
+    @Inject
+    private ChampionshipEngine championshipEngine;
 
     /**
      * Функция завершения первого шага создания турнира
@@ -66,10 +71,31 @@ public class TournamentRestController {
 
     @RequestMapping(value = "/{id}/leagues", method = RequestMethod.GET)
     public AjaxResponse leagues(@PathVariable("id") @Nonnull final Long id) {
-        // todo: подобрать только разрешенные лиги
-        // todo: а так же разрешенные количества туров
+        final Tournament t = tournamentService.getById(id, false);
+        final List<League> leagues = leagueService.findAll(false);
 
-        return webUtils.successResponse(leagueService.findAll(false));
+        if (t.getType() == TournamentType.CHAMPIONSHIP) {
+            final List<TournamentPlayerLink> links = tournamentService.findTournamentPlayerLinks(id);
+            championshipEngine.markEnabledLeagues((Championship) t, links.size(), leagues);
+        } else if (t.getType() == TournamentType.CUP) {
+            leagues.forEach(l -> l.setEnabled(true));
+        }
+
+        return webUtils.successResponse(leagues);
+    }
+
+    @RequestMapping(value = "/{id}/tourAndRoundCounts", method = RequestMethod.GET)
+    public AjaxResponse tourAndRoundCounts(@PathVariable("id") @Nonnull final Long id) {
+        final Tournament t = tournamentService.getById(id, false);
+
+        // количество туров и кругов
+        final List<Pair<Integer, Integer>> tourAndRoundCounts = new ArrayList<>();
+        if (t.getType() == TournamentType.CHAMPIONSHIP) {
+            final List<TournamentPlayerLink> links = tournamentService.findTournamentPlayerLinks(id);
+            tourAndRoundCounts.addAll(championshipEngine.getTourAndRoundCounts((Championship) t, links.size()));
+        }
+
+        return webUtils.successResponse(tourAndRoundCounts);
     }
 
     @RequestMapping(method = RequestMethod.GET)

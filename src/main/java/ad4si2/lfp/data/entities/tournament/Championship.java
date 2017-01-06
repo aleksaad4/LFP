@@ -14,11 +14,17 @@ public class Championship extends Tournament {
 
     /**
      * Количество кругов в чемпионате
-     * Только для турнира с типом
      */
     @Nullable
     @Column
     private Integer roundCount;
+
+    /**
+     * Колличество туров в чемпионате
+     */
+    @Nullable
+    @Column
+    private Integer tourCount;
 
     public Championship() {
     }

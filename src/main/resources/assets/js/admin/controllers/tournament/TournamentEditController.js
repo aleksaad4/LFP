@@ -11,26 +11,29 @@ export default class TournamentEditController extends BaseCrudController {
         that.loadValues("types");
         // игроки
         that.loadValues("players");
-        // лиги для уже созданного турнира
-        if (that.form.object != null) {
+
+        // загружаем дополнительную информацию
+        that.loadExtraInfo();
+    }
+
+    /**
+     * Загрузка дополнительной информации
+     */
+    loadExtraInfo() {
+        const that = this;
+        // если сейчас второй шаг - для выбора лиги и количества туров
+        if (that.isNStep(2)) {
+            // загружаем лиги
             that.loadLinkedValues("leagues");
+            // загружаем количества туров и кругов
+            that.loadLinkedValues("tourAndRoundCounts");
         }
     }
+
 
     getPlayersLabel() {
         let pCount = (this.form.object == null || this.form.object.players == null) ? 0 : this.form.object.players.length;
         return "Участники [" + pCount + "]";
-    }
-
-    extendedSave() {
-        const that = this;
-
-        that.save(created => {
-            // если это было создание турнира - то загружаем список лиг
-            if (created) {
-                that.loadLinkedValues("leagues");
-            }
-        });
     }
 
     /**
@@ -60,6 +63,8 @@ export default class TournamentEditController extends BaseCrudController {
             function success(data) {
                 that.form.object = data;
                 that.listController.replaceObj(that.form.object);
+                // по завершении очередного шага загружаем необходимую дополнительную информацию
+                that.loadExtraInfo()
             });
     }
 }

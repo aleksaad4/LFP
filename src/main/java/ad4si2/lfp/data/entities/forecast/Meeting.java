@@ -47,6 +47,12 @@ public class Meeting implements Serializable, IDeleted, IEntity<Long, Meeting>, 
     public Meeting() {
     }
 
+    public Meeting(final long playerAId, final long playerBId, final long tourId) {
+        this.playerAId = playerAId;
+        this.playerBId = playerBId;
+        this.tourId = tourId;
+    }
+
     public Meeting(@Nonnull final Meeting other) {
         this.id = other.id;
         this.d = other.d;

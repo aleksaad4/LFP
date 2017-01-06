@@ -1,8 +1,8 @@
 package ad4si2.lfp.engine;
 
 import ad4si2.lfp.data.entities.football.League;
+import ad4si2.lfp.data.entities.tournament.Championship;
 import ad4si2.lfp.data.services.football.LeagueService;
-import ad4si2.lfp.web.controllers.admin.tounament.TournamentDTO;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
@@ -24,14 +24,13 @@ public class ChampionshipEngine {
     /**
      * Отметка подходящих лиг турнира (типа чемпионат)
      *
-     * @param t турнир типа чемпионат
-     * @return список лиг с проставленным флагом enabled
+     * @param t           турнир типа чемпионат
+     * @param playerCount количество игроков
+     * @param leagues     все доступные для выбора лиги
      */
     @Nonnull
-    public List<League> getLeagues(@Nonnull final TournamentDTO t) {
-        final List<League> leagues = leagueService.findAll(false);
+    public void markEnabledLeagues(@Nonnull final Championship t, final int playerCount, @Nonnull final List<League> leagues) {
         final Integer roundCount = t.getRoundCount();
-        final int playerCount = t.getPlayers().size();
 
         // количество туров в круге
         final int tourInRoundCount = getTourInRoundCount(playerCount);
@@ -52,21 +51,19 @@ public class ChampionshipEngine {
                 }
             }
         }
-
-        return leagues;
     }
 
     /**
      * Получение списка возможных количеств туров и кругов для турнира (типа чемпионат)
      *
-     * @param t турнир типа чемпионат
+     * @param t           турнир типа чемпионат
+     * @param playerCount количество игроков
      * @return количества туров и кругов
      */
     @Nonnull
-    public List<Pair<Integer, Integer>> getTourAndRoundCount(@Nonnull final TournamentDTO t) {
+    public List<Pair<Integer, Integer>> getTourAndRoundCounts(@Nonnull final Championship t, final int playerCount) {
         final List<Pair<Integer, Integer>> result = new ArrayList<>();
         final Integer roundCount = t.getRoundCount();
-        final int playerCount = t.getPlayers().size();
 
         // количество туров в круге
         final int tourInRoundCount = getTourInRoundCount(playerCount);

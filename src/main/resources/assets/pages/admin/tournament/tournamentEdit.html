@@ -51,18 +51,25 @@
                     </div>
                 </form-control-messages>
 
+                <!--на шаге 2 отображаем select для выбора лиги-->
                 <form-control-messages field-name="leagueId" label="Лига" form="ctrl.form"
-                                       ng-if="ctrl.leagues != null && ctrl.isStepGreaterThanN(2)">
+                                       ng-if="ctrl.leagues != null && ctrl.isNStep(2)">
                     <select chosen
                             data-placeholder="Выберите лигу..."
                             class="form-control"
                             data-disable-search="false"
                             data-allow-single-deselect="true"
                             data-ng-model="ctrl.form.object.league"
-                            data-ng-options="r as r.name for r in ctrl.leagues track by r.id"
+                            data-ng-options="r as r.name disable when !r.enabled for r in ctrl.leagues track by r.id"
                             data-ng-disabled="!ctrl.isNStep(2)">
                         <option value=""></option>
                     </select>
+                </form-control-messages>
+
+                <!--на шаге 3 и выше - отображаем просто выбранную лигу, если она выбрана вообще -->
+                <form-control-messages field-name="leagueId" label="Лига" form="ctrl.form"
+                                       ng-if="ctrl.isStepGreaterThanN(3) && ctrl.form.object.league != null">
+                    <input class="form-control" disabled value="ctrl.form.object.league.name">
                 </form-control-messages>
 
                 <div>

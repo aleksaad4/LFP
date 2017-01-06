@@ -26,6 +26,9 @@ public class TournamentDTO {
     private Integer roundCount;
 
     @Nullable
+    private Integer tourCount;
+
+    @Nullable
     private TournamentStatus status;
 
     @Nullable
