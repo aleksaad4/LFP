@@ -1,6 +1,5 @@
 package ad4si2.lfp.engine;
 
-import ad4si2.lfp.data.entities.account.Player;
 import ad4si2.lfp.data.entities.forecast.Meeting;
 import ad4si2.lfp.data.entities.tour.Tour;
 import ad4si2.lfp.data.entities.tournament.Championship;
@@ -98,8 +97,9 @@ public class DrawEngine {
         fillSeedTable(seedTable, 0, seedTableSize, 0);
 
         // переносим данные в результат
-        for (int i = 1; i < playerCount; i++) {
-            for (int j = 0; j < i; j++) {
+        // (для нечетного числа - последние строка и столбец выкидываются)
+        for (int i = 0; i < playerCount; i++) {
+            for (int j = 0; j < playerCount; j++) {
                 result[i][j] = seedTable[i][j];
             }
         }
@@ -107,38 +107,76 @@ public class DrawEngine {
         return result;
     }
 
-    private int fillSeedTable(final int[][] seedTable, final int pos, final int size, final int startTour) {
+    /**
+     * Рекурсивный метод заполняет таблицу встреч
+     *
+     * @param table     таблица встреч
+     * @param pos       текущая позиция подтаблицы
+     * @param size      текущий размер подтаблицы
+     * @param startTour текущий тур
+     * @return          новый текущий тур
+     */
+    private int fillSeedTable(final int[][] table, final int pos, final int size, int startTour) {
         if (size == 2) {
             // базовая таблица
             // Х
             // 0 Х
-            seedTable[pos + 1][pos] = startTour;
+            table[pos + 1][pos] = startTour;
             return startTour + 1;
-        } else if ((size % 2) % 2 == 0) {
+        } else if ((size / 2) % 2 == 0) {
             // четная таблица - размер половины таблицы четный
             // заполняем две диагональные четверти, затем квадратную четверть
-            // D1
-            // S12 D2
             final int halfSize = size / 2;
-            fillSeedTable(seedTable, pos, halfSize, startTour);
-            int mergeStartTour = fillSeedTable(seedTable, pos + halfSize, halfSize, startTour);
 
-            // слияние
+            // верхняя и нижняя диагональные четверти
+            fillSeedTable(table, pos, halfSize, startTour);
+            startTour = fillSeedTable(table, pos + halfSize, halfSize, startTour);
+
+            // квадратная четверть
             for (int i = 0; i < halfSize; i++) {
                 for (int j = 0; j < halfSize; j++) {
-                    final int mergeIndex = (i + j + 1) % halfSize;
-                    seedTable[pos + halfSize + i][pos + j] = mergeStartTour + mergeIndex;
+                    final int index = (i + j + 1) % halfSize;
+                    table[pos + halfSize + i][pos + j] = startTour + index;
                 }
             }
 
-            return mergeStartTour + halfSize;
-        } else { // ((size % 2) % 2 == 1)
+            return startTour + halfSize;
+        } else { // ((size / 2) % 2 == 1)
             // нечетная таблица - размер половины таблицы нечетный
             // заполняем две диагональные четверти и одновременно диагональ квадратной,
             // затем остаток квадратной четверти
             final int halfSize = size / 2;
 
-            return startTour + size;
+            // верхняя и нижняя диагональные четверти
+            for (int i = 0; i < halfSize; i++) {
+                for (int j = 0; j <= i; j++) {
+                    final int index = (i + j + 1) % halfSize;
+                    table[pos + i][pos + j] = startTour + index;
+                    table[pos + size - j - 1][pos + size - i - 1] = startTour + index;
+                }
+            }
+
+            // диагональ квадратной четверти
+            for (int i = 0; i < halfSize; i++) {
+                table[pos + size - i - 1][pos + i] = table[pos + i][pos + i];
+            }
+
+            startTour += halfSize;
+
+            // квадратная четверть без диагонали
+            for (int i = 0; i < halfSize; i++) {
+                for (int j = 0; j < halfSize; j++) {
+                    if (i == halfSize - j - 1) {
+                        continue;
+                    }
+
+                    final int index = (i + j) % halfSize;
+                    table[pos + halfSize + i][pos + j] = startTour + index;
+                }
+            }
+
+            // диагональ тура не дала, так что на 1 меньше
+            return startTour + halfSize - 1;
         }
     }
 }

@@ -12,9 +12,7 @@ public class DrawEngineTest extends BaseTest {
 
     @Test
     public void getDrawTable() throws Exception {
-        int playersCount = 2;
-
-        while (playersCount <= 16) {
+        for (int playersCount = 2; playersCount <= 20; playersCount++) {
             int[][] table = drawEngine.getDrawTable(playersCount);
 
             System.out.println();
@@ -22,18 +20,13 @@ public class DrawEngineTest extends BaseTest {
             for (int i = 0; i < playersCount; i++) {
                 for (int j = 0; j < playersCount; j++) {
                     if (i == j) {
-                        System.out.print("X");
+                        System.out.print("{" + table[i][j] + "}\t");
                     } else {
-                        System.out.print(table[i][j]);
+                        System.out.print(table[i][j] + "\t");
                     }
-
-                    System.out.print("\t");
                 }
                 System.out.println();
             }
-
-            playersCount *= 2;
         }
     }
-
 }
