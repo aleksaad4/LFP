@@ -96,7 +96,7 @@ public class ChampionshipEngine {
      * @param playerCount количество игроков
      * @return количество туров в круге
      */
-    private int getTourInRoundCount(final int playerCount) {
+    public int getTourInRoundCount(final int playerCount) {
         return ((playerCount + 1) / 2) * 2 - 1;
     }
 }
