@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "match")
+@Table(name = "f_match")
 public class Match implements Serializable, IDeleted, IEntity<Long, Match>, IAccountable {
 
     @Id

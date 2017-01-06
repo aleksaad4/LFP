@@ -203,11 +203,23 @@ public class TournamentRestController {
         switch (dto.getType()) {
             case CHAMPIONSHIP:
                 t = new Championship(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),
-                        dto.getName(), dto.getType(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS, dto.getLeague() != null ? dto.getLeague().getId() : null, dto.getRoundCount());
+                        dto.getName(), dto.getType(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS,
+                        dto.getLeague() != null ? dto.getLeague().getId() : null, dto.getRoundCount(), dto.getTourCount());
+
+                // если выбрана лига, но ещё не задано количество кругов или количество туров - то проставим его
+                if ((dto.getRoundCount() == null || dto.getTourCount() == null) && dto.getLeague() != null) {
+                    // количество туров берем из лиги
+                    ((Championship) t).setTourCount(dto.getLeague().getTourCount());
+                    // количество кругов считаем по количеству туров и количеству игроков
+                    // noinspection ConstantConditions
+                    ((Championship) t).setRoundCount(championshipEngine.getRoundCount(dto.getLeague().getTourCount(), dto.getPlayers().size()));
+                }
+
                 break;
             case CUP:
                 t = new Cup(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),
-                        dto.getName(), dto.getType(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS, dto.getLeague() != null ? dto.getLeague().getId() : null);
+                        dto.getName(), dto.getType(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS,
+                        dto.getLeague() != null ? dto.getLeague().getId() : null);
                 break;
             default:
                 throw new UnsupportedOperationException("Can't create tournament with unknown type [" + dto.getType() + "]");
@@ -238,6 +250,7 @@ public class TournamentRestController {
                 t.getLeagueId() != null ? leagueService.findById(t.getLeagueId(), false) : null);
         if (t.getType() == TournamentType.CHAMPIONSHIP) {
             dto.setRoundCount(((Championship) t).getRoundCount());
+            dto.setTourCount(((Championship) t).getTourCount());
         }
         dto.setPlayers(links.stream().map(l -> (Player) id2account.get(l.getPlayerId())).collect(Collectors.toList()));
 
@@ -282,6 +295,7 @@ public class TournamentRestController {
                     t.getLeagueId() != null ? id2league.get(t.getLeagueId()) : null);
             if (t.getType() == TournamentType.CHAMPIONSHIP) {
                 dto.setRoundCount(((Championship) t).getRoundCount());
+                dto.setTourCount(((Championship) t).getTourCount());
             }
             // добавляем игроков, если они есть
             if (id2links.get(t.getId()) != null) {

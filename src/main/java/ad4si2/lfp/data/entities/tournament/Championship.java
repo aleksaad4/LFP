@@ -32,18 +32,33 @@ public class Championship extends Tournament {
     public Championship(final Championship other) {
         super(other);
         this.roundCount = other.roundCount;
+        this.tourCount = other.tourCount;
     }
 
     public Championship(final long id, @Nonnull final Date creationDate, @Nonnull final String name,
                         @Nonnull final TournamentType type, @Nonnull final TournamentStatus status, @Nullable final Long leagueId,
-                        @Nullable final Integer roundCount) {
+                        @Nullable final Integer roundCount, @Nullable final Integer tourCount) {
         super(id, creationDate, name, type, status, leagueId);
         this.roundCount = roundCount;
+        this.tourCount = tourCount;
     }
 
     @Nullable
     public Integer getRoundCount() {
         return roundCount;
+    }
+
+    @Nullable
+    public Integer getTourCount() {
+        return tourCount;
+    }
+
+    public void setRoundCount(@Nullable final Integer roundCount) {
+        this.roundCount = roundCount;
+    }
+
+    public void setTourCount(@Nullable final Integer tourCount) {
+        this.tourCount = tourCount;
     }
 
     @Nonnull
@@ -56,6 +71,7 @@ public class Championship extends Tournament {
     public String toString() {
         return "Championship {" +
                 "roundCount=" + roundCount +
+                ", tourCount=" + tourCount +
                 "} " + super.toString();
     }
 }

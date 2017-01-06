@@ -107,4 +107,13 @@ public class TournamentDTO {
     public Date getCreationDate() {
         return creationDate;
     }
+
+    public void setTourCount(@Nullable final Integer tourCount) {
+        this.tourCount = tourCount;
+    }
+
+    @Nullable
+    public Integer getTourCount() {
+        return tourCount;
+    }
 }

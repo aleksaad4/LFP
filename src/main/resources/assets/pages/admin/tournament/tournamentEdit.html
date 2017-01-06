@@ -60,8 +60,21 @@
                             data-disable-search="false"
                             data-allow-single-deselect="true"
                             data-ng-model="ctrl.form.object.league"
-                            data-ng-options="r as r.name disable when !r.enabled for r in ctrl.leagues track by r.id"
-                            data-ng-disabled="!ctrl.isNStep(2)">
+                            data-ng-options="r as r.name disable when !r.enabled for r in ctrl.leagues track by r.id">
+                        <option value=""></option>
+                    </select>
+                </form-control-messages>
+
+                <!--на шаге 2 отображаем так же контрол для выбора количества туров и кругов, если это чемпионат -->
+                <form-control-messages field-name="tourCount" label="Количество туров" form="ctrl.form"
+                                       ng-if="ctrl.isNStep(2) && ctrl.form.object.type.name == 'CHAMPIONSHIP'">
+                    <select chosen
+                            data-placeholder="Выберите количество туров..."
+                            class="form-control"
+                            data-disable-search="true"
+                            data-allow-single-deselect="true"
+                            data-ng-model="ctrl.form.object.tourCount"
+                            data-ng-options="(r.left + '(' + r.right + ')') as r.left for r in ctrl.tourAndRoundCounts track by r.left">
                         <option value=""></option>
                     </select>
                 </form-control-messages>
@@ -69,7 +82,7 @@
                 <!--на шаге 3 и выше - отображаем просто выбранную лигу, если она выбрана вообще -->
                 <form-control-messages field-name="leagueId" label="Лига" form="ctrl.form"
                                        ng-if="ctrl.isStepGreaterThanN(3) && ctrl.form.object.league != null">
-                    <input class="form-control" disabled value="ctrl.form.object.league.name">
+                    <input class="form-control" type="text" disabled data-ng-model="ctrl.form.object.league.name">
                 </form-control-messages>
 
                 <div>
