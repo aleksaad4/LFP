@@ -1,40 +1,60 @@
 .dropdown-menu {
-    box-shadow: @dropdown-shadow;
-    .animated(fadeIn, 300ms);
-    padding: 10px 0;
-    border-radius: 3px;
-    top: -1px;
-    margin: 0;
-    border: 0;
-
-    & > li > a {
-        padding: 10px 20px;
-        .transition(background-color);
-        .transition-duration(300ms);
-    }
+  box-shadow: @dropdown-shadow;
+  .transition(all);
+  .transition-duration(250ms);
+  margin-top: 3px;
+  display: block;
+  & > li > a {
+    padding: 10px 20px;
+    .transition(background-color);
+    .transition-duration(300ms);
+  }
 }
 
 .dm-icon {
-    & > li > a > .zmdi {
-        line-height: 100%;
-        vertical-align: top;
-        font-size: 18px;
-        width: 28px;
-    }
+  & > li > a > .zmdi {
+    line-height: 100%;
+    vertical-align: top;
+    font-size: 18px;
+    width: 28px;
+  }
 }
 
 .dropdown-menu-lg {
-    width: 300px;
+  width: 300px;
 }
 
 .dropdown-header {
-    padding: 3px 17px;
-    margin-top: 10px;
-    color: #b1b1b1;
-    text-transform: uppercase;
-    font-weight: normal;
+  padding: 3px 17px;
+  margin-top: 10px;
+  color: #b1b1b1;
+  text-transform: uppercase;
+  font-weight: normal;
 }
 
 .btn-group.open .dropdown-toggle {
-    box-shadow: none;
+  box-shadow: none;
+}
+
+.dropdown:not([data-animation]).open .dropdown-menu, .dropup.open .dropdown-menu, .bootstrap-select.open .dropdown-menu, .btn-group.open .dropdown-menu {
+  .scale(1);
+  .opacity(1);
+
+}
+
+.dropdown:not([data-animation]) .dropdown-menu, .btn-group .dropdown-menu, .date-picker .dropdown-menu {
+  .scale(0);
+  .opacity(0);
+}
+
+.dropdown:not([data-animation]) .dropdown-menu.pull-right, .bootstrap-select .dropdown-menu.pull-right, .btn-group .dropdown-menu.pull-right, .date-picker .dropdown-menu.pull-right, .dropdown:not([data-animation]) .dropdown-menu.dropdown-menu-right, .bootstrap-select .dropdown-menu.dropdown-menu-right, .btn-group .dropdown-menu.dropdown-menu-right, .date-picker .dropdown-menu.dropdown-menu-right {
+  .transform-origin(top right);
+}
+
+.dropdown:not([data-animation]) .dropdown-menu:not(.pull-right):not(.dropdown-menu-right), .bootstrap-select .dropdown-menu:not(.pull-right):not(.dropdown-menu-right), .btn-group .dropdown-menu:not(.pull-right):not(.dropdown-menu-right), .date-picker .dropdown-menu:not(.pull-right):not(.dropdown-menu-right) {
+  .transform-origin(top left);
+}
+
+.dropup:not([data-animation]) .dropdown-menu:not(.pull-right):not(.dropdown-menu-right) {
+  .transform-origin(bottom left);
 }

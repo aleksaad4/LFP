@@ -1,0 +1,9 @@
+<ul role="presentation" class="uib-datepicker-popup dropdown-menu" dropdown-nested ng-keydown="keydown($event)"
+    ng-click="$event.stopPropagation()">
+    <li ng-transclude></li>
+    <li ng-if="showButtonBar" class="dp-actions clearfix">
+        <button type="button" class="btn btn-link" ng-click="select('today', $event)">{{ getText('current') }}</button>
+        <button type="button" class="btn btn-link" ng-click="select(null, $event)">{{ getText('clear') }}</button>
+        <button type="button" class="btn btn-link" ng-click="close($event)">{{ getText('close') }}</button>
+    </li>
+</ul>

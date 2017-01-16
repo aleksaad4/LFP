@@ -8,7 +8,7 @@
                 <h2 data-ng-bind="ctrl.form.object.id != null ? 'Редактирование' : 'Создание'"></h2>
             </div>
 
-            <div class="card-header">
+            <div class="card-body card-padding">
                 <form-control-messages field-name="name" label="Название" form="ctrl.form">
                     <div class="fg-line">
                         <input type="text" class="form-control" placeholder="Название"
@@ -32,6 +32,67 @@
                     </div>
                 </form-control-messages>
 
+                <form-control-messages field-name="name" label="Список матчей"
+                                       form="ctrl.form">
+                    <editable-list list="ctrl.form.object.matchList" form="ctrl.matchForm"
+                                   init-data="ctrl.matchInitData"
+                                   format-func="ctrl.formatMatch(item)"
+                                   validate-func="ctrl.validateMatch(item, list)"
+                                   item-type-title="матч" can-delete="true" can-edit="true">
+                        <div>
+                            <form-control-messages field-name="teamA" label="Команда А" form="ctrl.matchForm"
+                                                   ng-if="ctrl.teams != null">
+                                <select chosen
+                                        data-placeholder="Выберите команду..."
+                                        class="form-control"
+                                        data-disable-search="false"
+                                        data-allow-single-deselect="false"
+                                        data-ng-model="ctrl.matchForm.data.teamA"
+                                        data-ng-options="r as r.name for r in ctrl.teams track by r.id">
+                                    <option value=""></option>
+                                </select>
+                            </form-control-messages>
+
+                            <form-control-messages field-name="teamB" label="Команда Б" form="ctrl.matchForm"
+                                                   ng-if="ctrl.teams != null">
+                                <select chosen
+                                        data-placeholder="Выберите команду..."
+                                        class="form-control"
+                                        data-disable-search="false"
+                                        data-allow-single-deselect="false"
+                                        data-ng-model="ctrl.matchForm.data.teamB"
+                                        data-ng-options="r as r.name for r in ctrl.teams track by r.id">
+                                    <option value=""></option>
+                                </select>
+                            </form-control-messages>
+
+                            <form-control-messages field-name="teamAIsHome" form="ctrl.matchForm">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="ctrl.matchForm.data.teamAIsHome">
+                                        <i class="input-helper"></i>
+                                        Команда А хозяин?
+                                    </label>
+                                </div>
+                            </form-control-messages>
+
+                            <form-control-messages field-name="date" form="ctrl.matchForm">
+                                <div class="date-picker input-group dropup"
+                                     ng-class="{ 'is-opened': ctrl.openedDatePicker == true }">
+                                    <span class="input-group-addon"><i class="zmdi zmdi-calendar ma-icon"></i></span>
+                                    <div class="fg-line" ng-class="{ 'fg-toggled': ctrl.openedDatePicker == true }">
+                                        <input ng-click="ctrl.openDatePicker($event)" type="text" class="form-control"
+                                               uib-datepicker-popup="{{ctrl.dateFormat}}"
+                                               ng-model="ctrl.matchForm.data.date" is-open="ctrl.openedDatePicker"
+                                               datepicker-options="ctrl.dateOptions"
+                                               popup-placement="top-left"
+                                               placeholder="Выберите дату матча.."/>
+                                    </div>
+                                </div>
+                            </form-control-messages>
+                        </div>
+                    </editable-list>
+                </form-control-messages>
 
                 <div>
                     <button class="btn btn-primary waves-effect" data-ng-click="ctrl.save();">Сохранить</button>

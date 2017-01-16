@@ -10,6 +10,13 @@ export default class TourEditController extends BaseCrudController {
 
         const that = this;
 
+        that.matchForm = {};
+        that.matchInitData = {teamAIsHome: true};
+        that.dateOptions = {
+            minDate: new Date(),
+        };
+        that.dateFormat = "dd.MM.yyyy";
+
         // загрузка игроков
         that.loadValues("players", () => {
             // заполним map-у игроков по id
@@ -18,8 +25,25 @@ export default class TourEditController extends BaseCrudController {
                 id2player[p.id] = p;
             });
             that.id2player = id2player;
-        })
+        });
+
+        // загрузка команд
+        that.loadValues("teams");
     }
+
+    formatMatch(item) {
+        return item.name;
+    }
+
+    validateMatch(item, list) {
+        return {hasErrors: false};
+    }
+
+    openDatePicker(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.openedDatePicker = true;
+    };
 }
 
 TourEditController.$inject = ["$scope", "$state", "$stateParams", "Restangular"];

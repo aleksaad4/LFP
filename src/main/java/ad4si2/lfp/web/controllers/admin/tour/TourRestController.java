@@ -2,6 +2,7 @@ package ad4si2.lfp.web.controllers.admin.tour;
 
 import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.data.entities.football.Match;
+import ad4si2.lfp.data.entities.football.Team;
 import ad4si2.lfp.data.entities.forecast.Meeting;
 import ad4si2.lfp.data.entities.tour.Tour;
 import ad4si2.lfp.data.entities.tour.TourStatus;
@@ -9,6 +10,7 @@ import ad4si2.lfp.data.entities.tournament.Tournament;
 import ad4si2.lfp.data.entities.tournament.TournamentType;
 import ad4si2.lfp.data.services.account.AccountService;
 import ad4si2.lfp.data.services.football.MatchService;
+import ad4si2.lfp.data.services.football.TeamService;
 import ad4si2.lfp.data.services.forecast.MeetingService;
 import ad4si2.lfp.data.services.tour.TourService;
 import ad4si2.lfp.data.services.tournament.TournamentService;
@@ -44,6 +46,9 @@ public class TourRestController {
     @Inject
     private MeetingService meetingService;
 
+    @Inject
+    private TeamService teamService;
+
     @RequestMapping(value = "{tId}/tournament", method = RequestMethod.GET)
     public AjaxResponse tournament(@PathVariable("tId") @Nonnull final Long tId) {
         // турнир
@@ -56,6 +61,13 @@ public class TourRestController {
         // список игроков
         final List<Account> players = accountService.findAll(false);
         return webUtils.successResponse(players);
+    }
+
+    @RequestMapping(value = "{tId}/teams", method = RequestMethod.GET)
+    public AjaxResponse teams(@PathVariable("tId") @Nonnull final Long tId) {
+        // список команд
+        final List<Team> teams = teamService.findAll(false);
+        return webUtils.successResponse(teams);
     }
 
     @RequestMapping(value = "/{tId}", method = RequestMethod.GET)

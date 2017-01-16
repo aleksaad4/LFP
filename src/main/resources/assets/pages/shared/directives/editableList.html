@@ -1,0 +1,57 @@
+<div>
+    <div class="listview lv-bordered">
+        <div class="lv-body">
+            <div class="lv-item lv-dark-item" data-ng-repeat="item in elCtrl.list">
+                <div class="lv-title" data-ng-bind="elCtrl.formatFunc({item: item})"></div>
+                <div class="lv-actions actions dropdown" uib-dropdown>
+                    <a uib-dropdown-toggle aria-expanded="true">
+                        <i class="zmdi zmdi-more-vert"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li ng-if="elCtrl.canEdit" data-ng-click="elCtrl.editItem($index);">
+                            <a>Редактировать</a>
+                        </li>
+                        <li ng-if="elCtrl.canDelete" data-ng-click="elCtrl.deleteItem($index);">
+                            <a>Удалить</a>
+                        </li>
+                        <li data-ng-click="elCtrl.moveUp($index);" data-ng-hide="$first">
+                            <a>Переместить вверх</a>
+                        </li>
+                        <li data-ng-click="elCtrl.moveDown($index);" data-ng-hide="$last">
+                            <a>Переместить вниз</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lv-item lv-dark-item" ng-if="elCtrl.canEdit && !elCtrl.form.show" ng-click="elCtrl.addItem()">
+                <div class="lv-title">
+                    <i class="zmdi zmdi-plus"></i>
+                    Добавить <span data-ng-bind="elCtrl.itemTypeTitle"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-bordered" data-ng-if="elCtrl.form.show">
+        <div class="card-header ch-alt bgm-cyan">
+            <h2>
+                <span data-ng-bind="elCtrl.form.new ? 'Добавить ' : 'Изменить '"></span>
+                <span data-ng-bind="elCtrl.itemTypeTitle"></span>
+            </h2>
+            <ul class="actions actions-alt">
+                <li data-ng-click="elCtrl.hideForm()">
+                    <a>
+                        <i class="zmdi zmdi-close"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body card-padding">
+            <div data-ng-transclude="formBody"></div>
+            <button class="btn btn-primary waves-effect" data-ng-click="elCtrl.saveItem();">Сохранить <span
+                    data-ng-bind="elCtrl.itemTypeTitle"></span></button>
+        </div>
+    </div>
+
+</div>
