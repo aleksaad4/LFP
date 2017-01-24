@@ -136,4 +136,15 @@ export class BaseController {
     setLoading(loading) {
         this.form.isLoading = loading;
     };
+
+    /**
+     * Функция получения из массива объектов map-у для обращения по id
+     */
+    getMapById(objects) {
+        let id2obj = {};
+        angular.forEach(objects, function (o) {
+            id2obj[o.id] = o;
+        });
+        return id2obj;
+    }
 }

@@ -35,7 +35,7 @@ public class Match implements Serializable, IDeleted, IEntity<Long, Match>, IAcc
     @Nullable
     @Column
     @Temporal(TemporalType.TIMESTAMP)
-    private Date date = new Date();
+    private Date date;
 
     @Column(nullable = false)
     private long teamAId;
@@ -167,5 +167,28 @@ public class Match implements Serializable, IDeleted, IEntity<Long, Match>, IAcc
 
     public boolean isTeamAIsHome() {
         return teamAIsHome;
+    }
+
+    public void setTourId(final long tourId) {
+        this.tourId = tourId;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final Match match = (Match) o;
+
+        return id == match.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 }

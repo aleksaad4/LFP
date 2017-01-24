@@ -13,6 +13,7 @@ export default class ToursController extends BaseListController {
 
         // сохраним id турнира
         that.tId = tId;
+        that.newTourState = "tours.edit({id:null, tId:" + that.tId + "})";
 
         that.header = [
             {title: "Название", field: "name"},

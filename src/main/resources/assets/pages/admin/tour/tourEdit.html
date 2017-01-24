@@ -31,37 +31,40 @@
                         </div>
                     </div>
                 </form-control-messages>
-
-                <form-control-messages field-name="name" label="Список матчей"
+                <form-control-messages field-name="matchList" label="Список матчей"
                                        form="ctrl.form">
                     <editable-list list="ctrl.form.object.matchList" form="ctrl.matchForm"
                                    init-data="ctrl.matchInitData"
                                    format-func="ctrl.formatMatch(item)"
                                    validate-func="ctrl.validateMatch(item, list)"
-                                   item-type-title="матч" can-delete="true" can-edit="true">
+                                   item-type-title="матч"
+                                   can-delete="ctrl.form.object.status.name == null || ctrl.form.object.status.name == 'NOT_STARTED'"
+                                   can-edit="ctrl.form.object.status.name == null || ctrl.form.object.status.name == 'NOT_STARTED'">
                         <div>
-                            <form-control-messages field-name="teamA" label="Команда А" form="ctrl.matchForm"
+                            <form-control-messages field-name="teamAId" label="Команда А" form="ctrl.matchForm"
                                                    ng-if="ctrl.teams != null">
                                 <select chosen
                                         data-placeholder="Выберите команду..."
                                         class="form-control"
                                         data-disable-search="false"
                                         data-allow-single-deselect="false"
-                                        data-ng-model="ctrl.matchForm.data.teamA"
-                                        data-ng-options="r as r.name for r in ctrl.teams track by r.id">
+                                        data-ng-model="ctrl.matchForm.data.teamAId"
+                                        data-ng-disabled="!(ctrl.form.object.status == null || ctrl.form.object.status.name == 'NOT_STARTED')"
+                                        data-ng-options="r.id as r.name for r in ctrl.teams">
                                     <option value=""></option>
                                 </select>
                             </form-control-messages>
 
-                            <form-control-messages field-name="teamB" label="Команда Б" form="ctrl.matchForm"
+                            <form-control-messages field-name="teamBId" label="Команда Б" form="ctrl.matchForm"
                                                    ng-if="ctrl.teams != null">
                                 <select chosen
                                         data-placeholder="Выберите команду..."
                                         class="form-control"
                                         data-disable-search="false"
                                         data-allow-single-deselect="false"
-                                        data-ng-model="ctrl.matchForm.data.teamB"
-                                        data-ng-options="r as r.name for r in ctrl.teams track by r.id">
+                                        data-ng-model="ctrl.matchForm.data.teamBId"
+                                        data-ng-disabled="!(ctrl.form.object.status == null || ctrl.form.object.status.name == 'NOT_STARTED')"
+                                        data-ng-options="r.id as r.name for r in ctrl.teams">
                                     <option value=""></option>
                                 </select>
                             </form-control-messages>
@@ -69,7 +72,9 @@
                             <form-control-messages field-name="teamAIsHome" form="ctrl.matchForm">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" ng-model="ctrl.matchForm.data.teamAIsHome">
+                                        <input type="checkbox"
+                                               data-ng-disabled="!(ctrl.matchForm.data.status == null || ctrl.matchForm.data.status.name == 'NOT_STARTED')"
+                                               ng-model="ctrl.matchForm.data.teamAIsHome">
                                         <i class="input-helper"></i>
                                         Команда А хозяин?
                                     </label>
@@ -86,6 +91,7 @@
                                                ng-model="ctrl.matchForm.data.date" is-open="ctrl.openedDatePicker"
                                                datepicker-options="ctrl.dateOptions"
                                                popup-placement="top-left"
+                                               data-ng-disabled="!(ctrl.matchForm.data.status == null || ctrl.matchForm.data.status.name == 'NOT_STARTED')"
                                                placeholder="Выберите дату матча.."/>
                                     </div>
                                 </div>
@@ -94,8 +100,39 @@
                     </editable-list>
                 </form-control-messages>
 
+                <form-control-messages field-name="status" label="Тип" form="ctrl.form" ng-if="ctrl.statuses != null">
+                    <select chosen
+                            data-placeholder="Статус..."
+                            class="form-control"
+                            data-disable-search="true"
+                            data-allow-single-deselect="false"
+                            data-ng-model="ctrl.form.object.status"
+                            data-ng-options="r.title for r in ctrl.statuses track by r.name"
+                            data-ng-disabled="true">
+                        <option value=""></option>
+                    </select>
+                </form-control-messages>
+
+                <form-control-messages field-name="openDate"
+                                       ng-if="ctrl.form.object.openDate != null"
+                                       label="Дата открытия тура" form="ctrl.form">
+                        <p data-ng-bind="ctrl.form.object.openDate | date:'dd.MM.yyyy'"></p>
+                </form-control-messages>
+
+                <form-control-messages field-name="startDate"
+                                       ng-if="ctrl.form.object.startDate != null"
+                                       label="Дата начала тура" form="ctrl.form">
+                    <p data-ng-bind="ctrl.form.object.startDate | date:'dd.MM.yyyy'"></p>
+                </form-control-messages>
+
+                <form-control-messages field-name="finishDate"
+                                       ng-if="ctrl.form.object.finishDate != null"
+                                       label="Дата завершения тура" form="ctrl.form">
+                    <p data-ng-bind="ctrl.form.object.finishDate | date:'dd.MM.yyyy'"></p>
+                </form-control-messages>
+
                 <div>
-                    <button class="btn btn-primary waves-effect" data-ng-click="ctrl.save();">Сохранить</button>
+                    <button class="btn btn-primary waves-effect" data-ng-click="ctrl.extendedSave();">Сохранить</button>
                     <!--удалять можно только туры в кубке и те, что ещё не стартовали-->
                     <confirm-button
                             data-ng-if="ctrl.form.object.id != null && ctrl.listController.tournament.type.name == 'CUP' && ctrl.form.object.status.name == 'NOT_STARTED'"

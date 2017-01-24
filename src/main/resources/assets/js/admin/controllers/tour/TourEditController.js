@@ -10,33 +10,63 @@ export default class TourEditController extends BaseCrudController {
 
         const that = this;
 
+        // в туре хранится ID турнира и список матчей
+        that.form.object = {tournamentId: that.listController.tId, matchList: [], name: ""};
+
         that.matchForm = {};
         that.matchInitData = {teamAIsHome: true};
+
+        // параметры для datepicker-а
+        let moment = require("moment/js/moment");
         that.dateOptions = {
-            minDate: new Date(),
+            minDate: moment(moment()).add(1, 'day')
         };
         that.dateFormat = "dd.MM.yyyy";
 
         // загрузка игроков
         that.loadValues("players", () => {
             // заполним map-у игроков по id
-            let id2player = {};
-            angular.forEach(that.players, function (p) {
-                id2player[p.id] = p;
-            });
-            that.id2player = id2player;
+            that.id2player = super.getMapById(that.players);
         });
 
         // загрузка команд
-        that.loadValues("teams");
+        that.loadValues("teams", () => {
+            // заполним map-у команд по id
+            that.id2team = super.getMapById(that.teams);
+        });
+
+        // возможные статусы тура
+        that.loadValues("statuses");
+
     }
 
     formatMatch(item) {
-        return item.name;
+        return item.teamAIsHome ? (this.id2team[item.teamAId].name + " - " + this.id2team[item.teamBId].name)
+            : (this.id2team[item.teamBId].name + " - " + this.id2team[item.teamAId].name);
     }
 
     validateMatch(item, list) {
-        return {hasErrors: false};
+        let errors = {hasErrors: true};
+        if (item.data.teamAId == null) {
+            errors.teamAId = "Небходимо выбрать команду А";
+        }
+        if (item.data.teamBId == null) {
+            errors.teamBId = "Небходимо выбрать команду Б";
+        }
+        if (Object.keys(errors).length == 1) {
+            errors.hasErrors = false;
+        }
+
+        return errors;
+    }
+
+    extendedSave() {
+        const that = this;
+
+        // todo: форматировать дату
+
+        // вызываем сохранение объекта
+        that.save();
     }
 
     openDatePicker(event) {

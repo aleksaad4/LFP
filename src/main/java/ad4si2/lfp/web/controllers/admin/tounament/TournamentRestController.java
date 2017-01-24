@@ -171,7 +171,7 @@ public class TournamentRestController {
             return webUtils.successResponse("OK");
         } else {
             // нельзя удалить турнир, который уже настроен
-            return webUtils.errorResponse(EntityValidatorResult.validatorResult("Can't delete already configurated tournament", "tournament_can_t_delete_already_configurated"));
+            return webUtils.errorResponse(EntityValidatorResult.validatorResult("Can't delete already configurated tournament", "common.can_t_delete"));
         }
     }
 

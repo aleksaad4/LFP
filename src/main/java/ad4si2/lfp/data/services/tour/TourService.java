@@ -1,5 +1,6 @@
 package ad4si2.lfp.data.services.tour;
 
+import ad4si2.lfp.data.entities.football.Match;
 import ad4si2.lfp.data.entities.tour.Tour;
 import ad4si2.lfp.data.entities.tournament.Championship;
 import ad4si2.lfp.data.repositories.tour.TourRepository;
@@ -27,4 +28,24 @@ public interface TourService extends IAccountCRUDService<Tour, Long, TourReposit
      */
     @Nonnull
     List<Tour> findByTournamentIdAndDeletedFalse(final long tId);
+
+    /**
+     * Создание тура с указанным списком матчей
+     *
+     * @param tour      тур
+     * @param matchList список матчей
+     * @return созданный тур
+     */
+    @Nonnull
+    Tour create(@Nonnull final Tour tour, @Nonnull final List<Match> matchList);
+
+    /**
+     * Обновление тура с указанным списком матчей
+     *
+     * @param tour      тур
+     * @param matchList список матчей
+     * @return обновленный тур
+     */
+    @Nonnull
+    Tour update(@Nonnull final Tour tour, @Nonnull final List<Match> matchList);
 }

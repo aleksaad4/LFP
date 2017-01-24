@@ -71,7 +71,7 @@ public class Tour implements Serializable, IDeleted, IEntity<Long, Tour>, IAccou
     }
 
     public Tour(final long id, @Nonnull final String name, final long tournamentId,
-                @Nullable final Date openDate, @Nullable final Date startDate, @Nullable final Date finishDate, @Nonnull final TourStatus status) {
+                @Nullable final Date openDate, @Nullable final Date startDate, @Nullable final Date finishDate, @Nullable final TourStatus status) {
         this.id = id;
         this.name = name;
         this.tournamentId = tournamentId;
@@ -192,5 +192,17 @@ public class Tour implements Serializable, IDeleted, IEntity<Long, Tour>, IAccou
 
     public long getTournamentId() {
         return tournamentId;
+    }
+
+    public void setOpenDate(@Nullable final Date openDate) {
+        this.openDate = openDate;
+    }
+
+    public void setStartDate(@Nullable final Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setFinishDate(@Nullable final Date finishDate) {
+        this.finishDate = finishDate;
     }
 }

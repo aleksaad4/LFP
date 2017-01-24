@@ -4,7 +4,6 @@ import ad4si2.lfp.data.entities.account.Account;
 import ad4si2.lfp.data.entities.football.Match;
 import ad4si2.lfp.data.entities.forecast.Meeting;
 import ad4si2.lfp.data.entities.tour.TourStatus;
-import ad4si2.lfp.data.entities.tournament.Tournament;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,16 +21,15 @@ public class TourDTO {
     @Nullable
     private Account account;
 
-    @Nonnull
-    private Tournament tournament;
+    private long tournamentId;
 
-    @Nonnull
+    @Nullable
     private TourStatus status;
 
     @Nullable
     private List<Meeting> meetingList;
 
-    @Nullable
+    @Nonnull
     private List<Match> matchList = new ArrayList<>();
 
     @Nullable
@@ -44,15 +42,13 @@ public class TourDTO {
     private Date finishDate;
 
     public TourDTO(final long id, @Nonnull final String name, @Nullable final Account account,
-                   @Nonnull final Tournament tournament, @Nonnull final TourStatus status,
+                   final long tournamentId, @Nonnull final TourStatus status,
                    @Nullable final Date openDate, @Nullable final Date startDate, @Nullable final Date finishDate) {
         this.id = id;
         this.name = name;
         this.account = account;
-        this.tournament = tournament;
+        this.tournamentId = tournamentId;
         this.status = status;
-        this.meetingList = meetingList;
-        this.matchList = matchList;
         this.openDate = openDate;
         this.startDate = startDate;
         this.finishDate = finishDate;
@@ -63,7 +59,7 @@ public class TourDTO {
     }
 
     public void setMatchList(@Nullable final List<Match> matchList) {
-        this.matchList = matchList;
+        this.matchList = matchList != null ? matchList : new ArrayList<>();
     }
 
     public long getId() {
@@ -80,12 +76,11 @@ public class TourDTO {
         return account;
     }
 
-    @Nonnull
-    public Tournament getTournament() {
-        return tournament;
+    public long getTournamentId() {
+        return tournamentId;
     }
 
-    @Nonnull
+    @Nullable
     public TourStatus getStatus() {
         return status;
     }
@@ -95,7 +90,7 @@ public class TourDTO {
         return meetingList;
     }
 
-    @Nullable
+    @Nonnull
     public List<Match> getMatchList() {
         return matchList;
     }

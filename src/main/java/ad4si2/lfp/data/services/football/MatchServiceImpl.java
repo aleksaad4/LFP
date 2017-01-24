@@ -5,6 +5,7 @@ import ad4si2.lfp.data.entities.football.MatchResult;
 import ad4si2.lfp.data.entities.football.MatchStatus;
 import ad4si2.lfp.data.entities.football.Team;
 import ad4si2.lfp.data.entities.tour.Tour;
+import ad4si2.lfp.data.entities.tour.TourStatus;
 import ad4si2.lfp.data.repositories.football.MatchRepository;
 import ad4si2.lfp.data.services.tour.TourService;
 import ad4si2.lfp.utils.collection.CollectionUtils;
@@ -83,6 +84,24 @@ public class MatchServiceImpl implements MatchService, ChangesEventsListener {
                 .checkLinkedValue("teamBId", entry, entry.getTeamBId(), (linkedId) -> teamService.findById(linkedId, false), false)
                 .checkLinkedValue("tourId", entry, entry.getTourId(), (linkedId) -> tourService.findById(linkedId, false), false);
 
+        if (forUpdate) {
+            // если тур уже открыт, то нельзя изменить участников матча
+            final Tour tour = tourService.getById(entry.getTourId(), false);
+            final Match match = getById(entry.getId(), false);
+
+            // если тур в состоянии отличном от NOT_STARTED, то нельзя изменять участников матча
+            if (tour.getStatus() != TourStatus.NOT_STARTED) {
+                result.checkNotModify("teamAId", entry, match, Match::getTeamAId);
+                result.checkNotModify("teamBId", entry, match, Match::getTeamBId);
+            }
+
+            // если матч в состоянии отличном от NOT_STARTEd, то уже нельзя поменять хозяев матча и дату
+            if (entry.getStatus() != MatchStatus.NOT_STARTED) {
+                result.checkNotModify("date", entry, match, Match::getDate);
+                result.checkNotModify("teamAIsHome", entry, match, Match::isTeamAIsHome);
+            }
+        }
+
         return result;
     }
 
@@ -95,8 +114,12 @@ public class MatchServiceImpl implements MatchService, ChangesEventsListener {
                 // нельзя удалить команду, если в системе уже есть матчи с этой командой
                 .doIf(Team.class, ChangeEvent.ChangeEventType.PRE_DELETE,
                         dcc(l -> repository.findByTeamAIdOrTeamBId(l, l).stream().filter(m -> !m.isDeleted()).collect(Collectors.toList()), res))
-                // нельзя удалить тур, если есть матчи в этом туре
-                .doIf(Tour.class, ChangeEvent.ChangeEventType.PRE_DELETE, dcc(l -> repository.findByTourIdAndDeletedFalse(l), res))
+                // после удаления тура удаляем и все матчи в этом туре
+                // тур можно удалять только если он ещё не в открыт, так что никаких связных сущностей с этими матчами ещё не будет
+                .doIf(Tour.class, ChangeEvent.ChangeEventType.POST_DELETE, t -> {
+                    final List<Match> matches = findByTourIdAndDeletedFalse(t.getId());
+                    delete(matches);
+                })
                 // нельзя удалить результат матча, если он уже завершен
                 .doIf(MatchResult.class, ChangeEvent.ChangeEventType.PRE_DELETE, mr -> {
                     final Match match = getById(mr.getMatchId(), false);
@@ -111,7 +134,7 @@ public class MatchServiceImpl implements MatchService, ChangesEventsListener {
     @Nonnull
     @Override
     public Set<ChangeEvent.ChangeEventType> getEventTypes() {
-        return CollectionUtils.asSet(ChangeEvent.ChangeEventType.PRE_DELETE);
+        return CollectionUtils.asSet(ChangeEvent.ChangeEventType.PRE_DELETE, ChangeEvent.ChangeEventType.POST_DELETE);
     }
 
     @Nonnull

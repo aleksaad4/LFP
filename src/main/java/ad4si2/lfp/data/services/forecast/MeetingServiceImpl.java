@@ -88,8 +88,12 @@ public class MeetingServiceImpl implements MeetingService, ChangesEventsListener
         final EntityValidatorResult res = new EntityValidatorResult();
 
         event
-                // нельзя удалить тур, если есть встречи в этом туре
-                .doIf(Tour.class, ChangeEvent.ChangeEventType.PRE_DELETE, dcc(l -> repository.findByTourIdAndDeletedFalse(l), res));
+                // после удаления тура удаляем и все встречи в этом туре
+                // тур можно удалять только если он ещё не в открыт, так что никаких связных сущностей с этими встречами ещё не будет
+                .doIf(Tour.class, ChangeEvent.ChangeEventType.POST_DELETE, t -> {
+                    final List<Meeting> meetings = findByTourIdAndDeletedFalse(t.getId());
+                    delete(meetings);
+                });
 
         return res;
     }
@@ -97,7 +101,7 @@ public class MeetingServiceImpl implements MeetingService, ChangesEventsListener
     @Nonnull
     @Override
     public Set<ChangeEvent.ChangeEventType> getEventTypes() {
-        return CollectionUtils.asSet(ChangeEvent.ChangeEventType.PRE_DELETE);
+        return CollectionUtils.asSet(ChangeEvent.ChangeEventType.POST_DELETE);
     }
 
     @Nonnull

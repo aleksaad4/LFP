@@ -63,6 +63,11 @@ public class TourRestController {
         return webUtils.successResponse(players);
     }
 
+    @RequestMapping(value = "{tId}/statuses", method = RequestMethod.GET)
+    public AjaxResponse statuses(@PathVariable("tId") @Nonnull final Long tId) {
+        return webUtils.successResponse(TourStatus.values());
+    }
+
     @RequestMapping(value = "{tId}/teams", method = RequestMethod.GET)
     public AjaxResponse teams(@PathVariable("tId") @Nonnull final Long tId) {
         // список команд
@@ -86,7 +91,7 @@ public class TourRestController {
         return webUtils.successResponse(dto);
     }
 
-    @RequestMapping(value = "/{tId}/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{tId}", method = RequestMethod.POST)
     public AjaxResponse create(@RequestBody @Nonnull final TourDTO dto) {
         // тур
         final Tour t = convertFromDTO(dto);
@@ -99,10 +104,10 @@ public class TourRestController {
         }
 
         // сохранение в БД
-        // final Tournament created = tourService.create(t, dto.getPlayers());
-        // final TournamentDTO createdDto = convertToDTO(created);
+        final Tour created = tourService.create(t, dto.getMatchList());
+        final TourDTO createdDto = convertToDTO(created);
 
-        return webUtils.successResponse(t);
+        return webUtils.successResponse(createdDto);
     }
 
     @RequestMapping(value = "/{tId}", method = RequestMethod.PATCH)
@@ -117,10 +122,10 @@ public class TourRestController {
         }
 
         // сохранение в БД
-        // final Tournament updated = tournamentService.update(t, dto.getPlayers());
-        // final TournamentDTO updatedDto = convertToDTO(updated);
+        final Tour updated = tourService.update(t, dto.getMatchList());
+        final TourDTO updatedDto = convertToDTO(updated);
 
-        return webUtils.successResponse(t);
+        return webUtils.successResponse(updatedDto);
     }
 
     @RequestMapping(value = "/{tId}/{id}", method = RequestMethod.DELETE)
@@ -134,14 +139,14 @@ public class TourRestController {
             return webUtils.successResponse("OK");
         } else {
             // в другом случае удалить нельзя
-            return webUtils.errorResponse(EntityValidatorResult.validatorResult("Can't delete tour", "tournament_can_t_delete"));
+            return webUtils.errorResponse(EntityValidatorResult.validatorResult("Can't delete tour", "common.can_t_delete"));
         }
     }
 
     @Nonnull
     private Tour convertFromDTO(@Nonnull final TourDTO dto) {
-        return new Tour(dto.getId(), dto.getName(), dto.getTournament().getId(), dto.getOpenDate(),
-                dto.getStartDate(), dto.getFinishDate(), dto.getStatus());
+        return new Tour(dto.getId(), dto.getName(), dto.getTournamentId(), dto.getOpenDate(),
+                dto.getStartDate(), dto.getFinishDate(), dto.getStatus() != null ? dto.getStatus() : TourStatus.NOT_STARTED);
     }
 
     @Nonnull
@@ -149,7 +154,7 @@ public class TourRestController {
         // создадим dto
         final Tournament tournament = tournamentService.getById(t.getTournamentId(), false);
         final TourDTO dto = new TourDTO(t.getId(), t.getName(), t.getAccountId() != null ? accountService.findById(t.getId(), true) : null,
-                tournament, t.getStatus(), t.getOpenDate(), t.getStartDate(), t.getFinishDate());
+                t.getTournamentId(), t.getStatus(), t.getOpenDate(), t.getStartDate(), t.getFinishDate());
 
         // проставляем список матчей
         dto.setMatchList(matchService.findByTourIdAndDeletedFalse(t.getId()));
@@ -190,7 +195,7 @@ public class TourRestController {
         for (final Tour tour : tours) {
             final Tournament tournament = id2tournament.get(tour.getTournamentId());
             final TourDTO dto = new TourDTO(tour.getId(), tour.getName(), tour.getAccountId() != null ? id2account.get(tour.getAccountId()) : null,
-                    tournament, tour.getStatus(), tour.getOpenDate(), tour.getStartDate(), tour.getFinishDate());
+                    tour.getTournamentId(), tour.getStatus(), tour.getOpenDate(), tour.getStartDate(), tour.getFinishDate());
             // проставляем список матчей
             dto.setMatchList(tour2match.get(tour.getId()));
             // проставляем список встреч для турнира типа ЧЕМПИОНАТ

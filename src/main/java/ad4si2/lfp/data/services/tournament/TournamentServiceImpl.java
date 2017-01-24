@@ -228,7 +228,7 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
     public void delete(@Nonnull final Tournament t) {
         // нельзя удалить турнир, который уже не находится на стадии настройки
         if (!t.getStatus().isConfiguration()) {
-            throw new ValidationException(EntityValidatorResult.validatorResult("Can't delete player", "common.can_t_delete"));
+            throw new ValidationException(EntityValidatorResult.validatorResult("Can't delete tour", "common.can_t_delete"));
         }
 
         TournamentService.super.delete(t);
