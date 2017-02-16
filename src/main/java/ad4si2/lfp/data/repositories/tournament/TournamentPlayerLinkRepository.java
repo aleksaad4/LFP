@@ -22,4 +22,7 @@ public interface TournamentPlayerLinkRepository extends JpaRepository<Tournament
 
     @Nonnull
     List<TournamentPlayerLink> findByPlayerId(final long playerId);
+
+    @Nonnull
+    List<TournamentPlayerLink> findByTournamentIdInAndPlayerId(final Collection<Long> tournamentIds, final long playerId);
 }

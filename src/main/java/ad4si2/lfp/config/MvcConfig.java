@@ -60,7 +60,8 @@ public class MvcConfig {
 
                 registry.addInterceptor(authInterceptor)
                         .addPathPatterns("/rest/account/**")
-                        .addPathPatterns("/rest/admin/**");
+                        .addPathPatterns("/rest/admin/**")
+                        .addPathPatterns("/rest/user/**");
             }
 
             @Override

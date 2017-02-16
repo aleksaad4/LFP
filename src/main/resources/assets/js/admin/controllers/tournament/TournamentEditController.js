@@ -1,4 +1,4 @@
-import {BaseCrudController} from "./../base/BaseCrudController";
+import {BaseCrudController} from "./../../../shared/controllers/base/BaseCrudController";
 
 export default class TournamentEditController extends BaseCrudController {
 

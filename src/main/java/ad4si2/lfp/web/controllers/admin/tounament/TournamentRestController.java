@@ -59,6 +59,15 @@ public class TournamentRestController {
         return finishStep(id, tId -> tournamentService.toSetupTourList(tId));
     }
 
+    /**
+     * Функция завершения третьего (и последнего) шага создания турнира
+     * После завершения этого шага турнир более не находится на этапе конфигурации
+     */
+    @RequestMapping(value = "/{id}/finish3Step", method = RequestMethod.GET)
+    public AjaxResponse finishThirdStep(@PathVariable("id") @Nonnull final Long id) {
+        return finishStep(id, tId -> tournamentService.finishCreateTournament(tId));
+    }
+
     @RequestMapping(value = "/types", method = RequestMethod.GET)
     public AjaxResponse types() {
         return webUtils.successResponse(new TournamentType[]{TournamentType.CHAMPIONSHIP, TournamentType.CUP});
@@ -203,7 +212,7 @@ public class TournamentRestController {
         switch (dto.getType()) {
             case CHAMPIONSHIP:
                 t = new Championship(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),
-                        dto.getName(),  dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS,
+                        dto.getName(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS,
                         dto.getLeague() != null ? dto.getLeague().getId() : null, dto.getRoundCount(), dto.getTourCount());
 
                 // если выбрана лига, но ещё не задано количество туров - то проставим его

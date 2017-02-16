@@ -12,6 +12,7 @@ import ad4si2.lfp.data.services.football.MatchService;
 import ad4si2.lfp.data.services.forecast.TourPredictService;
 import ad4si2.lfp.data.services.tournament.TournamentService;
 import ad4si2.lfp.utils.collection.CollectionUtils;
+import ad4si2.lfp.utils.date.DateUtils;
 import ad4si2.lfp.utils.events.data.ChangeEvent;
 import ad4si2.lfp.utils.events.data.ChangesEventDispatcher;
 import ad4si2.lfp.utils.events.data.ChangesEventsListener;
@@ -74,6 +75,33 @@ public class TourServiceImpl implements TourService, ChangesEventsListener {
     @Override
     public List<Tour> findByTournamentIdAndDeletedFalse(final long tId) {
         return repository.findByTournamentIdAndDeletedFalse(tId);
+    }
+
+    @Nonnull
+    @Override
+    public List<Tour> findByOpenDateAndStatus(@Nonnull final Date date, @Nonnull final TourStatus status) {
+        final Pair<Date, Date> dates = DateUtils.getDayDates(date);
+        return repository.findByOpenDateBeforeAndDeletedFalseAndStatus(dates.getRight(), status);
+    }
+
+    @Nonnull
+    @Override
+    public List<Tour> findByStartDateAndStatus(@Nonnull final Date date, @Nonnull final TourStatus status) {
+        final Pair<Date, Date> dates = DateUtils.getDayDates(date);
+        return repository.findByStartDateBeforeAndDeletedFalseAndStatus(dates.getRight(), status);
+    }
+
+    @Nonnull
+    @Override
+    public List<Tour> findByFinishDateAndStatus(@Nonnull final Date date, @Nonnull final TourStatus status) {
+        final Pair<Date, Date> dates = DateUtils.getDayDates(date);
+        return repository.findByFinishDateBeforeAndDeletedFalseAndStatus(dates.getRight(), status);
+    }
+
+    @Nonnull
+    @Override
+    public List<Tour> findByTournamentIdsAndStatus(@Nonnull final Set<Long> tournamentIds, @Nonnull final TourStatus status) {
+        return repository.findByTournamentIdInAndStatusAndDeletedFalse(tournamentIds, status);
     }
 
     @Nonnull

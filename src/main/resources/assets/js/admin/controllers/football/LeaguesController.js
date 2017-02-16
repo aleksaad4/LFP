@@ -1,6 +1,6 @@
 
 import urls from "../../urls";
-import {BaseListController} from "./../base/BaseListController";
+import {BaseListController} from "./../../../shared/controllers/base/BaseListController";
 
 export default class LeaguesController extends BaseListController {
 

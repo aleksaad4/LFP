@@ -1,8 +1,6 @@
 import "expose?$!expose?jQuery!jquery";
-import "expose?$!expose?moment!moment/js/moment";
 
 import "./skin/less/vendors/bootstrap/js/bootstrap.min.js";
-import "./skin/less/skin.less";
 
 import "angular/js/angular";
 import "angular-animate/js/angular-animate";
@@ -12,7 +10,12 @@ import "angular-bootstrap-colorpicker/css/colorpicker";
 import "angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module";
 
 import "angular-bootstrap-slider/js/slider";
-import "angular-chosen-localytics/js/chosen";
+
+import "angular-chosen-localytics/js/chosen.jquery";
+import "angular-chosen-localytics/js/chosen.proto";
+import "angular-chosen-localytics/js/chosen-fix";
+import "angular-chosen-localytics/css/chosen";
+
 import "angular-cookies/js/angular-cookies";
 
 import "angular-datatables/css/angular-datatables.css";
@@ -27,8 +30,8 @@ import "angular-farbtastic/js/angular-farbtastic";
 import "angular-file-saver/js/angular-file-saver.bundle";
 import "angular-file-upload/js/angular-file-upload";
 
-import "angular-loading-bar/css/loading-bar";
-import "angular-loading-bar/js/loading-bar";
+// import "angular-loading-bar/css/loading-bar";
+// import "angular-loading-bar/js/loading-bar";
 
 import "angular-loopify-number-picker/dist/loopify-ui-number-picker.js";
 import "angular-loopify-number-picker/dist/loopify-ui-number-picker.min.css";
@@ -119,6 +122,7 @@ import "material-design-icons/material-icons";
 
 import "mediaelement/css/mediaelementplayer-fixed";
 import "mediaelement/js/mediaelement-and-player";
+import "moment/js/moment";
 
 // import "ng-table/js/ng-table.min.js";
 // import "ng-table/css/ng-table.min.css";
@@ -164,3 +168,7 @@ import "Waves/js/waves.min.js";
 
 import "expose?$!expose?vis!vis/js/vis.js";
 import "vis/css/vis-fixed.css";
+
+import "fileinput/js/fileinput.min";
+
+import "./skin/less/skin.less";

@@ -1,9 +1,9 @@
-<header id="header" data-current-skin={{rCtrl.currentSkin}} data-ng-include="'/pages/admin/header.html'"
+<header id="header" data-current-skin={{rCtrl.currentSkin}} data-ng-include="'/pages/shared/header.html'"
         data-ng-controller="HeaderController as hCtrl">
 </header>
 
 <section id="main">
-    <aside id="sidebar" data-ng-include="'/pages/admin/sideMenu.html'"
+    <aside id="sidebar" data-ng-include="'/pages/shared/sideMenu.html'"
            data-ng-class="{'toggled': rCtrl.sideMenu}"
            data-ng-controller="MenuController as mCtrl"></aside>
 
@@ -15,4 +15,4 @@
     </section>
 </section>
 
-<footer id="footer" data-ng-include="'/pages/admin/footer.html'"></footer>
+<footer id="footer" data-ng-include="'/pages/shared/footer.html'"></footer>

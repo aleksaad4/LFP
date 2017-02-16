@@ -1,6 +1,7 @@
 package ad4si2.lfp.data.repositories.tournament;
 
 import ad4si2.lfp.data.entities.tournament.Tournament;
+import ad4si2.lfp.data.entities.tournament.TournamentStatus;
 import ad4si2.lfp.utils.data.RepositoryWithDeleted;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +17,6 @@ public interface TournamentRepository extends RepositoryWithDeleted<Tournament, 
     @Nonnull
     List<Tournament> findByLeagueIdAndDeletedFalse(final long leagueId);
 
+    @Nonnull
+    List<Tournament> findByStatusAndDeletedFalse(@Nonnull final TournamentStatus status);
 }

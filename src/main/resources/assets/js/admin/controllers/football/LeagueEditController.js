@@ -1,4 +1,4 @@
-import {BaseCrudController} from "./../base/BaseCrudController";
+import {BaseCrudController} from "./../../../shared/controllers/base/BaseCrudController";
 import urls from "../../urls";
 
 export default class CountryEditController extends BaseCrudController {

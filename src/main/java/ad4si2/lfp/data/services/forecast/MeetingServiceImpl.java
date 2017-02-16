@@ -15,9 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -66,6 +68,17 @@ public class MeetingServiceImpl implements MeetingService, ChangesEventsListener
     @Override
     public List<Meeting> findByTourIdInAndDeletedFalse(final Set<Long> tourIds) {
         return repository.findByTourIdInAndDeletedFalse(tourIds);
+    }
+
+    @Nullable
+    @Override
+    public Meeting findByTourIdAndPlayer(final long tourId, final long playerId) {
+        final List<Meeting> meetings = repository.findByTourIdAndDeletedFalse(tourId).stream().filter(m -> m.getPlayerAId() == playerId || m.getPlayerBId() == playerId).collect(Collectors.toList());
+        if (meetings.isEmpty()) {
+            return null;
+        } else {
+            return meetings.get(0);
+        }
     }
 
     @Nonnull

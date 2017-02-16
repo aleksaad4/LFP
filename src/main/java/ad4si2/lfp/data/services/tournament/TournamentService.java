@@ -3,6 +3,7 @@ package ad4si2.lfp.data.services.tournament;
 import ad4si2.lfp.data.entities.account.Player;
 import ad4si2.lfp.data.entities.tournament.Tournament;
 import ad4si2.lfp.data.entities.tournament.TournamentPlayerLink;
+import ad4si2.lfp.data.entities.tournament.TournamentStatus;
 import ad4si2.lfp.data.repositories.tournament.TournamentRepository;
 import ad4si2.lfp.utils.data.IAccountCRUDService;
 
@@ -25,8 +26,14 @@ public interface TournamentService extends IAccountCRUDService<Tournament, Long,
     List<TournamentPlayerLink> findTournamentPlayerLinks(@Nonnull final Set<Long> tournamentIds);
 
     @Nonnull
+    List<Tournament> findByStatusAndPlayer(@Nonnull final TournamentStatus status, final long playerId);
+
+    @Nonnull
     TournamentStatusModifyResult toSetupLeagueAndTourCountStatus(final long tournamentId);
 
     @Nonnull
     TournamentStatusModifyResult toSetupTourList(final long tournamentId);
+
+    @Nonnull
+    TournamentStatusModifyResult finishCreateTournament(final long tournamentId);
 }

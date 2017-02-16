@@ -44,6 +44,16 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         return super.preHandle(request, response, handler);
     }
 
+    @Nonnull
+    public Account currentAccount(@Nonnull final HttpServletRequest request) {
+        final Account account = getAccount(request);
+        if (account == null) {
+            throw new UnauthorizedException("common.access_denied", "Can't authorize account");
+        } else {
+            return account;
+        }
+    }
+
     @Nullable
     public Account getAccount(final HttpServletRequest request) {
         // получаем аккаунт из сессии

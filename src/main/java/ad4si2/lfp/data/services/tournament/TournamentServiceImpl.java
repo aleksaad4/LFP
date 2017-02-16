@@ -5,6 +5,7 @@ import ad4si2.lfp.data.entities.account.Player;
 import ad4si2.lfp.data.entities.football.League;
 import ad4si2.lfp.data.entities.forecast.Meeting;
 import ad4si2.lfp.data.entities.tour.Tour;
+import ad4si2.lfp.data.entities.tour.TourStatus;
 import ad4si2.lfp.data.entities.tournament.*;
 import ad4si2.lfp.data.repositories.tournament.TournamentPlayerLinkRepository;
 import ad4si2.lfp.data.repositories.tournament.TournamentRepository;
@@ -27,10 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,6 +97,21 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
 
     @Nonnull
     @Override
+    public List<Tournament> findByStatusAndPlayer(@Nonnull final TournamentStatus status, final long playerId) {
+        // находим все турниры в указанном статусе
+        final List<Tournament> tournaments = repository.findByStatusAndDeletedFalse(status);
+
+        // затем находим из них все турниры, в которых участвует указанный игрок
+        final Set<Long> tIds = tournaments.stream().map(Tournament::getId).collect(Collectors.toSet());
+        final List<TournamentPlayerLink> tp = tournamentPlayerLinkRepository.findByTournamentIdInAndPlayerId(tIds, playerId);
+
+        // id турниров в которых, участвует указанный игрок
+        final Set<Long> playerTournaments = tp.stream().map(TournamentPlayerLink::getTournamentId).collect(Collectors.toSet());
+        return tournaments.stream().filter(t -> playerTournaments.contains(t.getId())).collect(Collectors.toList());
+    }
+
+    @Nonnull
+    @Override
     public TournamentStatusModifyResult toSetupLeagueAndTourCountStatus(final long tournamentId) {
         // проверим, что все добавленные игроки активны
         final Set<Long> playerIds = findTournamentPlayerLinks(tournamentId).stream().map(TournamentPlayerLink::getPlayerId).collect(Collectors.toSet());
@@ -116,6 +129,7 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
         }
 
         // если всё хорошо, то изменяем статус турнира на 'CONFIGURATION_TOUR_COUNT_SETTINGS'
+        // делаем апдейт так, чтобы разлетелись ивенты об обновлении
         final Tournament forUpdate = t.copy();
         forUpdate.setStatus(TournamentStatus.CONFIGURATION_TOUR_COUNT_SETTINGS);
         final Tournament updated = update(forUpdate);
@@ -162,6 +176,7 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
         }
 
         // если всё хорошо, то изменяем статус турнира на 'CONFIGURATION_TOUR_COUNT_SETTINGS'
+        // делаем апдейт так, чтобы разлетелись ивенты об обновлении
         final Tournament forUpdate = t.copy();
         forUpdate.setStatus(TournamentStatus.CONFIGURATION_TOUR_LIST_SETTINGS);
         final Tournament updated = update(forUpdate);
@@ -178,6 +193,35 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
             // создаём встречи
             meetingService.create(meetings);
         }
+
+        return TournamentStatusModifyResult.success(updated);
+    }
+
+    @Override
+    @Nonnull
+    public TournamentStatusModifyResult finishCreateTournament(final long tournamentId) {
+        final Tournament t = getById(tournamentId, false);
+
+        // проверим, что даты начала всех туров в турнире не ранее чем 'ЗАВТРА', чтобы все успели сделать прогнозы
+        final List<Tour> tours = tourService.findByTournamentIdAndDeletedFalse(t.getId());
+        final Calendar c = Calendar.getInstance();
+        final Date now = new Date();
+        for (final Tour tour : tours) {
+            if (tour.getStartDate() != null) {
+                c.setTime(tour.getStartDate());
+                c.add(Calendar.DAY_OF_YEAR, -1);
+                if (c.getTime().before(now)) {
+                    return TournamentStatusModifyResult.error(EntityValidatorResult.validatorResult("Incorrect tour [" + tour.getId() + " date]",
+                            "tournament.tour_dates_incorrect"));
+                }
+            }
+        }
+
+        // если всё хорошо, то изменяем статус турнира на 'CREATED'
+        // делаем апдейт так, чтобы разлетелись ивенты об обновлении
+        final Tournament forUpdate = t.copy();
+        forUpdate.setStatus(TournamentStatus.CREATED);
+        final Tournament updated = update(forUpdate);
 
         return TournamentStatusModifyResult.success(updated);
     }
@@ -322,6 +366,18 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
                     final Tournament tournament = getById(t.getTournamentId(), false);
                     if (tournament.getType() == TournamentType.CHAMPIONSHIP && !tournament.getStatus().isConfiguration()) {
                         res.addError(new EntityValidatorError("Can't delete [" + t + "]", "common.can_t_delete"));
+                    }
+                })
+                .doIf(Tour.class, ChangeEvent.ChangeEventType.PRE_UPDATE, (t, oldT) -> {
+                    // если происходит открытие тура, а турнир не находится в статусе 'PROGRESS', то переводим его в этот статус
+                    if (oldT.getStatus() != TourStatus.OPEN && t.getStatus() == TourStatus.OPEN) {
+                        final Tournament tournament = getById(t.getTournamentId(), false);
+                        if (tournament.getStatus() != TournamentStatus.PROGRESS) {
+                            // начинаем турнир
+                            final Tournament forUpdate = tournament.copy();
+                            forUpdate.setStatus(TournamentStatus.PROGRESS);
+                            update(forUpdate);
+                        }
                     }
                 });
 

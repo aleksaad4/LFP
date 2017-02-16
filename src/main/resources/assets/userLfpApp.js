@@ -54,7 +54,6 @@ const initAngularUserLfpApp = function () {
 
             ngMethod(name, controller);
         } else {
-            console.warn("Component '" + controllerName + "' are empty");
         }
     }
 
@@ -64,10 +63,7 @@ const initAngularUserLfpApp = function () {
      * @param items загружаемые файлы
      */
     function module(app, items) {
-        // console.info("module");
         items.keys().forEach(function (fileName) {
-
-            // console.info(fileName);
 
             const resource = items(fileName);
 
@@ -82,7 +78,6 @@ const initAngularUserLfpApp = function () {
             } else if (fileName.match(/.*Routes\.js$/)) {
                 // ignore route - must be included manually
             } else {
-                console.debug("File '" + fileName + "' are ignored");
             }
         });
     }
@@ -113,10 +108,9 @@ const initAngularUserLfpApp = function () {
         "angularRandomString",
         "luegg.directives",
         "ui.bootstrap-slider",
-        'angular-loading-bar',
-        'oc.lazyLoad',
         'nouislider',
-        'ngTable'
+        'localytics.directives',
+        // 'ngTable'
     ]);
 
     // Инициазизация всех компонент (контролеров, директив etc) – package by layer
@@ -128,7 +122,7 @@ const initAngularUserLfpApp = function () {
 
     //shared компоненты
     populate(app.controller, require.context("./js/shared/controllers/", true, /\.js$/));
-    populate(app.controller, require.context("./js/shared/components/", true, /\.js$/));
+    populate(app.component, require.context("./js/shared/components/", true, /\.js$/));
     populate(app.directive, require.context("./js/shared/directives/", true, /\.js$/));
     populate(app.service, require.context("./js/shared/services/", true, /\.js$/));
     populate(app.filter, require.context("./js/shared/filters/", true, /\.js$/));

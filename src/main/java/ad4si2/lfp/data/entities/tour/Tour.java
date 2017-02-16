@@ -205,4 +205,8 @@ public class Tour implements Serializable, IDeleted, IEntity<Long, Tour>, IAccou
     public void setFinishDate(@Nullable final Date finishDate) {
         this.finishDate = finishDate;
     }
+
+    public void setStatus(@Nonnull final TourStatus status) {
+        this.status = status;
+    }
 }

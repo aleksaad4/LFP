@@ -132,6 +132,12 @@
                     Перейти к управлению турами в турнире
                 </button>
 
+                <button class="btn waves-effect btn-success m-t-15"
+                        data-ng-click="ctrl.finishNStep(3)"
+                        data-ng-if="ctrl.isStepGreaterThanN(3)">
+                    Завершить конфигурацию турнира
+                </button>
+
                 <form-messages class="m-t-15" form="ctrl.form"></form-messages>
             </div>
         </div>

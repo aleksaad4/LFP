@@ -31,7 +31,11 @@ public class MenuBuilder {
 
             return items;
         } else {
-            return new ArrayList<>();
+            final List<MenuItem> items = new ArrayList<>();
+
+            // прогнозы
+            items.add(new MenuItem("Прогнозы", "predicts", ""));
+            return items;
         }
     }
 }
