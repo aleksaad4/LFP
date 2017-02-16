@@ -43,6 +43,7 @@ public abstract class Account implements Serializable, IDeleted, IEntity<Long, A
     @Column(nullable = false)
     private String password;
 
+    @Nonnull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountRole role;
@@ -67,10 +68,20 @@ public abstract class Account implements Serializable, IDeleted, IEntity<Long, A
     @Nullable
     private Account creatorAccount;
 
-    public Account() {
+    protected Account() {
     }
 
-    public Account(@Nonnull final String login, @Nonnull final String password, final AccountRole role) {
+    public Account(@Nonnull final String login, @Nonnull final String password, @Nonnull final AccountRole role,
+                   @Nullable final String name, @Nullable final String avatarUrl, @Nullable final String email) {
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.name = name;
+        this.avatarUrl = avatarUrl;
+        this.email = email;
+    }
+
+    public Account(@Nonnull final String login, @Nonnull final String password, @Nonnull final AccountRole role) {
         this.login = login;
         this.password = password;
         this.role = role;
@@ -155,6 +166,7 @@ public abstract class Account implements Serializable, IDeleted, IEntity<Long, A
         return password;
     }
 
+    @Nonnull
     public AccountRole getRole() {
         return role;
     }
@@ -172,6 +184,14 @@ public abstract class Account implements Serializable, IDeleted, IEntity<Long, A
     @Nullable
     public String getEmail() {
         return email;
+    }
+
+    public void setRole(@Nonnull final AccountRole role) {
+        this.role = role;
+    }
+
+    public void setBlocked(final boolean blocked) {
+        this.blocked = blocked;
     }
 
     @Override

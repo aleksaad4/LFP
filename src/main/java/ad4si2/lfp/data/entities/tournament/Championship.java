@@ -26,7 +26,7 @@ public class Championship extends Tournament {
     @Column
     private Integer tourCount;
 
-    public Championship() {
+    protected Championship() {
     }
 
     public Championship(final Championship other) {
@@ -36,9 +36,16 @@ public class Championship extends Tournament {
     }
 
     public Championship(final long id, @Nonnull final Date creationDate, @Nonnull final String name,
-                        @Nonnull final TournamentType type, @Nonnull final TournamentStatus status, @Nullable final Long leagueId,
+                        @Nonnull final TournamentStatus status, @Nullable final Long leagueId,
                         @Nullable final Integer roundCount, @Nullable final Integer tourCount) {
-        super(id, creationDate, name, type, status, leagueId);
+        super(id, creationDate, name, TournamentType.CHAMPIONSHIP, status, leagueId);
+        this.roundCount = roundCount;
+        this.tourCount = tourCount;
+    }
+
+    public Championship(@Nonnull final String name,
+                        @Nullable final Long leagueId, @Nullable final Integer roundCount, @Nullable final Integer tourCount) {
+        super(name, TournamentType.CHAMPIONSHIP, leagueId);
         this.roundCount = roundCount;
         this.tourCount = tourCount;
     }
@@ -48,13 +55,13 @@ public class Championship extends Tournament {
         return roundCount;
     }
 
+    public void setRoundCount(@Nullable final Integer roundCount) {
+        this.roundCount = roundCount;
+    }
+
     @Nullable
     public Integer getTourCount() {
         return tourCount;
-    }
-
-    public void setRoundCount(@Nullable final Integer roundCount) {
-        this.roundCount = roundCount;
     }
 
     public void setTourCount(@Nullable final Integer tourCount) {

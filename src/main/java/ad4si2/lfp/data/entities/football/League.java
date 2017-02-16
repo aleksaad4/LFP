@@ -62,7 +62,19 @@ public class League implements Serializable, IDeleted, IEntity<Long, League>, IA
     @Nullable
     private Boolean enabled;
 
-    public League() {
+    protected League() {
+    }
+
+    public League(@Nonnull final String name, final String imageUrl) {
+        this.name = name;
+        this.imageUrl = imageUrl;
+    }
+
+    public League(@Nonnull final String name, @Nullable final String imageUrl, @Nullable final Long countryId, @Nullable final Integer tourCount) {
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.countryId = countryId;
+        this.tourCount = tourCount;
     }
 
     public League(@Nonnull final League other) {

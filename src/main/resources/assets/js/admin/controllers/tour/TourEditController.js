@@ -40,11 +40,17 @@ export default class TourEditController extends BaseCrudController {
 
     }
 
+    /**
+     * Форматирование матча в строку для отображения на интерфейсе
+     */
     formatMatch(item) {
         return item.teamAIsHome ? (this.id2team[item.teamAId].name + " - " + this.id2team[item.teamBId].name)
             : (this.id2team[item.teamBId].name + " - " + this.id2team[item.teamAId].name);
     }
 
+    /**
+     * Валидация матча перед добавлением в список матчей
+     */
     validateMatch(item, list) {
         let errors = {hasErrors: true};
         if (item.data.teamAId == null) {
@@ -56,14 +62,20 @@ export default class TourEditController extends BaseCrudController {
         if (Object.keys(errors).length == 1) {
             errors.hasErrors = false;
         }
-
         return errors;
     }
 
     extendedSave() {
         const that = this;
 
-        // todo: форматировать дату
+        // форматируем дату матчей в timestamp перед отправкой на сервер
+        if (that.form.object.matchList != null) {
+            angular.forEach(that.form.object.matchList, (match) => {
+                if (match.date != null) {
+                    match.date = match.date.getTime();
+                }
+            })
+        }
 
         // вызываем сохранение объекта
         that.save();

@@ -32,6 +32,7 @@
                     </div>
                 </form-control-messages>
                 <form-control-messages field-name="matchList" label="Список матчей"
+                                       ng-if="ctrl.id2team != null"
                                        form="ctrl.form">
                     <editable-list list="ctrl.form.object.matchList" form="ctrl.matchForm"
                                    init-data="ctrl.matchInitData"
@@ -39,7 +40,8 @@
                                    validate-func="ctrl.validateMatch(item, list)"
                                    item-type-title="матч"
                                    can-delete="ctrl.form.object.status.name == null || ctrl.form.object.status.name == 'NOT_STARTED'"
-                                   can-edit="ctrl.form.object.status.name == null || ctrl.form.object.status.name == 'NOT_STARTED'">
+                                   can-edit="true"
+                                   can-add="ctrl.form.object.status.name == null || ctrl.form.object.status.name == 'NOT_STARTED'">
                         <div>
                             <form-control-messages field-name="teamAId" label="Команда А" form="ctrl.matchForm"
                                                    ng-if="ctrl.teams != null">
@@ -116,7 +118,7 @@
                 <form-control-messages field-name="openDate"
                                        ng-if="ctrl.form.object.openDate != null"
                                        label="Дата открытия тура" form="ctrl.form">
-                        <p data-ng-bind="ctrl.form.object.openDate | date:'dd.MM.yyyy'"></p>
+                    <p data-ng-bind="ctrl.form.object.openDate | date:'dd.MM.yyyy'"></p>
                 </form-control-messages>
 
                 <form-control-messages field-name="startDate"

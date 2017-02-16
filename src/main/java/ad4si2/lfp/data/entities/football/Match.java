@@ -58,7 +58,15 @@ public class Match implements Serializable, IDeleted, IEntity<Long, Match>, IAcc
     @Nullable
     private Account account;
 
-    public Match() {
+    protected Match() {
+    }
+
+    public Match(@Nullable final Date date, final long teamAId, final long teamBId, final boolean teamAIsHome, final long tourId) {
+        this.date = date;
+        this.teamAId = teamAId;
+        this.teamBId = teamBId;
+        this.teamAIsHome = teamAIsHome;
+        this.tourId = tourId;
     }
 
     public Match(@Nonnull final Match other) {

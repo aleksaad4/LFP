@@ -1,7 +1,6 @@
 package ad4si2.lfp.data.services.account;
 
 import ad4si2.lfp.data.entities.account.Account;
-import ad4si2.lfp.data.entities.account.AccountRole;
 import ad4si2.lfp.data.entities.account.Admin;
 import ad4si2.lfp.data.entities.account.Player;
 import ad4si2.lfp.data.repositories.account.AccountRepository;
@@ -100,7 +99,7 @@ public class AccountServiceImpl implements AccountService, ApplicationListener<A
     public void onApplicationEvent(final ApplicationReadyEvent applicationReadyEvent) {
         // создаём админа admin/admin, если его нет
         if (repository.findByLoginAndDeletedFalse("admin").isEmpty()) {
-            create(new Admin("admin", "admin", AccountRole.ADMIN));
+            create(new Admin("admin", "admin"));
         }
     }
 }

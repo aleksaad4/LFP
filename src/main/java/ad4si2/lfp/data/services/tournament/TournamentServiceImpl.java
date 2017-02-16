@@ -252,10 +252,11 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
         result.checkLinkedValue("leagueId", entry, entry.getLeagueId(), (linkedId) -> leagueService.findById(linkedId, false), false);
 
         // нельзя изменять тип турнира
-        result.checkNotModify("type", entry, findById(entry.getId(), false), Tournament::getType);
+        final EntityValidatorResult modifyTypeResult = new EntityValidatorResult().checkNotModify("type", entry, findById(entry.getId(), false), Tournament::getType);
+        result.addErrors(modifyTypeResult.getErrors());
 
         // отдельные проверки для турнира с типом `ЧЕМПИОНАТ`
-        if (entry.getType() == TournamentType.CHAMPIONSHIP) {
+        if (!modifyTypeResult.hasErrors() && entry.getType() == TournamentType.CHAMPIONSHIP) {
             // если количество кругов задано, оно должно быть больше 0
             result.checkPositiveValue("roundCount", (Championship) entry, Championship::getRoundCount);
             // если количество туров задано, оно должно быть больше 0
@@ -269,7 +270,7 @@ public class TournamentServiceImpl implements TournamentService, ChangesEventsLi
 
             // обновлять количество туров можно только на этапе выбора количества туров
             if (entry.getStatus() != TournamentStatus.CONFIGURATION_TOUR_COUNT_SETTINGS) {
-                result.checkNotModify("tourCount", (Championship) entry, (Championship) findById(entry.getId(), false), Championship::getRoundCount);
+                result.checkNotModify("tourCount", (Championship) entry, (Championship) findById(entry.getId(), false), Championship::getTourCount);
             }
         }
 

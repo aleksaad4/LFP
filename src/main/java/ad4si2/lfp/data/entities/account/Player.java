@@ -1,19 +1,24 @@
 package ad4si2.lfp.data.entities.account;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
 
 @Entity
 public class Player extends Account {
 
-    public Player() {
+    protected Player() {
     }
 
-    public Player(@Nonnull final String login, @Nonnull final String password, final AccountRole role) {
-        super(login, password, role);
+    public Player(@Nonnull final String login, @Nonnull final String password, @Nullable final String name, @Nullable final String avatarUrl, @Nullable final String email) {
+        super(login, password, AccountRole.PLAYER, name, avatarUrl, email);
     }
 
-    public Player(@Nonnull final Account other) {
+    public Player(@Nonnull final String login, @Nonnull final String password) {
+        super(login, password, AccountRole.PLAYER);
+    }
+
+    public Player(@Nonnull final Player other) {
         super(other);
     }
 

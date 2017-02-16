@@ -43,7 +43,12 @@ public class Country implements Serializable, IDeleted, IEntity<Long, Country>, 
     @Nullable
     private Account account;
 
-    public Country() {
+    protected Country() {
+    }
+
+    public Country(@Nonnull final String name, @Nullable final String imageUrl) {
+        this.name = name;
+        this.imageUrl = imageUrl;
     }
 
     public Country(@Nonnull final Country other) {

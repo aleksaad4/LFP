@@ -12,5 +12,12 @@ public class ValidationException extends RuntimeException {
     public ValidationException(final EntityValidatorResult result) {
         this.result = result;
     }
+
+    @Override
+    public String toString() {
+        return "ValidationException {" +
+                "result=" + result +
+                "} " + super.toString();
+    }
 }
 

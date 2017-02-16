@@ -65,11 +65,6 @@ public class EntityValidatorResult {
         return fields;
     }
 
-    @Override
-    public String toString() {
-        return hasErrors() ? "ERROR: " + errors : "OK";
-    }
-
     public void addError(@Nonnull final EntityValidatorError error) {
         errors.add(error);
     }
@@ -238,5 +233,12 @@ public class EntityValidatorResult {
             }
         }
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "EntityValidatorResult {" +
+                "errors=" + errors +
+                '}';
     }
 }

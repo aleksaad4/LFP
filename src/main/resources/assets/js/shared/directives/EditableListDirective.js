@@ -19,7 +19,8 @@ function EditableListDirective() {
             formatFunc: "&",
             validateFunc: "&",
             canDelete: "=",
-            canEdit: "="
+            canEdit: "=",
+            canAdd: "="
         },
         controller: function () {
             const that = this;

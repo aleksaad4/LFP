@@ -55,7 +55,14 @@ public class Team implements Serializable, IDeleted, IEntity<Long, Team>, IAccou
     @Nullable
     private Country country;
 
-    public Team() {
+    protected Team() {
+    }
+
+    public Team(@Nonnull final String name, @Nonnull final String city, @Nullable final String imageUrl, final long countryId) {
+        this.name = name;
+        this.city = city;
+        this.imageUrl = imageUrl;
+        this.countryId = countryId;
     }
 
     public Team(@Nonnull final Team other) {

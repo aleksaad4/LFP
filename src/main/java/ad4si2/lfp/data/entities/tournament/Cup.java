@@ -11,7 +11,7 @@ import java.util.Date;
 @Entity
 public class Cup extends Tournament {
 
-    public Cup() {
+    protected Cup() {
     }
 
     public Cup(final Cup other) {
@@ -19,8 +19,12 @@ public class Cup extends Tournament {
     }
 
     public Cup(final long id, @Nonnull final Date creationDate, @Nonnull final String name,
-               @Nonnull final TournamentType type, @Nonnull final TournamentStatus status, @Nullable final Long leagueId) {
-        super(id, creationDate, name, type, status, leagueId);
+               @Nonnull final TournamentStatus status, @Nullable final Long leagueId) {
+        super(id, creationDate, name, TournamentType.CUP, status, leagueId);
+    }
+
+    public Cup(@Nonnull final String name, @Nullable final Long leagueId) {
+        super(name, TournamentType.CUP, leagueId);
     }
 
     @Nonnull

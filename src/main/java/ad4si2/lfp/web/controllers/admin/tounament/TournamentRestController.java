@@ -203,7 +203,7 @@ public class TournamentRestController {
         switch (dto.getType()) {
             case CHAMPIONSHIP:
                 t = new Championship(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),
-                        dto.getName(), dto.getType(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS,
+                        dto.getName(),  dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS,
                         dto.getLeague() != null ? dto.getLeague().getId() : null, dto.getRoundCount(), dto.getTourCount());
 
                 // если выбрана лига, но ещё не задано количество туров - то проставим его
@@ -214,7 +214,7 @@ public class TournamentRestController {
                 break;
             case CUP:
                 t = new Cup(dto.getId(), dto.getCreationDate() == null ? new Date() : dto.getCreationDate(),
-                        dto.getName(), dto.getType(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS,
+                        dto.getName(), dto.getStatus() != null ? dto.getStatus() : TournamentStatus.CONFIGURATION_PLAYERS_SETTINGS,
                         dto.getLeague() != null ? dto.getLeague().getId() : null);
                 break;
             default:

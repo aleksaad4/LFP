@@ -89,6 +89,12 @@ public abstract class Tournament implements Serializable, IDeleted, IEntity<Long
         this.leagueId = leagueId;
     }
 
+    public Tournament(@Nonnull final String name, @Nonnull final TournamentType type, @Nullable final Long leagueId) {
+        this.name = name;
+        this.type = type;
+        this.leagueId = leagueId;
+    }
+
     @Override
     public boolean isDeleted() {
         return deleted;
@@ -155,6 +161,14 @@ public abstract class Tournament implements Serializable, IDeleted, IEntity<Long
     @Nonnull
     public TournamentType getType() {
         return type;
+    }
+
+    public void setType(@Nonnull final TournamentType type) {
+        this.type = type;
+    }
+
+    public void setLeagueId(@Nullable final Long leagueId) {
+        this.leagueId = leagueId;
     }
 
     @Override
